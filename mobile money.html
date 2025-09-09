@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Money | Huile de Chèbe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    :root {
+      --golden-brown: #B76E22;
+      --dark-brown: #8B4513;
+      --light-gold: #D4AF37;
+      --cream: #FFF8E7;
+      --off-white: #FDF6E3;
+      --black: #333333;
+      --green: #2E8B57;
+      --blue: #4682B4;
+      --red: #DC3545;
+      --gray: #6C757D;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+      color: var(--black);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--light-gold);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--dark-brown);
+    }
+    
+    .logo i {
+      margin-right: 8px;
+      color: var(--light-gold);
+    }
+    
+    .back-btn {
+      color: var(--dark-brown);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    
+    .back-btn i {
+      margin-right: 5px;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    .page-header h1 {
+      font-size: 24px;
+      color: var(--dark-brown);
+      margin-bottom: 8px;
+    }
+    
+    .page-header p {
+      font-size: 16px;
+      color: var(--black);
+    }
+    
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+    
+    .section-title {
+      color: var(--dark-brown);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--light-gold);
+      font-size: 20px;
+      text-align: center;
+    }
+    
+    .payment-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    @media (max-width: 480px) {
+      .payment-methods {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .payment-method {
+      background: var(--off-white);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      border: 2px solid var(--light-gold);
+    }
+    
+    .payment-method i {
+      font-size: 32px;
+      color: var(--dark-brown);
+      margin-bottom: 10px;
+    }
+    
+    .payment-method h3 {
+      color: var(--dark-brown);
+      margin-bottom: 5px;
+    }
+    
+    .payment-method p {
+      color: var(--black);
+      font-weight: 600;
+    }
+    
+    .divider {
+      height: 2px;
+      background: var(--light-gold);
+      margin: 25px 0;
+      opacity: 0.5;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-brown);
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--golden-brown);
+      outline: none;
+    }
+    
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+    }
+    
+    .receipt {
+      margin-top: 25px;
+      padding: 20px;
+      border: 2px dashed var(--golden-brown);
+      border-radius: 10px;
+      background: var(--off-white);
+      display: none;
+    }
+    
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .receipt-header h3 {
+      color: var(--dark-brown);
+      font-size: 20px;
+    }
+    
+    .receipt-details {
+      margin-bottom: 20px;
+    }
+    
+    .receipt-details p {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .receipt-details b {
+      color: var(--dark-brown);
+    }
+    
+    .receipt-footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid var(--light-gold);
+    }
+    
+    .receipt-footer small {
+      color: var(--gray);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      background: var(--green);
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--dark-brown);
+      border: 2px solid var(--light-gold);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-spa"></i>
+        <span>Huile de Chèbe</span>
+      </div>
+      <a href="mobile pay.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to mobile
+      </a>
+    </header>
+    
+    <div class="page-header">
+      <h1>Mobile Money Payment</h1>
+      <p>Complete your payment and generate a receipt</p>
+    </div>
+    
+    <div class="card">
+      <h2 class="section-title">Payment Methods</h2>
+      
+      <div class="payment-methods">
+        <div class="payment-method">
+          <i class="fas fa-mobile-alt"></i>
+          <h3>Orange Money</h3>
+          <p>+237 670 000 000</p>
+        </div>
+        
+      
+      
+      <div class="divider"></div>
+      
+      <h2 class="section-title">Generate Receipt</h2>
+      
+      <form id="receiptForm">
+        <div class="form-group">
+          <label for="customerName">Customer Name</label>
+          <input type="text" id="customerName" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="amount">Amount (XAF)</label>
+          <input type="number" id="amount" placeholder="Enter amount in XAF" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="txnId">Transaction ID</label>
+          <input type="text" id="txnId" placeholder="Enter transaction ID" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phoneNumber">Your Phone Number</label>
+          <input type="tel" id="phoneNumber" placeholder="Enter your phone number" required>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-check-circle"></i> Approve & Generate Receipt
+        </button>
+      </form>
+      
+      <div class="receipt" id="receiptBox">
+        <div class="receipt-header">
+          <h3>Payment Receipt</h3>
+        </div>
+        
+        <div class="receipt-details">
+          <p><b>Name:</b> <span id="rName"></span></p>
+          <p><b>Phone Number:</b> <span id="rPhone"></span></p>
+          <p><b>Amount:</b> XAF <span id="rAmount"></span></p>
+          <p><b>Transaction ID:</b> <span id="rTxn"></span></p>
+          <p><b>Payment Method:</b> <span id="rMethod">Mobile Money</span></p>
+          <p><b>Status:</b> <span class="status-badge">Payment Approved ✅</span></p>
+        </div>
+        
+        <div class="receipt-footer">
+          <small>Generated on: <span id="rDate"></span></small>
+        </div>
+        
+        <div class="action-buttons">
+          <a href="#" class="action-btn btn-secondary" id="printReceipt">
+            <i class="fas fa-print"></i> Print Receipt
+          </a>
+          <a href="index.html" class="action-btn btn-primary">
+            <i class="fas fa-home"></i> Return Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("receiptForm");
+    const receiptBox = document.getElementById("receiptBox");
+    const printBtn = document.getElementById("printReceipt");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Get form values
+      const customerName = document.getElementById("customerName").value;
+      const amount = document.getElementById("amount").value;
+      const txnId = document.getElementById("txnId").value;
+      const phoneNumber = document.getElementById("phoneNumber").value;
+
+      // Validate inputs
+      if (!customerName || !amount || !txnId || !phoneNumber) {
+        alert("Please fill in all fields");
+        return;
+      }
+
+      // Set receipt values
+      document.getElementById("rName").textContent = customerName;
+      document.getElementById("rPhone").textContent = phoneNumber;
+      document.getElementById("rAmount").textContent = Number(amount).toLocaleString();
+      document.getElementById("rTxn").textContent = txnId;
+      document.getElementById("rDate").textContent = new Date().toLocaleString();
+
+      // Show receipt
+      receiptBox.style.display = "block";
+      
+      // Scroll to receipt
+      receiptBox.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Print receipt functionality
+    printBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      window.print();
+    });
+  </script>
+</body>
+</html>

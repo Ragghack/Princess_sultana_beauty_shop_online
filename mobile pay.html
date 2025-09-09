@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Money Payment | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Your existing CSS remains the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            color: var(--black);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .payment-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .payment-method {
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            border-color: var(--light-gold);
+            transform: translateY(-5px);
+        }
+        
+        .payment-method.selected {
+            border-color: var(--golden-brown);
+            background: rgba(183, 110, 34, 0.05);
+        }
+        
+        .payment-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--dark-brown);
+        }
+        
+        .mtn {
+            color: #FFC107; /* MTN Yellow */
+        }
+        
+        .orange {
+            color: #FF6600; /* Orange Orange */
+        }
+        
+        .payment-name {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .payment-form {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .instructions {
+            background: var(--off-white);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .instructions h3 {
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+        }
+        
+        .steps {
+            list-style-type: none;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .steps li:before {
+            content: counter(step);
+            counter-increment: step;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--golden-brown);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .payment-info {
+            background: #E8F5E9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--green);
+        }
+        
+        .payment-info p {
+            margin-bottom: 10px;
+        }
+        
+        .payment-details {
+            font-weight: 600;
+            color: var(--dark-brown);
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .btn-large {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--dark-brown);
+            border: 2px solid var(--light-gold);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--off-white);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid var(--green);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mobile Money Payment</h1>
+            <p>Select your mobile money provider and complete your payment</p>
+        </header>
+        
+        <div class="payment-container">
+            <h2 class="section-title">Select Payment Method</h2>
+            
+            <div class="payment-methods">
+                <div class="payment-method" data-method="mtn">
+                    <div class="payment-icon mtn">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <a class="payment-name" href="momo page.html">MTN Mobile Money</a>
+                    <p>Pay with your MTN mobile money account</p>
+                </div>
+                
+                <div class="payment-method" data-method="orange">
+                    <div class="payment-icon orange">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <a class="payment-name" href="OM money.html">Orange Money</a>
+                    <p>Pay with your Orange mobile money account</p>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='shopping cart.html'">Back to Cart</button>
+                <button class="btn" id="help-btn">Need Help?</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const helpBtn = document.getElementById('help-btn');
+            
+            // Help button
+            helpBtn.addEventListener('click', function() {
+                alert('For assistance with mobile money payments, please call our support team at +237 677 000 000 or email support@chebeoil.com');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Huile de Chèbe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+      --golden-brown: #B76E22;
+      --dark-brown: #8B4513;
+      --light-gold: #D4AF37;
+      --cream: #FFF8E7;
+      --off-white: #FDF6E3;
+      --black: #333333;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--light-gold);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .logo i {
+      margin-right: 10px;
+      font-size: 28px;
+      color: var(--light-gold);
+    }
+    /* Navigation Styles */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .nav-links li a:hover {
+            color: var(--light-gold);
+        }
+
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--light-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links li a:hover::after {
+            width: 100%;
+        }
+
+        /* Burger menu styles */
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .burger-menu span {
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .burger-menu {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 70%;
+                background: var(--dark-brown);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                z-index: 100;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li a {
+                font-size: 1.2rem;
+                padding: 15px 25px;
+            }
+            
+            .close-menu {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 1.8rem;
+                color: white;
+                cursor: pointer;
+                z-index: 102;
+            }
+            
+            /* Burger animation */
+            .burger-menu.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            
+            .burger-menu.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .burger-menu.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+        }
+
+        .auth-buttons button {
+            background: var(--light-gold);
+            color: var(--dark-brown);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .auth-buttons button:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .hero-image {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image {
+            width: 320px;
+            height: 420px;
+            background: linear-gradient(135deg, var(--light-gold) 0%, var(--golden-brown) 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 20px 40px rgba(183, 110, 34, 0.3),
+                inset 0 -10px 20px rgba(139, 69, 19, 0.2),
+                inset 0 10px 20px rgba(255, 255, 255, 0.3);
+            animation: morphing 10s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes morphing {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+            100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent 20%, var(--light-gold) 20%, var(--light-gold) 25%, transparent 25%, transparent 40%, var(--golden-brown) 40%, var(--golden-brown) 45%, transparent 45%);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            transform: rotate(45deg);
+            animation: patternMove 20s linear infinite;
+        }
+
+        @keyframes patternMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .product-image i {
+            font-size: 80px;
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        .product-image h2 {
+            color: var(--dark-brown);
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 0 10px;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+        }
+
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: var(--light-gold);
+    }
+
+    /* About Section */
+    .about-section {
+      max-width: 1100px;
+      margin: 3rem auto;
+      padding: 2rem;
+    }
+
+    .about-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .about-header h1 {
+      font-size: 2.8rem;
+      color: var(--dark-brown);
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .about-header h1::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      bottom: -10px;
+      left: 0;
+      background: linear-gradient(90deg, var(--golden-brown), var(--light-gold));
+      border-radius: 5px;
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    .about-content img {
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .about-text h2 {
+      color: var(--dark-brown);
+      margin-bottom: 1rem;
+    }
+
+    .about-text p {
+      margin-bottom: 1rem;
+      color: var(--black);
+    }
+
+    /* Mission Section */
+    .mission-section {
+      text-align: center;
+      background: var(--off-white);
+      padding: 3rem 2rem;
+      border-radius: 15px;
+      margin-bottom: 3rem;
+    }
+
+    .mission-section h2 {
+      color: var(--dark-brown);
+      margin-bottom: 1rem;
+    }
+
+    .mission-section p {
+      max-width: 800px;
+      margin: auto;
+      font-size: 1.1rem;
+    }
+
+    /* Team Section */
+    .team-section {
+      margin: 2rem auto;
+      text-align: center;
+    }
+
+    .team-section h2 {
+      color: var(--dark-brown);
+      margin-bottom: 2rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .team-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .team-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    .team-card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--golden-brown);
+    }
+
+    footer {
+      background: linear-gradient(135deg, var(--dark-brown) 0%, var(--black) 100%);
+      color: white;
+      padding: 3rem 5% 2rem;
+      margin-top: 3rem;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--light-gold);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--cream);
+    }
+
+    @media (max-width: 768px) {
+      .about-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+   <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-spa"></i>
+            <span>Princesse Sultana
+                <p> Hair care <p> 
+            <span>
+        </div>
+        
+        <!-- Burger Menu -->
+        <div class="burger-menu" id="burgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav>
+            <ul class="nav-links" id="navLinks">
+              <li><a href="index.html">Home</a></li>
+               <li><a href="products.html">Products</a></li>
+                <li><a href="benefits.html">Benefits</a></li>
+                <li><a href="how-to-use.html">How to Use</a></li>
+                <li><a href="testimonials.html">Testimonials</a></li>
+                <li><a href="about.html">About</a></li>
+                <div class="close-menu" id="closeMenu">x</div>
+                 
+            </ul>
+        </nav>
+            </ul>
+        </nav>
+    </header>
+
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-header">
+      <h1>About Us</h1>
+    </div>
+    <div class="about-content">
+      <img src="https://via.placeholder.com/500x350.png?text=Huile+de+Ch%C3%A8be" alt="Huile de Chèbe">
+      <div class="about-text">
+        <h2>Our Story</h2>
+        <p>Huile de Chèbe was born from the desire to bring natural, authentic hair care solutions to everyone. Inspired by traditional African beauty rituals, we developed a product that harnesses the power of Chèbe seeds, carefully blended with nourishing oils.</p>
+        <p>Our mission is to restore confidence, promote natural hair growth, and empower individuals to embrace their beauty with healthier, stronger, and shinier hair.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="mission-section">
+    <h2>Our Mission</h2>
+    <p>We believe in sustainable beauty. Our mission is to provide 100% organic hair care that not only enhances hair health but also respects the environment. Every bottle of Huile de Chèbe reflects our commitment to quality, authenticity, and care for our customers.</p>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section">
+    <h2>Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100.png?text=Founder" alt="Founder">
+        <h3>Jane Doe</h3>
+        <p>Founder & CEO</p>
+      </div>
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100.png?text=Formulator" alt="Formulator">
+        <h3>John Smith</h3>
+        <p>Head of Product Development</p>
+      </div>
+      <div class="team-card">
+        <img src="https://via.placeholder.com/100.png?text=Marketing" alt="Marketing">
+        <h3>Mary Johnson</h3>
+        <p>Marketing Director</p>
+        </div>
+         <div class="team-card">
+        <img src="https://via.placeholder.com/100.png?text=Marketing" alt="Engineer">
+        <h3>Mary Johnson</h3>
+        <p>Software Designer</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Huile de Chèbe</h3>
+        <p>100% organic hair oil that hydrates, protects, and promotes hair growth for healthier, more beautiful hair.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html" style="color:white;">Home</a></li>
+          <li><a href="login.html" style="color:white;">Login</a></li>
+          <li><a href="register.html" style="color:white;">Register</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2023 Huile de Chèbe. All rights reserved.</p>
+    </div>
+  </footer>
+   <script>
+        // Burger menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const burgerMenu = document.getElementById('burgerMenu');
+            const navLinks = document.getElementById('navLinks');
+            const closeMenu = document.getElementById('closeMenu');
+            const overlay = document.getElementById('overlay');
+            
+            // Toggle menu
+            burgerMenu.addEventListener('click', function() {
+                navLinks.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+                burgerMenu.classList.add('active');
+            });
+            
+            // Close menu when clicking the close button
+            closeMenu.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = ''; // Enable scrolling
+                burgerMenu.classList.remove('active');
+            });
+            
+            // Close menu when clicking on a link
+            const navItems = document.querySelectorAll('.nav-links a');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    burgerMenu.classList.remove('active');
+                });
+            });
+            
+            // Close menu when clicking outside
+            overlay.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                burgerMenu.classList.remove('active');
+            });
+            
+            // Other functionality
+            const shopNowBtn = document.getElementById('shopNowBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Register button functionality
+            registerBtn.addEventListener('click', function() {
+                window.location.href = 'register.html';
+            });
+            
+            // Login button functionality
+            loginBtn.addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+            
+            // Add animation to elements on scroll
+            const animatedElements = document.querySelectorAll('.feature-card, .step, .testimonial');
+            
+            function checkScroll() {
+                animatedElements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = 1;
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            }
+            
+            // Initialize opacity for animation
+            animatedElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            });
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll(); // Check on initial load
+        });
+    </script>
+</body>
+</html>
