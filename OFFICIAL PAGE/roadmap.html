@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Roadmap | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --purple: #9370DB;
+            --orange: #FF8C42;
+            --red: #DC3545;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: var(--black);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .progress-summary {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .progress-card {
+            text-align: center;
+            padding: 15px;
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .progress-card i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .progress-card h3 {
+            margin-bottom: 10px;
+        }
+        
+        .progress-card p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .progress-complete {
+            color: var(--green);
+        }
+        
+        .progress-progress {
+            color: var(--blue);
+        }
+        
+        .progress-pending {
+            color: var(--orange);
+        }
+        
+        .progress-future {
+            color: var(--red);
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .roadmap-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background: white;
+            border: 2px solid var(--light-gold);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: var(--golden-brown);
+            color: white;
+            border-color: var(--golden-brown);
+        }
+        
+        .tab:hover:not(.active) {
+            background: var(--off-white);
+        }
+        
+        .roadmap-content {
+            display: none;
+        }
+        
+        .roadmap-content.active {
+            display: block;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: var(--light-gold);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 10px;
+        }
+        
+        .phase {
+            padding: 20px;
+            position: relative;
+            width: 50%;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .phase.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .phase-left {
+            left: 0;
+        }
+        
+        .phase-right {
+            left: 50%;
+        }
+        
+        .phase-content {
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border-top: 5px solid var(--golden-brown);
+        }
+        
+        .phase-content::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--light-gold);
+            border: 4px solid white;
+            border-radius: 50%;
+            top: 30px;
+            z-index: 1;
+        }
+        
+        .phase-left .phase-content::after {
+            right: -10px;
+        }
+        
+        .phase-right .phase-content::after {
+            left: -10px;
+        }
+        
+        .phase-title {
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .phase-title i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .phase-desc {
+            margin-bottom: 20px;
+            color: var(--black);
+        }
+        
+        .milestones {
+            list-style: none;
+        }
+        
+        .milestone {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .milestone::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--golden-brown);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-complete {
+            background: var(--green);
+            color: white;
+        }
+        
+        .status-progress {
+            background: var(--blue);
+            color: white;
+        }
+        
+        .status-pending {
+            background: var(--orange);
+            color: white;
+        }
+        
+        .status-future {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .resources {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resources h2 {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-card {
+            background: var(--off-white);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--golden-brown);
+            transition: transform 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-card h3 {
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .resource-card h3 i {
+            margin-right: 10px;
+        }
+        
+        .resource-card p {
+            color: var(--black);
+            font-size: 0.9rem;
+        }
+        
+        .completed-check {
+            color: var(--green);
+            margin-right: 8px;
+        }
+        
+        .phase-progress {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .phase-progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--green);
+            transition: width 0.5s ease;
+        }
+        
+        .phase-progress-text {
+            font-size: 0.9rem;
+            text-align: right;
+            color: var(--dark-brown);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .phase {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .phase-left, .phase-right {
+                left: 0;
+            }
+            
+            .phase-left .phase-content::after, 
+            .phase-right .phase-content::after {
+                left: 56px;
+            }
+            
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-summary {
+                flex-direction: column;
+            }
+            
+            .progress-card {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Filter classes for tabs */
+        .phase.hidden {
+            display: none;
+        }
+        
+        /* Animation for progress bars */
+        @keyframes growProgressBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .animate-progress {
+            animation: growProgressBar 1.5s ease-out forwards;
+        }
+        
+        .completion-banner {
+            background: linear-gradient(135deg, var(--green) 0%, #1e6e46 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .completion-banner i {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Huile de Chèbe Development Roadmap</h1>
+            <p>Visualizing our progress and what's ahead for our hair product e-commerce website</p>
+        </header>
+        
+        <div class="progress-summary">
+            <div class="progress-card">
+                <i class="fas fa-check-circle progress-complete"></i>
+                <h3>Completed</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar progress-complete" style="width: 60%; background-color: var(--green);"></div>
+                </div>
+                <p class="progress-complete">60%</p>
+            </div>
+            
+            <div class="progress-card">
+                <i class="fas fa-spinner progress-progress"></i>
+                <h3>In Progress</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar progress-progress" style="width: 25%; background-color: var(--blue);"></div>
+                </div>
+                <p class="progress-progress">25%</p>
+            </div>
+            
+            <div class="progress-card">
+                <i class="fas fa-clock progress-pending"></i>
+                <h3>Pending</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar progress-pending" style="width: 10%; background-color: var(--orange);"></div>
+                </div>
+                <p class="progress-pending">10%</p>
+            </div>
+            
+            <div class="progress-card">
+                <i class="fas fa-calendar progress-future"></i>
+                <h3>Future</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar progress-future" style="width: 5%; background-color: var(--red);"></div>
+                </div>
+                <p class="progress-future">5%</p>
+            </div>
+        </div>
+        
+        <div class="completion-banner">
+            <i class="fas fa-check-circle"></i>
+            <span><strong>Phase 3 Completed!</strong> Order Management system has been successfully implemented</span>
+        </div>
+        
+        <div class="roadmap-tabs">
+            <div class="tab active" data-tab="all">All Phases</div>
+            <div class="tab" data-tab="completed">Completed</div>
+            <div class="tab" data-tab="progress">In Progress</div>
+            <div class="tab" data-tab="pending">Up Next</div>
+        </div>
+        
+        <div class="roadmap-content active" id="all-content">
+            <div class="timeline">
+                <!-- Phase 1 -->
+                <div class="phase phase-left visible" data-status="completed">
+                    <div class="phase-content">
+                        <h2 class="phase-title"><i class="fas fa-pencil-ruler"></i> Phase 1: Planning & Design</h2>
+                        <p class="phase-desc">Establishing project requirements, design system, and visual identity</p>
+                        <div class="phase-progress">
+                            <div class="phase-progress-bar" style="width: 100%"></div>
+                        </div>
+                        <div class="phase-progress-text">100% Complete</div>
+                        <ul class="milestones">
+                            <li><span class="completed-check">✓</span> Requirements gathering <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Wireframing <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> UI/UX design <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Color scheme selection <span class="status-badge status-complete">Completed</span></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Phase 2 -->
+                <div class="phase phase-right visible" data-status="completed">
+                    <div class="phase-content">
+                        <h2 class="phase-title"><i class="fas fa-code"></i> Phase 2: Core Development</h2>
+                        <p class="phase-desc">Building the foundational pages and functionality</p>
+                        <div class="phase-progress">
+                            <div class="phase-progress-bar" style="width: 100%"></div>
+                        </div>
+                        <div class="phase-progress-text">100% Complete</div>
+                        <ul class="milestones">
+                            <li><span class="completed-check">✓</span> Homepage development <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Product showcase <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Registration system <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Login system <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Shop page <span class="status-badge status-complete">Completed</span></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Phase 3 -->
+                <div class="phase phase-left visible" data-status="completed">
+                    <div class="phase-content">
+                        <h2 class="phase-title"><i class="fas fa-shopping-cart"></i> Phase 3: E-commerce Features</h2>
+                        <p class="phase-desc">Implementing shopping functionality and payment processing</p>
+                        <div class="phase-progress">
+                            <div class="phase-progress-bar" style="width: 100%"></div>
+                        </div>
+                        <div class="phase-progress-text">100% Complete</div>
+                        <ul class="milestones">
+                            <li><span class="completed-check">✓</span> Shopping cart system <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Checkout process <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Payment integration <span class="status-badge status-complete">Completed</span></li>
+                            <li><span class="completed-check">✓</span> Order management <span class="status-badge status-complete">Completed</span></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Phase 4 -->
+                <div class="phase phase-right visible" data-status="progress">
+                    <div class="phase-content">
+                        <h2 class="phase-title"><i class="fas fa-database"></i> Phase 4: Backend Development</h2>
+                        <p class="phase-desc">Building server-side functionality and database architecture</p>
+                        <div class="phase-progress">
+                            <div class="phase-progress-bar" style="width: 25%"></div>
+                        </div>
+                        <div class="phase-progress-text">25% Complete</div>
+                        <ul class="milestones">
+                            <li>Node.js(Express)+MongoDB atlas <span class="status-badge status-progress">In Progress</span></li>
+                            <li>User authentication <span class="status-badge status-pending">Pending</span></li>
+                            <li>Product management <span class="status-badge status-pending">Pending</span></li>
+                            <li>Admin panel <span class="status-badge status-future">Future</span></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Phase 5 -->
+                <div class="phase phase-left visible" data-status="pending">
+                    <div class="phase-content">
+                        <h2 class="phase-title"><i class="fas fa-vial"></i> Phase 5: Testing & Quality Assurance</h2>
+                        <p class="phase-desc">Ensuring the website functions correctly across all scenarios</p>
+                        <div class="phase-progress">
+                            <div class="phase-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">0% Complete</div>
+                        <ul class="milestones">
+                            <li>Functionality testing <span class="status-badge status-future">Future</span></li>
+                            <li>Responsive testing <span class="status-badge status-future">Future</span></li>
+                            <li>Performance optimization <span class="status-badge status-future">Future</span></li>
+                            <li>Security audit <span class="status-badge status-future">Future</span></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Phase 6 -->
+                <div class="phase phase-right visible" data-status="future">
+                    <div class="phase-content">
+                        <h2 class="phase-title"><i class="fas fa-rocket"></i> Phase 6: Deployment & Launch</h2>
+                        <p class="phase-desc">Preparing for and executing the website launch</p>
+                        <div class="phase-progress">
+                            <div class="phase-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-progress-text">0% Complete</div>
+                        <ul class="milestones">
+                            <li>Domain configuration <span class="status-badge status-future">Future</span></li>
+                            <li>Server setup <span class="status-badge status-future">Future</span></li>
+                            <li>Live testing <span class="status-badge status-future">Future</span></li>
+                            <li>Official launch <span class="status-badge status-future">Future</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="resources">
+            <h2>Current Focus: Phase 4 Backend Development</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <h3><i class="fas fa-database"></i> Database Design</h3>
+                    <p>Creating efficient MySQL database schema for products, users, and orders</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h3><i class="fas fa-user-shield"></i> Authentication</h3>
+                    <p>Implementing secure user authentication and session management</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h3><i class="fas fa-cogs"></i> API Development</h3>
+                    <p>Building RESTful APIs for frontend-backend communication</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h3><i class="fas fa-tools"></i> Admin Panel</h3>
+                    <p>Creating management interface for product and order administration</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            const phases = document.querySelectorAll('.phase');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Filter phases based on tab selection
+                    phases.forEach(phase => {
+                        const status = phase.getAttribute('data-status');
+                        
+                        if (tabId === 'all') {
+                            phase.classList.remove('hidden');
+                        } else if (tabId === 'completed' && status === 'completed') {
+                            phase.classList.remove('hidden');
+                        } else if (tabId === 'progress' && status === 'progress') {
+                            phase.classList.remove('hidden');
+                        } else if (tabId === 'pending' && (status === 'pending' || status === 'future')) {
+                            phase.classList.remove('hidden');
+                        } else {
+                            phase.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+            
+            // Animation on scroll
+            function checkVisibility() {
+                phases.forEach(phase => {
+                    const position = phase.getBoundingClientRect();
+                    
+                    // If the phase is in the viewport and not hidden
+                    if (position.top < window.innerHeight - 100 && !phase.classList.contains('hidden')) {
+                        phase.classList.add('visible');
+                    }
+                });
+            }
+            
+            // Check visibility on load and scroll
+            window.addEventListener('load', checkVisibility);
+            window.addEventListener('scroll', checkVisibility);
+            
+            // Animate progress bars
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar').forEach(bar => {
+                    bar.classList.add('animate-progress');
+                });
+            }, 500);
+            
+            // Initial check
+            checkVisibility();
+        });
+    </script>
+</body>
+</html>

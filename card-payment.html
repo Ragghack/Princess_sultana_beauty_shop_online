@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -628,4 +629,636 @@
     });
   </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Card Payment | Huile de Chèbe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    :root {
+      --golden-brown: #B76E22;
+      --dark-brown: #8B4513;
+      --light-gold: #D4AF37;
+      --cream: #FFF8E7;
+      --off-white: #FDF6E3;
+      --black: #333333;
+      --green: #2E8B57;
+      --blue: #4682B4;
+      --red: #DC3545;
+      --gray: #6C757D;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+      color: var(--black);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--light-gold);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--dark-brown);
+    }
+    
+    .logo i {
+      margin-right: 10px;
+      color: var(--light-gold);
+    }
+    
+    .back-btn {
+      color: var(--dark-brown);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    
+    .back-btn i {
+      margin-right: 5px;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    
+    .page-header h1 {
+      font-size: 28px;
+      color: var(--dark-brown);
+      margin-bottom: 10px;
+    }
+    
+    .page-header p {
+      font-size: 16px;
+      color: var(--black);
+    }
+    
+    .section {
+      margin-bottom: 25px;
+    }
+    
+    .section-title {
+      color: var(--dark-brown);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--light-gold);
+    }
+    
+    .order-summary {
+      background: var(--off-white);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+    }
+    
+    .order-total {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--dark-brown);
+      border-top: 2px solid var(--light-gold);
+      padding-top: 15px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .payment-container {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      margin-top: 20px;
+    }
+    
+    .card-icons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    
+    .card-icon {
+      font-size: 32px;
+      color: #555;
+    }
+    
+    .card-icon.visa {
+      color: #1A1F71;
+    }
+    
+    .card-icon.mastercard {
+      color: #EB001B;
+    }
+    
+    .card-icon.amex {
+      color: #002663;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-brown);
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--golden-brown);
+      outline: none;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+    }
+    
+    .processing {
+      text-align: center;
+      padding: 20px;
+      display: none;
+    }
+    
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--golden-brown);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .receipt {
+      margin-top: 25px;
+      padding: 20px;
+      border: 2px dashed var(--golden-brown);
+      border-radius: 10px;
+      background: var(--off-white);
+      display: none;
+    }
+    
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .receipt-header h2 {
+      color: var(--dark-brown);
+    }
+    
+    .receipt-details {
+      margin-bottom: 20px;
+    }
+    
+    .receipt-details p {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .receipt-details b {
+      color: var(--dark-brown);
+    }
+    
+    .receipt-footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid var(--light-gold);
+    }
+    
+    .receipt-footer small {
+      color: var(--gray);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      background: var(--green);
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--dark-brown);
+      border: 2px solid var(--light-gold);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-spa"></i>
+        <span>Huile de Chèbe</span>
+      </div>
+      <a href="checkout.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Checkout
+      </a>
+    </header>
+    
+    <div class="page-header">
+      <h1>Credit Card Payment</h1>
+      <p>Complete your payment securely with your credit card</p>
+    </div>
+    
+    <!-- Order Summary -->
+    <div class="section">
+      <h2 class="section-title">Order Summary</h2>
+      <div class="order-summary" id="orderSummary">
+        <!-- Order items will be dynamically inserted here -->
+      </div>
+    </div>
+    
+    <!-- Credit Card Payment Form -->
+    <div class="section">
+      <h2 class="section-title">Credit Card Details</h2>
+      
+      <div class="payment-container">
+        <div class="card-icons">
+          <i class="fab fa-cc-visa card-icon visa"></i>
+          <i class="fab fa-cc-mastercard card-icon mastercard"></i>
+          <i class="fab fa-cc-amex card-icon amex"></i>
+        </div>
+        
+        <form id="cardForm">
+          <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="cardName">Name on Card</label>
+            <input type="text" id="cardName" placeholder="John Doe" required>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expiry">Expiry Date</label>
+              <input type="text" id="expiry" placeholder="MM/YY" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="cvv">CVV</label>
+              <input type="text" id="cvv" placeholder="123" required>
+            </div>
+          </div>
+          
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-lock"></i> Pay Now
+          </button>
+        </form>
+        
+        <!-- Processing Indicator -->
+        <div class="processing" id="processing">
+          <div class="spinner"></div>
+          <p>Processing your card payment...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Receipt -->
+    <div class="receipt" id="receiptBox">
+      <div class="receipt-header">
+        <h2>Payment Receipt</h2>
+      </div>
+      
+      <div class="receipt-details">
+        <p><b>Transaction ID:</b> <span id="rTxnId"></span></p>
+        <p><b>Amount Paid:</b> <span id="rAmount"></span></p>
+        <p><b>Payment Method:</b> Credit Card</p>
+        <p><b>Status:</b> <span class="status-badge">Payment Approved ✅</span></p>
+      </div>
+      
+      <div class="receipt-footer">
+        <small>Generated on: <span id="rDate"></span></small>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="action-btn btn-secondary" id="printReceipt">
+          <i class="fas fa-print"></i> Print Receipt
+        </button>
+        <a href="index.html" class="action-btn btn-primary">
+          <i class="fas fa-home"></i> Return Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cardForm = document.getElementById('cardForm');
+      const processing = document.getElementById('processing');
+      const receiptBox = document.getElementById('receiptBox');
+      const printBtn = document.getElementById('printReceipt');
+      const orderSummary = document.getElementById('orderSummary');
+      
+      // Currency exchange rates (relative to USD)
+      const exchangeRates = {
+        USD: 1,
+        EUR: 0.93,
+        GBP: 0.81,
+        XAF: 605.50, // CFA Franc
+        NGN: 770.50, // Nigerian Naira
+        GHS: 11.80, // Ghanaian Cedi
+        ZAR: 18.70, // South African Rand
+        CAD: 1.37, // Canadian Dollar
+        AUD: 1.54  // Australian Dollar
+      };
+      
+      // Format currency based on currency code
+      function formatCurrency(amount, currency) {
+        if (currency === 'XAF') {
+          return new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'XAF',
+            minimumFractionDigits: 0
+          }).format(amount);
+        }
+        
+        const formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: currency,
+          minimumFractionDigits: 2
+        });
+        
+        return formatter.format(amount);
+      }
+      
+      // Load order summary
+      function loadOrderSummary() {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        const cartTotal = localStorage.getItem('cartTotal') || 0;
+        const cartCurrency = localStorage.getItem('cartCurrency') || 'XAF';
+        
+        if (cartItems.length === 0) {
+          // If cart is empty, redirect back to shopping cart
+          window.location.href = 'shopping cart.html';
+          return;
+        }
+        
+        // Clear order summary
+        orderSummary.innerHTML = '';
+        
+        // Add cart items to order summary
+        cartItems.forEach(item => {
+          // Convert prices from USD to XAF (shop page uses USD prices)
+          const priceInXAF = item.price * exchangeRates['XAF'];
+          const itemTotal = priceInXAF * item.qty;
+          
+          const orderItem = document.createElement('div');
+          orderItem.className = 'order-item';
+          orderItem.innerHTML = `
+            <span>${item.name} (x${item.qty})</span>
+            <span>${formatCurrency(itemTotal, 'XAF')}</span>
+          `;
+          orderSummary.appendChild(orderItem);
+        });
+        
+        // Add shipping
+        const shipping = 1000; // Fixed shipping cost in XAF
+        const shippingItem = document.createElement('div');
+        shippingItem.className = 'order-item';
+        shippingItem.innerHTML = `
+          <span>Delivery Fee</span>
+          <span>${formatCurrency(shipping, 'XAF')}</span>
+        `;
+        orderSummary.appendChild(shippingItem);
+        
+        // Add total
+        const totalItem = document.createElement('div');
+        totalItem.className = 'order-total';
+        totalItem.innerHTML = `
+          <span>Total:</span>
+          <span>${formatCurrency(cartTotal, 'XAF')}</span>
+        `;
+        orderSummary.appendChild(totalItem);
+      }
+      
+      // Load order summary on page load
+      loadOrderSummary();
+      
+      // Form submission
+      cardForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardName = document.getElementById('cardName').value;
+        const expiry = document.getElementById('expiry').value;
+        const cvv = document.getElementById('cvv').value;
+        const cartTotal = localStorage.getItem('cartTotal') || 0;
+        
+        // Validate form
+        if (!cardNumber || !cardName || !expiry || !cvv) {
+          alert('Please fill in all card details');
+          return;
+        }
+        
+        // Validate card number (simple Luhn algorithm check)
+        if (!isValidCardNumber(cardNumber.replace(/\s/g, ''))) {
+          alert('Please enter a valid card number');
+          return;
+        }
+        
+        // Validate expiry date
+        if (!isValidExpiryDate(expiry)) {
+          alert('Please enter a valid expiry date (MM/YY)');
+          return;
+        }
+        
+        // Validate CVV
+        if (!isValidCVV(cvv)) {
+          alert('Please enter a valid CVV (3 or 4 digits)');
+          return;
+        }
+        
+        // Show processing indicator
+        processing.style.display = 'block';
+        cardForm.style.display = 'none';
+        
+        // Simulate payment processing
+        setTimeout(function() {
+          // Hide processing indicator
+          processing.style.display = 'none';
+          
+          // Generate random transaction ID
+          const txnId = 'CC' + Math.floor(100000 + Math.random() * 900000);
+          
+          // Fill receipt details
+          document.getElementById('rTxnId').textContent = txnId;
+          document.getElementById('rAmount').textContent = formatCurrency(cartTotal, 'XAF');
+          document.getElementById('rDate').textContent = new Date().toLocaleString();
+          
+          // Show receipt
+          receiptBox.style.display = 'block';
+          receiptBox.scrollIntoView({ behavior: 'smooth' });
+          
+          // Clear cart after successful payment
+          localStorage.removeItem('cart');
+          localStorage.removeItem('cartItems');
+          localStorage.removeItem('cartTotal');
+          localStorage.removeItem('cartCurrency');
+        }, 3000);
+      });
+      
+      // Simple card number validation using Luhn algorithm
+      function isValidCardNumber(cardNumber) {
+        let sum = 0;
+        let isEven = false;
+        
+        for (let i = cardNumber.length - 1; i >= 0; i--) {
+          let digit = parseInt(cardNumber.charAt(i), 10);
+          
+          if (isEven) {
+            digit *= 2;
+            if (digit > 9) {
+              digit -= 9;
+            }
+          }
+          
+          sum += digit;
+          isEven = !isEven;
+        }
+        
+        return (sum % 10) === 0;
+      }
+      
+      // Expiry date validation
+      function isValidExpiryDate(expiry) {
+        const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+        if (!regex.test(expiry)) return false;
+        
+        const [month, year] = expiry.split('/');
+        const now = new Date();
+        const currentYear = now.getFullYear() % 100;
+        const currentMonth = now.getMonth() + 1;
+        
+        if (parseInt(year) < currentYear) return false;
+        if (parseInt(year) === currentYear && parseInt(month) < currentMonth) return false;
+        
+        return true;
+      }
+      
+      // CVV validation
+      function isValidCVV(cvv) {
+        const regex = /^[0-9]{3,4}$/;
+        return regex.test(cvv);
+      }
+      
+      // Print receipt
+      printBtn.addEventListener('click', function() {
+        window.print();
+      });
+    });
+  </script>
+</body>
+>>>>>>> 720c1e3 (Initial commit)
 </html>

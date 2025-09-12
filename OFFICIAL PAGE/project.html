@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Hub | Hair Product Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: var(--black);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .project-status {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .project-status h2 {
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .status-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .status-item {
+            background: var(--off-white);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--golden-brown);
+        }
+        
+        .status-item h3 {
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-item h3 i {
+            margin-right: 10px;
+            color: var(--golden-brown);
+        }
+        
+        .status-item ul {
+            list-style: none;
+            margin-left: 10px;
+        }
+        
+        .status-item li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-item li i {
+            margin-right: 8px;
+            color: var(--golden-brown);
+            font-size: 0.9rem;
+        }
+        
+        .files-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .files-section h2 {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .file-card {
+            background: var(--off-white);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .file-header {
+            background: var(--golden-brown);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .file-header i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .file-content {
+            padding: 15px;
+        }
+        
+        .file-content h3 {
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        .file-content p {
+            color: var(--black);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .file-link {
+            display: block;
+            text-align: center;
+            background: var(--dark-brown);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        
+        .file-link:hover {
+            background: var(--golden-brown);
+        }
+        
+        .next-steps {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .next-steps h2 {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .steps-list {
+            list-style: none;
+        }
+        
+        .steps-list li {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--off-white);
+            border-radius: 8px;
+            border-left: 4px solid var(--golden-brown);
+            display: flex;
+            align-items: center;
+        }
+        
+        .steps-list li i {
+            margin-right: 15px;
+            color: var(--golden-brown);
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .status-items, .file-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hair Product Website Project</h1>
+            <p>Welcome back! This is the hub for your Huile de Chèbe hair product website project. Here's an overview of what we've built so far and what's next.</p>
+        </header>
+        
+        <section class="project-status">
+            <h2>Project Status</h2>
+            <div class="status-items">
+                <div class="status-item">
+                    <h3><i class="fas fa-check-circle"></i> Completed</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Homepage Design</li>
+                        <li><i class="fas fa-check"></i> Product Showcase</li>
+                        <li><i class="fas fa-check"></i> Registration Page</li>
+                        <li><i class="fas fa-check"></i> Login Page</li>
+                        <li><i class="fas fa-check"></i> Shop Page Design</li>
+                    </ul>
+                </div>
+                
+                <div class="status-item">
+                    <h3><i class="fas fa-spinner"></i> In Progress</h3>
+                    <ul>
+                        <li><i class="fas fa-cog"></i> Shopping Cart Functionality</li>
+                        <li><i class="fas fa-cog"></i> Payment Integration</li>
+                        <li><i class="fas fa-cog"></i> Product Database</li>
+                    </ul>
+                </div>
+                
+                <div class="status-item">
+                    <h3><i class="fas fa-clipboard-list"></i> To Do</h3>
+                    <ul>
+                        <li><i class="fas fa-square"></i> User Dashboard</li>
+                        <li><i class="fas fa-square"></i> Order Management</li>
+                        <li><i class="fas fa-square"></i> Admin Panel</li>
+                        <li><i class="fas fa-square"></i> Product Reviews</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="files-section">
+            <h2>Project Files</h2>
+            <div class="file-grid">
+                <div class="file-card">
+                    <div class="file-header">
+                        <i class="fas fa-home"></i>
+                        <h3>Homepage</h3>
+                    </div>
+                    <div class="file-content">
+                        <p>Main landing page with product highlights and navigation.</p>
+                        <a href="index.html" class="file-link">Open Homepage</a>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-header">
+                        <i class="fas fa-store"></i>
+                        <h3>Shop Page</h3>
+                    </div>
+                    <div class="file-content">
+                        <p>Product listing page with shopping cart functionality.</p>
+                        <a href="shop.html" class="file-link">Open Shop</a>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-header">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>Registration</h3>
+                    </div>
+                    <div class="file-content">
+                        <p>User registration page with form validation.</p>
+                        <a href="register.html" class="file-link">Open Registration</a>
+                    </div>
+                </div>
+                
+                <div class="file-card">
+                    <div class="file-header">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <h3>Login Page</h3>
+                    </div>
+                    <div class="file-content">
+                        <p>User authentication page with social login options.</p>
+                        <a href="login.html" class="file-link">Open Login</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="next-steps">
+            <h2>Next Steps</h2>
+            <ul class="steps-list">
+                <li>
+                    <i class="fas fa-shopping-cart"></i>
+                    <div>
+                        <h3>Implement Shopping Cart</h3>
+                        <p>Add full cart functionality with item management and checkout process.</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="fas fa-credit-card"></i>
+                    <div>
+                        <h3>Payment Integration</h3>
+                        <p>Integrate payment gateways like PayPal, credit cards, and mobile money.</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="fas fa-database"></i>
+                    <div>
+                        <h3>Product Database</h3>
+                        <p>Set up MySQL database to store products, users, and orders.</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="fas fa-tachometer-alt"></i>
+                    <div>
+                        <h3>Admin Dashboard</h3>
+                        <p>Create an admin panel to manage products, orders, and users.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        // Simple navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileLinks = document.querySelectorAll('.file-link');
+            
+           // fileLinks.forEach(link => {
+               // link.addEventListener('click', function(e) {
+                  //  e.preventDefault();
+                   // const pageName = this.closest('.file-card').querySelector('h3').textContent;
+                   // alert(`In a real implementation, this would open the ${pageName} page.`);
+               // });
+           // });
+            
+            // Display welcome message
+            setTimeout(() => {
+                alert('Welcome back to the Hair Product Website Project!');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

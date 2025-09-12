@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huile de Chèbe | 100% Bio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --dark-green: #2C5F2D;
+            --medium-green: #4CAF50;
+            --light-green: #E8F5E9;
+            --cream: #FFF9E6;
+            --brown: #8D6E63;
+            --light-brown: #D7CCC8;
+            --white: #FFFFFF;
+            --black: #333333;
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--dark-green), var(--medium-green));
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--cream);
+        }
+
+        .auth-buttons button {
+            background: var(--cream);
+            color: var(--dark-green);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons button:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23E8F5E9"/><path d="M0 0L100 100" stroke="%234CAF50" stroke-width="2"/><path d="M100 0L0 100" stroke="%234CAF50" stroke-width="2"/></svg>');
+            background-size: cover;
+            padding: 4rem 5%;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .hero-image {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .product-image {
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(135deg, var(--light-green) 0%, var(--cream) 100%);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: var(--medium-green);
+            opacity: 0.1;
+            border-radius: 50%;
+            top: -50px;
+            left: -50px;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: var(--brown);
+            opacity: 0.1;
+            border-radius: 50%;
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .product-image i {
+            font-size: 80px;
+            color: var(--dark-green);
+            margin-bottom: 20px;
+        }
+
+        .product-image h2 {
+            color: var(--dark-green);
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        .hero-text h1 {
+            font-size: 2.8rem;
+            color: var(--dark-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--black);
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .benefits-list li {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .benefits-list li i {
+            color: var(--dark-green);
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .cta-button {
+            background: var(--dark-green);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(44, 95, 45, 0.3);
+        }
+
+        .cta-button:hover {
+            background: var(--medium-green);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(44, 95, 45, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 5%;
+            background: var(--light-green);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--dark-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        /* How to Use Section */
+        .usage {
+            padding: 5rem 5%;
+            background: white;
+        }
+
+        .usage h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            margin-bottom: 3rem;
+        }
+
+        .usage-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            padding: 2rem;
+            background: var(--cream);
+            border-radius: 15px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--dark-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 5%;
+            background: var(--light-green);
+        }
+
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--dark-green);
+            margin-bottom: 3rem;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--black);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--brown);
+            border-radius: 50%;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-green);
+            color: white;
+            padding: 4rem 5% 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--cream);
+        }
+
+        .footer-section p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--cream);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-text p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-leaf"></i>
+            <span>Huile de Chèbe</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Benefits</a></li>
+                <li><a href="#">How to Use</a></li>
+                <li><a href="#">Testimonials</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button>Sign In</button>
+            <button>Register</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>HUILE DE CHÈBE 100% BIO</h1>
+                <p>Discover the transformative power of our 100% organic Chebe Oil, specially formulated to nourish, protect, and revitalize your hair.</p>
+                
+                <ul class="benefits-list">
+                    <li><i class="fas fa-check-circle"></i> Hydrates and protects hair</li>
+                    <li><i class="fas fa-check-circle"></i> Reduces hair loss</li>
+                    <li><i class="fas fa-check-circle"></i> Promotes hair growth</li>
+                    <li><i class="fas fa-check-circle"></i> Adds shine and softness</li>
+                    <li><i class="fas fa-check-circle"></i> Visible results in weeks</li>
+                </ul>
+                
+                <button class="cta-button">
+                    <span>Shop Now</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="hero-image">
+                <div class="product-image">
+                    <i class="fas fa-oil-can"></i>
+                    <h2>HUILE DE CHÈBE<br>100% BIO</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>Why Choose Our Chebe Oil?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-certificate"></i>
+                <h3>100% Organic</h3>
+                <p>Made with certified organic ingredients, free from harmful chemicals.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-seedling"></i>
+                <h3>Natural Ingredients</h3>
+                <p>Formulated with natural oils and traditional Chebe powder.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-heart"></i>
+                <h3>Nourishing</h3>
+                <p>Deeply nourishes hair from root to tip for healthier-looking hair.</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-rocket"></i>
+                <h3>Fast Results</h3>
+                <p>See visible improvements in your hair in just a few weeks.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+    <section class="usage">
+        <h2>How to Use</h2>
+        <div class="usage-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Apply</h3>
+                <p>Apply a small amount of Chebe Oil to your palms and rub together.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Massage</h3>
+                <p>Gently massage the oil into your scalp and through your hair.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Leave In</h3>
+                <p>Leave the oil in your hair for at least 30 minutes or overnight.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Rinse</h3>
+                <p>Rinse thoroughly and style as usual. Use 2-3 times per week.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2>What Our Customers Say</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial">
+                <p class="testimonial-text">"I've been using Huile de Chèbe for 3 months now and my hair has never been healthier. I've noticed significantly less breakage and my hair is growing faster!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">A</div>
+                    <div>
+                        <h4>Amina S.</h4>
+                        <p>Verified Customer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <p class="testimonial-text">"This product transformed my dry, brittle hair. After just a month of use, my hair is softer, shinier, and more manageable. I'm never going back to other products!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">K</div>
+                    <div>
+                        <h4>Khadija T.</h4>
+                        <p>Verified Customer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <p class="testimonial-text">"I was skeptical at first, but Huile de Chèbe really works! My edges are filling in and my hair feels stronger. The organic ingredients are a huge plus for me."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">M</div>
+                    <div>
+                        <h4>Mariam D.</h4>
+                        <p>Verified Customer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Huile de Chèbe</h3>
+                <p>100% organic hair oil that hydrates, protects, and promotes hair growth for healthier, more beautiful hair.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">Testimonials</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Nature Street, Eco City</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> info@chebeoil.com</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <p>Subscribe to our newsletter for updates and special offers.</p>
+                <form>
+                    <input type="email" placeholder="Your email address" style="padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 5px; border: none;">
+                    <button type="submit" style="background: var(--cream); color: var(--dark-green); border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%;">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 Huile de Chèbe. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JavaScript for interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctaButton = document.querySelector('.cta-button');
+            
+            ctaButton.addEventListener('click', function() {
+                alert('Thank you for your interest in Huile de Chèbe! You will be redirected to our shop.');
+            });
+            
+            // Add animation to feature cards on scroll
+            const featureCards = document.querySelectorAll('.feature-card');
+            
+            function checkScroll() {
+                featureCards.forEach(card => {
+                    const cardPosition = card.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (cardPosition < screenPosition) {
+                        card.style.opacity = 1;
+                        card.style.transform = 'translateY(0)';
+                    }
+                });
+            }
+            
+            // Initialize opacity for animation
+            featureCards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            });
+            
+            window.addEventListener('scroll', checkScroll);
+            checkScroll(); // Check on initial load
+        });
+    </script>
+</body>
+</html>

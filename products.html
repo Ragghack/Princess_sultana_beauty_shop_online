@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -473,4 +474,481 @@
     });
   </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products | Huile de Chèbe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+      --golden-brown: #B76E22;
+      --dark-brown: #8B4513;
+      --light-gold: #D4AF37;
+      --cream: #FFF8E7;
+      --off-white: #FDF6E3;
+      --black: #333333;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--light-gold);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .logo i {
+      margin-right: 10px;
+      font-size: 28px;
+      color: var(--light-gold);
+    }
+    
+    /* Navigation Styles */
+    .nav-links {
+      display: flex;
+      list-style: none;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links li {
+      margin: 0 15px;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 8px 0;
+    }
+
+    .nav-links li a:hover {
+      color: var(--light-gold);
+    }
+
+    .nav-links li a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--light-gold);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links li a:hover::after {
+      width: 100%;
+    }
+
+    /* Burger menu styles */
+    .burger-menu {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      cursor: pointer;
+      z-index: 101;
+    }
+
+    .burger-menu span {
+      width: 100%;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .burger-menu {
+        display: flex;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 70%;
+        background: var(--dark-brown);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        transition: right 0.3s ease;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+      }
+      
+      .nav-links.active {
+        right: 0;
+      }
+      
+      .nav-links li a {
+        font-size: 1.2rem;
+        padding: 15px 25px;
+      }
+      
+      .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.8rem;
+        color: white;
+        cursor: pointer;
+        z-index: 102;
+      }
+      
+      /* Burger animation */
+      .burger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+      
+      .burger-menu.active span:nth-child(2) {
+        opacity: 0;
+      }
+      
+      .burger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+      }
+    }
+
+    /* Overlay for when menu is open */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* Product Section */
+    .product-section {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 2rem;
+    }
+
+    .product-section h1 {
+      text-align: center;
+      font-size: 2.8rem;
+      color: var(--dark-brown);
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .product-section h1::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      bottom: -10px;
+      left: 0;
+      background: linear-gradient(90deg, var(--golden-brown), var(--light-gold));
+      border-radius: 5px;
+    }
+
+    .product-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 3rem;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-desc {
+      padding: 2rem;
+    }
+
+    .product-desc h2 {
+      margin-bottom: 1rem;
+      color: var(--golden-brown);
+    }
+
+    .product-desc p {
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--golden-brown);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: var(--dark-brown);
+    }
+
+    /* Alternate Layout */
+    .reverse {
+      grid-template-columns: 1fr 1fr;
+      direction: rtl;
+    }
+
+    .reverse .product-desc {
+      direction: ltr;
+    }
+
+    footer {
+      background: linear-gradient(135deg, var(--dark-brown) 0%, var(--black) 100%);
+      color: white;
+      padding: 3rem 5% 2rem;
+      margin-top: 3rem;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--light-gold);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--cream);
+    }
+
+    @media (max-width: 768px) {
+      .product-box, .reverse {
+        grid-template-columns: 1fr;
+        direction: ltr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Overlay for when menu is open -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <i class="fas fa-spa"></i>
+      <span>Huile de Chèbe</span>
+    </div>
+    
+    <!-- Burger Menu Icon -->
+    <div class="burger-menu" id="burgerMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="how-to-use.html">How to Use</a></li>
+        <li><a href="benefits.html">Benefits</a></li>
+        <li><a href="testimonials.html">Testimonials</a></li>
+        <li><a href="about.html">About</a></li>
+        
+        <!-- Close button for mobile menu -->
+        <div class="close-menu" id="closeMenu">×</div>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Product Section -->
+  <section class="product-section">
+    <h1>Our Products</h1>
+
+    <div class="product-box">
+      <div class="product-img">
+        <img src="https://via.placeholder.com/500x350.png?text=Product+1" alt="Product 1">
+      </div>
+      <div class="product-desc">
+        <h2>Huile Indienne for Beards</h2>
+        <p>Our signature blend that hydrates, strengthens, and nourishes hair from root to tip. Perfect for daily use.</p>
+        <a href="#" class="btn">Shop Now</a>
+      </div>
+    </div>
+
+    <div class="product-box reverse">
+      <div class="product-img">
+        <img src="https://via.placeholder.com/500x350.png?text=Product+2" alt="Product 2">
+      </div>
+      <div class="product-desc">
+        <h2>Huile Indienne for Hair</h2>
+        <p>Enhanced with essential oils for extra scalp stimulation and growth support. A favorite for fast results.</p>
+        <a href="#" class="btn">Shop Now</a>
+      </div>
+    </div>
+
+    <div class="product-box">
+      <div class="product-img">
+        <img src="https://via.placeholder.com/500x350.png?text=Product+3" alt="Product 3">
+      </div>
+      <div class="product-desc">
+        <h2>Chèbe Butter Cream</h2>
+        <p>A rich cream infused with Chèbe and shea butter to deeply moisturize and protect hair from breakage.</p>
+        <a href="#" class="btn">Shop Now</a>
+      </div>
+    </div>
+
+    <div class="product-box reverse">
+      <div class="product-img">
+        <img src="https://via.placeholder.com/500x350.png?text=Product+4" alt="Product 4">
+      </div>
+      <div class="product-desc">
+        <h2>Chèbe Hair Mask</h2>
+        <p>A restorative mask that revives dry and damaged hair, leaving it soft, shiny, and manageable.</p>
+        <a href="#" class="btn">Shop Now</a>
+      </div>
+    </div>
+
+    <div class="product-box">
+      <div class="product-img">
+        <img src="https://via.placeholder.com/500x350.png?text=Product+5" alt="Product 5">
+      </div>
+      <div class="product-desc">
+        <h2>Huile de Chèbe Deluxe Set</h2>
+        <p>Complete care package including oil, cream, and mask for ultimate results. A must-have collection.</p>
+        <a href="#" class="btn">Shop Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Huile de Chèbe</h3>
+        <p>100% organic hair oil that hydrates, protects, and promotes hair growth for healthier, more beautiful hair.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html" style="color:white;">Home</a></li>
+          <li><a href="login.html" style="color:white;">Login</a></li>
+          <li><a href="register.html" style="color:white;">Register</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2023 Huile de Chèbe. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <script>
+    // Burger menu functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const burgerMenu = document.getElementById('burgerMenu');
+      const navLinks = document.getElementById('navLinks');
+      const closeMenu = document.getElementById('closeMenu');
+      const overlay = document.getElementById('overlay');
+      
+      // Toggle menu
+      burgerMenu.addEventListener('click', function() {
+        navLinks.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        burgerMenu.classList.add('active');
+      });
+      
+      // Close menu when clicking the close button
+      closeMenu.addEventListener('click', function() {
+        navLinks.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = ''; // Enable scrolling
+        burgerMenu.classList.remove('active');
+      });
+      
+      // Close menu when clicking on a link
+      const navItems = document.querySelectorAll('.nav-links a');
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          navLinks.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+          burgerMenu.classList.remove('active');
+        });
+      });
+      
+      // Close menu when clicking outside
+      overlay.addEventListener('click', function() {
+        navLinks.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        burgerMenu.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+>>>>>>> 720c1e3 (Initial commit)
 </html>

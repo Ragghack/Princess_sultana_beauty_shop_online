@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL Database Script | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+            --purple: #9370DB;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: var(--black);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .code-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gold);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .code-container {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .sql-keyword {
+            color: #f92672;
+        }
+        
+        .sql-function {
+            color: #66d9ef;
+        }
+        
+        .sql-string {
+            color: #a6e22e;
+        }
+        
+        .sql-comment {
+            color: #75715e;
+        }
+        
+        .sql-table {
+            color: #ae81ff;
+        }
+        
+        .copy-btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #3a71a3;
+        }
+        
+        .instructions {
+            background: var(--off-white);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .instructions h3 {
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .code-container {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+        
+        .completion-banner {
+            background: linear-gradient(135deg, var(--blue) 0%, #3a71a3 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .completion-banner i {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MySQL Database Script</h1>
+            <p>Complete SQL code to create the database for Huile de Chèbe</p>
+        </header>
+        
+        <div class="completion-banner">
+            <i class="fas fa-database"></i>
+            <span><strong>Database Schema:</strong> Ready for implementation</span>
+        </div>
+        
+        <div class="code-section">
+            <h2 class="section-title"><i class="fas fa-code"></i> MySQL Database Creation Script</h2>
+            <p>Execute this SQL code in your MySQL database to create the complete schema for your e-commerce platform.</p>
+            
+            <div class="code-container">
+                <pre><code><span class="sql-comment">-- Create Database</span>
+<span class="sql-keyword">CREATE DATABASE</span> <span class="sql-function">IF NOT EXISTS</span> huile_de_chebe;
+<span class="sql-keyword">USE</span> huile_de_chebe;
+
+<span class="sql-comment">-- Create Users Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">users</span> (
+    user_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    email <span class="sql-keyword">VARCHAR</span>(100) <span class="sql-keyword">NOT NULL UNIQUE</span>,
+    password_hash <span class="sql-keyword">VARCHAR</span>(255) <span class="sql-keyword">NOT NULL</span>,
+    full_name <span class="sql-keyword">VARCHAR</span>(100) <span class="sql-keyword">NOT NULL</span>,
+    phone <span class="sql-keyword">VARCHAR</span>(20),
+    created_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    last_login <span class="sql-keyword">TIMESTAMP NULL</span>,
+    <span class="sql-keyword">INDEX</span> idx_email (email),
+    <span class="sql-keyword">INDEX</span> idx_created_at (created_at)
+);
+
+<span class="sql-comment">-- Create User Profiles Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">user_profiles</span> (
+    profile_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    user_id <span class="sql-keyword">INT NOT NULL</span>,
+    address <span class="sql-keyword">TEXT</span>,
+    city <span class="sql-keyword">VARCHAR</span>(50),
+    country <span class="sql-keyword">VARCHAR</span>(50),
+    <span class="sql-keyword">FOREIGN KEY</span> (user_id) <span class="sql-keyword">REFERENCES</span> users(user_id) <span class="sql-keyword">ON DELETE CASCADE</span>,
+    <span class="sql-keyword">INDEX</span> idx_user_id (user_id)
+);
+
+<span class="sql-comment">-- Create Categories Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">categories</span> (
+    category_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    name <span class="sql-keyword">VARCHAR</span>(50) <span class="sql-keyword">NOT NULL</span>,
+    description <span class="sql-keyword">TEXT</span>,
+    <span class="sql-keyword">INDEX</span> idx_name (name)
+);
+
+<span class="sql-comment">-- Create Products Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">products</span> (
+    product_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    name <span class="sql-keyword">VARCHAR</span>(100) <span class="sql-keyword">NOT NULL</span>,
+    description <span class="sql-keyword">TEXT</span>,
+    price <span class="sql-keyword">DECIMAL</span>(10, 2) <span class="sql-keyword">NOT NULL</span>,
+    stock_quantity <span class="sql-keyword">INT DEFAULT 0</span>,
+    category_id <span class="sql-keyword">INT</span>,
+    image_url <span class="sql-keyword">VARCHAR</span>(255),
+    created_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    updated_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (category_id) <span class="sql-keyword">REFERENCES</span> categories(category_id),
+    <span class="sql-keyword">INDEX</span> idx_name (name),
+    <span class="sql-keyword">INDEX</span> idx_category (category_id),
+    <span class="sql-keyword">INDEX</span> idx_price (price)
+);
+
+<span class="sql-comment">-- Create Cart Items Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">cart_items</span> (
+    cart_item_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    user_id <span class="sql-keyword">INT NOT NULL</span>,
+    product_id <span class="sql-keyword">INT NOT NULL</span>,
+    quantity <span class="sql-keyword">INT NOT NULL DEFAULT 1</span>,
+    added_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (user_id) <span class="sql-keyword">REFERENCES</span> users(user_id) <span class="sql-keyword">ON DELETE CASCADE</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (product_id) <span class="sql-keyword">REFERENCES</span> products(product_id),
+    <span class="sql-keyword">UNIQUE KEY</span> unique_user_product (user_id, product_id),
+    <span class="sql-keyword">INDEX</span> idx_user_id (user_id),
+    <span class="sql-keyword">INDEX</span> idx_added_at (added_at)
+);
+
+<span class="sql-comment">-- Create Orders Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">orders</span> (
+    order_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    user_id <span class="sql-keyword">INT NOT NULL</span>,
+    total_amount <span class="sql-keyword">DECIMAL</span>(10, 2) <span class="sql-keyword">NOT NULL</span>,
+    status <span class="sql-keyword">VARCHAR</span>(20) <span class="sql-keyword">DEFAULT</span> <span class="sql-string">'pending'</span>,
+    created_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    updated_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (user_id) <span class="sql-keyword">REFERENCES</span> users(user_id),
+    <span class="sql-keyword">INDEX</span> idx_user_id (user_id),
+    <span class="sql-keyword">INDEX</span> idx_status (status),
+    <span class="sql-keyword">INDEX</span> idx_created_at (created_at)
+);
+
+<span class="sql-comment">-- Create Order Items Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">order_items</span> (
+    order_item_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    order_id <span class="sql-keyword">INT NOT NULL</span>,
+    product_id <span class="sql-keyword">INT NOT NULL</span>,
+    quantity <span class="sql-keyword">INT NOT NULL</span>,
+    price <span class="sql-keyword">DECIMAL</span>(10, 2) <span class="sql-keyword">NOT NULL</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (order_id) <span class="sql-keyword">REFERENCES</span> orders(order_id) <span class="sql-keyword">ON DELETE CASCADE</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (product_id) <span class="sql-keyword">REFERENCES</span> products(product_id),
+    <span class="sql-keyword">INDEX</span> idx_order_id (order_id)
+);
+
+<span class="sql-comment">-- Create Order History Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">order_history</span> (
+    history_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    order_id <span class="sql-keyword">INT NOT NULL</span>,
+    status <span class="sql-keyword">VARCHAR</span>(20) <span class="sql-keyword">NOT NULL</span>,
+    updated_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    notes <span class="sql-keyword">TEXT</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (order_id) <span class="sql-keyword">REFERENCES</span> orders(order_id) <span class="sql-keyword">ON DELETE CASCADE</span>,
+    <span class="sql-keyword">INDEX</span> idx_order_id (order_id),
+    <span class="sql-keyword">INDEX</span> idx_updated_at (updated_at)
+);
+
+<span class="sql-comment">-- Create Payments Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">payments</span> (
+    payment_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    order_id <span class="sql-keyword">INT NOT NULL</span>,
+    payment_method <span class="sql-keyword">VARCHAR</span>(50) <span class="sql-keyword">NOT NULL</span>,
+    amount <span class="sql-keyword">DECIMAL</span>(10, 2) <span class="sql-keyword">NOT NULL</span>,
+    status <span class="sql-keyword">VARCHAR</span>(20) <span class="sql-keyword">DEFAULT</span> <span class="sql-string">'pending'</span>,
+    transaction_id <span class="sql-keyword">VARCHAR</span>(100),
+    created_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (order_id) <span class="sql-keyword">REFERENCES</span> orders(order_id),
+    <span class="sql-keyword">INDEX</span> idx_order_id (order_id),
+    <span class="sql-keyword">INDEX</span> idx_status (status),
+    <span class="sql-keyword">INDEX</span> idx_created_at (created_at)
+);
+
+<span class="sql-comment">-- Create Admins Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">admins</span> (
+    admin_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    username <span class="sql-keyword">VARCHAR</span>(50) <span class="sql-keyword">NOT NULL UNIQUE</span>,
+    password_hash <span class="sql-keyword">VARCHAR</span>(255) <span class="sql-keyword">NOT NULL</span>,
+    permissions <span class="sql-keyword">VARCHAR</span>(100) <span class="sql-keyword">DEFAULT</span> <span class="sql-string">'view'</span>,
+    created_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    <span class="sql-keyword">INDEX</span> idx_username (username)
+);
+
+<span class="sql-comment">-- Create User Activity Log Table</span>
+<span class="sql-keyword">CREATE TABLE</span> <span class="sql-table">user_activity</span> (
+    activity_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT PRIMARY KEY</span>,
+    user_id <span class="sql-keyword">INT</span>,
+    activity_type <span class="sql-keyword">VARCHAR</span>(50) <span class="sql-keyword">NOT NULL</span>,
+    description <span class="sql-keyword">TEXT</span>,
+    ip_address <span class="sql-keyword">VARCHAR</span>(45),
+    created_at <span class="sql-keyword">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>,
+    <span class="sql-keyword">FOREIGN KEY</span> (user_id) <span class="sql-keyword">REFERENCES</span> users(user_id) <span class="sql-keyword">ON DELETE SET NULL</span>,
+    <span class="sql-keyword">INDEX</span> idx_user_id (user_id),
+    <span class="sql-keyword">INDEX</span> idx_activity_type (activity_type),
+    <span class="sql-keyword">INDEX</span> idx_created_at (created_at)
+);
+
+<span class="sql-comment">-- Insert Sample Categories</span>
+<span class="sql-keyword">INSERT INTO</span> categories (name, description) <span class="sql-keyword">VALUES</span>
+(<span class="sql-string">'Huiles'</span>, <span class="sql-string">'Natural hair oils for growth and nourishment'</span>),
+(<span class="sql-string">'Creams'</span>, <span class="sql-string">'Hair creams for moisturizing and styling'</span>),
+(<span class="sql-string">'Shampoos'</span>, <span class="sql-string">'Cleansing products for all hair types'</span>),
+(<span class="sql-string">'Treatments'</span>, <span class="sql-string">'Specialized hair treatments and masks'</span>);
+
+<span class="sql-comment">-- Insert Sample Products</span>
+<span class="sql-keyword">INSERT INTO</span> products (name, description, price, stock_quantity, category_id, image_url) <span class="sql-keyword">VALUES</span>
+(<span class="sql-string">'Huile de Chèbe Original'</span>, <span class="sql-string">'Original formula hair growth oil with natural ingredients'</span>, 12495.00, 50, 1, <span class="sql-string">'/images/huile-original.jpg'</span>),
+(<span class="sql-string">'Chèbe Hair Cream'</span>, <span class="sql-string">'Moisturizing cream for dry and damaged hair'</span>, 8495.00, 35, 2, <span class="sql-string">'/images/creme-cheveux.jpg'</span>),
+(<span class="sql-string">'Chèbe Shampoo'</span>, <span class="sql-string">'Gentle cleansing shampoo for all hair types'</span>, 7495.00, 40, 3, <span class="sql-string">'/images/shampooing.jpg'</span>),
+(<span class="sql-string">'Chèbe Hair Growth Set'</span>, <span class="sql-string">'Complete hair growth system with oil and cream'</span>, 19995.00, 20, 4, <span class="sql-string">'/images/kit-croissance.jpg'</span>);
+
+<span class="sql-comment">-- Insert Sample Admin User</span>
+<span class="sql-keyword">INSERT INTO</span> admins (username, password_hash, permissions) <span class="sql-keyword">VALUES</span>
+(<span class="sql-string">'admin'</span>, <span class="sql-string">'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'</span>, <span class="sql-string">'full'</span>); <span class="sql-comment">-- password: password</span>
+
+<span class="sql-comment">-- Show confirmation message</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-string">'Database huile_de_chebe created successfully!'</span> <span class="sql-keyword">AS</span> message;</code></pre>
+            </div>
+            
+            <button class="copy-btn" id="copyButton">
+                <i class="fas fa-copy"></i> Copy SQL to Clipboard
+            </button>
+            
+            <div class="instructions">
+                <h3>Implementation Instructions</h3>
+                <ol>
+                    <li>Copy the SQL code above</li>
+                    <li>Open your MySQL database management tool (phpMyAdmin, MySQL Workbench, or command line)</li>
+                    <li>Execute the SQL code to create the database and tables</li>
+                    <li>Update your application configuration to connect to this database</li>
+                    <li>The script includes sample data to get you started</li>
+                </ol>
+                <p><strong>Note:</strong> The admin user created has username "admin" and password "password" - please change this in a production environment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButton = document.getElementById('copyButton');
+            
+            copyButton.addEventListener('click', function() {
+                const codeElement = document.querySelector('.code-container code');
+                const textArea = document.createElement('textarea');
+                textArea.value = codeElement.textContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Provide visual feedback
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

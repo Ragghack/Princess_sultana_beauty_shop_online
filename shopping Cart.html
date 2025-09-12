@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -739,4 +740,747 @@
         });
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--dark-brown);
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--light-gold);
+        }
+        
+        .cart-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .cart-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        .cart-header p {
+            font-size: 1.1rem;
+            color: var(--black);
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        .cart-summary {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            align-self: start;
+        }
+        
+        .section-title {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .cart-item {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-details {
+            flex-grow: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .item-price {
+            color: var(--golden-brown);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--light-gold);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        .item-total {
+            font-weight: 600;
+            color: var(--dark-brown);
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .remove-item {
+            color: var(--red);
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .summary-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark-brown);
+            border-top: 2px solid var(--light-gold);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--light-gold);
+            margin-bottom: 20px;
+        }
+        
+        .empty-cart p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--black);
+        }
+        
+        .currency-converter {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .converter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .converter-form select, .converter-form input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .converter-form button {
+            padding: 12px 20px;
+            background: var(--golden-brown);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .conversion-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--off-white);
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
+        .order-management {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-top: 40px;
+        }
+        
+        .order-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .order-filters button {
+            padding: 10px 20px;
+            border: 1px solid var(--light-gold);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .order-filters button.active {
+            background: var(--golden-brown);
+            color: white;
+        }
+        
+        .orders-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .order-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-info h3 {
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-processing {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-shipped {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+        
+        .status-delivered {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: white;
+            color: var(--dark-brown);
+            border: 2px solid var(--light-gold);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .continue-shopping:hover {
+            background: var(--off-white);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-spa"></i>
+                <span>Huile de Chèbe</span>
+            </div>
+            <nav>
+                <a href="shop.html" class="continue-shopping">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </a>
+            </nav>
+        </header>
+        
+        <div class="cart-header">
+            <h1>Your Shopping Cart</h1>
+            <p>Review your items and proceed to checkout</p>
+        </div>
+        
+        <!-- Currency Converter -->
+        <div class="currency-converter">
+            <h2 class="section-title">Currency Converter</h2>
+            <p>Convert prices to your local currency (FCFA is the default)</p>
+            
+            <div class="converter-form">
+                <select id="currency-from">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="XAF" selected>XAF - CFA Franc</option>
+                    <option value="NGN">NGN - Nigerian Naira</option>
+                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                    <option value="ZAR">ZAR - South African Rand</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                </select>
+                
+                <span>to</span>
+                
+                <select id="currency-to">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="XAF" selected>XAF - CFA Franc</option>
+                    <option value="NGN">NGN - Nigerian Naira</option>
+                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                    <option value="ZAR">ZAR - South African Rand</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                </select>
+                
+                <input type="number" id="amount" placeholder="Amount" value="1">
+                
+                <button id="convert-btn">Convert</button>
+            </div>
+            
+            <div class="conversion-result" id="conversion-result">
+                Enter an amount and click Convert
+            </div>
+        </div>
+        
+        <div class="cart-container">
+            <div class="cart-items">
+                <h2 class="section-title">Cart Items</h2>
+                
+                <div id="cart-items-container">
+                    <!-- Cart items will be dynamically inserted here -->
+                </div>
+                
+                <div class="empty-cart" id="empty-cart-message">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Your cart is empty</p>
+                    <a href="shop.html" class="checkout-btn">Browse Products</a>
+                </div>
+            </div>
+            
+            <div class="cart-summary">
+                <h2 class="section-title">Order Summary</h2>
+                
+                <div class="summary-line">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">0 XAF</span>
+                </div>
+                
+                <div class="summary-line">
+                    <span>Shipping:</span>
+                    <span id="shipping">1,000 XAF</span>
+                </div>
+                
+                <div class="summary-line">
+                    <span>Tax:</span>
+                    <span id="tax">0 XAF</span>
+                </div>
+                
+                <div class="summary-line summary-total">
+                    <span>Total:</span>
+                    <span id="total">0 XAF</span>
+                </div>
+                
+                <a href="checkout.html" class="checkout-btn" id="checkout-btn">Proceed to Checkout</a>
+            </div>
+        </div>
+        
+        <!-- Order Management Section -->
+        <div class="order-management">
+            <h2 class="section-title">Recent Orders</h2>
+            
+            <div class="order-filters">
+                <button class="active">All Orders</button>
+                <button>Processing</button>
+                <button>Shipped</button>
+                <button>Delivered</button>
+            </div>
+            
+            <div class="orders-list">
+                <div class="order-card">
+                    <div class="order-info">
+                        <h3>Order #HC-98432</h3>
+                        <p>Date: Nov 10, 2023 | Total: 36,485 XAF</p>
+                    </div>
+                    <div class="order-status status-processing">Processing</div>
+                </div>
+                
+                <div class="order-card">
+                    <div class="order-info">
+                        <h3>Order #HC-97541</h3>
+                        <p>Date: Nov 5, 2023 | Total: 22,990 XAF</p>
+                    </div>
+                    <div class="order-status status-shipped">Shipped</div>
+                </div>
+                
+                <div class="order-card">
+                    <div class="order-info">
+                        <h3>Order #HC-96328</h3>
+                        <p>Date: Oct 28, 2023 | Total: 16,495 XAF</p>
+                    </div>
+                    <div class="order-status status-delivered">Delivered</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get cart data from localStorage instead of hardcoded sample data
+            function getCartFromStorage() {
+                try {
+                    const cartData = localStorage.getItem('cart');
+                    return cartData ? JSON.parse(cartData) : [];
+                } catch (e) {
+                    console.error('Error reading cart from localStorage:', e);
+                    return [];
+                }
+            }
+            
+            // Currency exchange rates (relative to USD)
+            const exchangeRates = {
+                USD: 1,
+                EUR: 0.93,
+                GBP: 0.81,
+                XAF: 605.50, // CFA Franc
+                NGN: 770.50, // Nigerian Naira
+                GHS: 11.80, // Ghanaian Cedi
+                ZAR: 18.70, // South African Rand
+                CAD: 1.37, // Canadian Dollar
+                AUD: 1.54  // Australian Dollar
+            };
+            
+            const cartContainer = document.getElementById('cart-items-container');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const subtotalElement = document.getElementById('subtotal');
+            const taxElement = document.getElementById('tax');
+            const totalElement = document.getElementById('total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const convertBtn = document.getElementById('convert-btn');
+            const conversionResult = document.getElementById('conversion-result');
+            
+            let currentCurrency = 'XAF'; // Default to CFA Franc
+            let cartItems = getCartFromStorage(); // Get cart from localStorage
+            
+            // Format currency based on currency code
+            function formatCurrency(amount, currency) {
+                if (currency === 'XAF') {
+                    return new Intl.NumberFormat('fr-FR', {
+                        style: 'currency',
+                        currency: 'XAF',
+                        minimumFractionDigits: 0
+                    }).format(amount);
+                }
+                
+                const formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 2
+                });
+                
+                return formatter.format(amount);
+            }
+            
+            // Convert currency
+            function convertCurrency(amount, fromCurrency, toCurrency) {
+                // Convert to USD first, then to target currency
+                const amountInUSD = amount / exchangeRates[fromCurrency];
+                return amountInUSD * exchangeRates[toCurrency];
+            }
+            
+            // Render cart items
+            function renderCartItems() {
+                cartContainer.innerHTML = '';
+                
+                if (cartItems.length === 0) {
+                    emptyCartMessage.style.display = 'block';
+                    checkoutBtn.style.display = 'none';
+                    return;
+                }
+                
+                emptyCartMessage.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+                
+                cartItems.forEach(item => {
+                    // Convert prices from USD to XAF (shop page uses USD prices)
+                    const priceInXAF = item.price * exchangeRates['XAF'];
+                    const itemTotal = priceInXAF * item.qty;
+                    const convertedPrice = convertCurrency(priceInXAF, 'XAF', currentCurrency);
+                    const convertedTotal = convertCurrency(itemTotal, 'XAF', currentCurrency);
+                    
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'cart-item';
+                    cartItemElement.innerHTML = `
+                        <div class="item-image">
+                            <img src="${item.image || 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'}" alt="${item.name}">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">${formatCurrency(convertedPrice, currentCurrency)}</div>
+                            <div class="item-quantity">
+                                <button class="quantity-btn" data-action="decrease" data-id="${item.id}">-</button>
+                                <input type="number" class="quantity-input" value="${item.qty}" min="1" data-id="${item.id}">
+                                <button class="quantity-btn" data-action="increase" data-id="${item.id}">+</button>
+                            </div>
+                        </div>
+                        <div class="item-total">${formatCurrency(convertedTotal, currentCurrency)}</div>
+                        <button class="remove-item" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    
+                    cartContainer.appendChild(cartItemElement);
+                });
+                
+                updateCartSummary();
+            }
+            
+            // Update cart summary
+            function updateCartSummary() {
+                // Convert prices from USD to XAF for calculation
+                const subtotal = cartItems.reduce((total, item) => {
+                    const priceInXAF = item.price * exchangeRates['XAF'];
+                    return total + (priceInXAF * item.qty);
+                }, 0);
+                
+                const shipping = 1000; // Fixed shipping cost in XAF
+                const tax = 0; // No tax
+                const total = subtotal + shipping + tax;
+                
+                const convertedSubtotal = convertCurrency(subtotal, 'XAF', currentCurrency);
+                const convertedShipping = convertCurrency(shipping, 'XAF', currentCurrency);
+                const convertedTax = convertCurrency(tax, 'XAF', currentCurrency);
+                const convertedTotal = convertCurrency(total, 'XAF', currentCurrency);
+                
+                subtotalElement.textContent = formatCurrency(convertedSubtotal, currentCurrency);
+                taxElement.textContent = formatCurrency(convertedTax, currentCurrency);
+                totalElement.textContent = formatCurrency(convertedTotal, currentCurrency);
+                
+                // Save cart to localStorage for checkout page
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                localStorage.setItem('cartTotal', convertedTotal);
+                localStorage.setItem('cartCurrency', currentCurrency);
+            }
+            
+            // Update cart in localStorage
+            function updateCartInStorage() {
+                localStorage.setItem('cart', JSON.stringify(cartItems));
+            }
+            
+            // Initialize cart
+            renderCartItems();
+            
+            // Event listeners for quantity buttons
+            cartContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('quantity-btn') || e.target.parentElement.classList.contains('quantity-btn')) {
+                    const button = e.target.classList.contains('quantity-btn') ? e.target : e.target.parentElement;
+                    const action = button.getAttribute('data-action');
+                    const id = button.getAttribute('data-id');
+                    
+                    const item = cartItems.find(item => item.id === id);
+                    
+                    if (action === 'increase') {
+                        item.qty++;
+                    } else if (action === 'decrease' && item.qty > 1) {
+                        item.qty--;
+                    }
+                    
+                    updateCartInStorage();
+                    renderCartItems();
+                }
+                
+                if (e.target.classList.contains('remove-item') || e.target.parentElement.classList.contains('remove-item')) {
+                    const button = e.target.classList.contains('remove-item') ? e.target : e.target.parentElement;
+                    const id = button.getAttribute('data-id');
+                    
+                    cartItems = cartItems.filter(item => item.id !== id);
+                    updateCartInStorage();
+                    renderCartItems();
+                }
+            });
+            
+            // Event listeners for quantity inputs
+            cartContainer.addEventListener('change', function(e) {
+                if (e.target.classList.contains('quantity-input')) {
+                    const id = e.target.getAttribute('data-id');
+                    const quantity = parseInt(e.target.value);
+                    
+                    if (quantity < 1) {
+                        e.target.value = 1;
+                        return;
+                    }
+                    
+                    const item = cartItems.find(item => item.id === id);
+                    item.qty = quantity;
+                    
+                    updateCartInStorage();
+                    renderCartItems();
+                }
+            });
+            
+            // Currency conversion
+            convertBtn.addEventListener('click', function() {
+                const fromCurrency = document.getElementById('currency-from').value;
+                const toCurrency = document.getElementById('currency-to').value;
+                const amount = parseFloat(document.getElementById('amount').value);
+                
+                if (isNaN(amount) || amount <= 0) {
+                    conversionResult.textContent = 'Please enter a valid amount';
+                    return;
+                }
+                
+                const convertedAmount = convertCurrency(amount, fromCurrency, toCurrency);
+                conversionResult.textContent = `${formatCurrency(amount, fromCurrency)} = ${formatCurrency(convertedAmount, toCurrency)}`;
+                
+                // Update cart currency and refresh display
+                currentCurrency = toCurrency;
+                renderCartItems();
+            });
+            
+            // Check if cart is empty and disable checkout if so
+            if (cartItems.length === 0) {
+                checkoutBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+>>>>>>> 720c1e3 (Initial commit)
 </html>

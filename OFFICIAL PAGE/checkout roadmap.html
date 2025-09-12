@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment System Roadmap | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+            --mtn-yellow: #FFC107;
+            --orange: #FF6600;
+            --paypal-blue: #0070BA;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            color: var(--black);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .roadmap {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .roadmap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50px;
+            width: 4px;
+            background: var(--light-gold);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .phase {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .phase-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light-gold);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .phase-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            flex-grow: 1;
+        }
+        
+        .phase-title {
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .pages {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .page-card {
+            background: var(--off-white);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid var(--light-gold);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .page-card.shop {
+            border-color: var(--green);
+        }
+        
+        .page-card.cart {
+            border-color: var(--blue);
+        }
+        
+        .page-card.checkout {
+            border-color: var(--golden-brown);
+        }
+        
+        .page-card.mobile {
+            border-color: var(--orange);
+        }
+        
+        .page-card.mtn {
+            border-color: var(--mtn-yellow);
+        }
+        
+        .page-card.orange {
+            border-color: var(--orange);
+        }
+        
+        .page-card.paypal {
+            border-color: var(--paypal-blue);
+        }
+        
+        .page-card.credit {
+            border-color: var(--dark-brown);
+        }
+        
+        .page-card.receipt {
+            border-color: var(--green);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .page-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            width: 30px;
+        }
+        
+        .page-card.shop .page-icon {
+            color: var(--green);
+        }
+        
+        .page-card.cart .page-icon {
+            color: var(--blue);
+        }
+        
+        .page-card.checkout .page-icon {
+            color: var(--golden-brown);
+        }
+        
+        .page-card.mobile .page-icon {
+            color: var(--orange);
+        }
+        
+        .page-card.mtn .page-icon {
+            color: var(--mtn-yellow);
+        }
+        
+        .page-card.orange .page-icon {
+            color: var(--orange);
+        }
+        
+        .page-card.paypal .page-icon {
+            color: var(--paypal-blue);
+        }
+        
+        .page-card.credit .page-icon {
+            color: var(--dark-brown);
+        }
+        
+        .page-card.receipt .page-icon {
+            color: var(--green);
+        }
+        
+        .page-title {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .page-desc {
+            font-size: 0.9rem;
+            color: var(--black);
+            margin-bottom: 15px;
+        }
+        
+        .page-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--light-gold);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .page-link:hover {
+            background: var(--golden-brown);
+            transform: translateY(-2px);
+        }
+        
+        .connections {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .connections-title {
+            color: var(--dark-brown);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .connection {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--off-white);
+            border-radius: 8px;
+        }
+        
+        .connection-icon {
+            font-size: 20px;
+            margin-right: 15px;
+            color: var(--golden-brown);
+        }
+        
+        .connection-text {
+            flex-grow: 1;
+        }
+        
+        .connection-link {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .connection-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .roadmap::before {
+                left: 25px;
+            }
+            
+            .phase {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .phase-number {
+                align-self: center;
+            }
+            
+            .pages {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            border-radius: 5px;
+            width: 100%;
+            animation: progressAnimation 1.5s ease-in-out;
+        }
+        
+        @keyframes progressAnimation {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Huile de Chèbe Payment System Roadmap</h1>
+            <p>Visualizing the complete customer journey from product selection to payment completion</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        
+        <div class="roadmap">
+            <!-- Phase 1: Shopping -->
+            <div class="phase">
+                <div class="phase-number">1</div>
+                <div class="phase-content">
+                    <h2 class="phase-title">Shopping Phase</h2>
+                    <p>Customers browse products and add items to their cart</p>
+                    <div class="pages">
+                        <div class="page-card shop">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                                <h3 class="page-title">Shop Page</h3>
+                            </div>
+                            <p class="page-desc">Product catalog with add to cart functionality</p>
+                            <a href="shop.html" class="page-link">View Page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 2: Cart Management -->
+            <div class="phase">
+                <div class="phase-number">2</div>
+                <div class="phase-content">
+                    <h2 class="phase-title">Cart Management</h2>
+                    <p>Customers review their selected items, adjust quantities, and proceed to checkout</p>
+                    <div class="pages">
+                        <div class="page-card cart">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <h3 class="page-title">Shopping Cart</h3>
+                            </div>
+                            <p class="page-desc">Cart review, quantity adjustment, and checkout initiation</p>
+                            <a href="shopping cart.html" class="page-link">View Page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 3: Checkout -->
+            <div class="phase">
+                <div class="phase-number">3</div>
+                <div class="phase-content">
+                    <h2 class="phase-title">Checkout Process</h2>
+                    <p>Customers enter their information and select a payment method</p>
+                    <div class="pages">
+                        <div class="page-card checkout">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-cash-register"></i>
+                                </div>
+                                <h3 class="page-title">Checkout Page</h3>
+                            </div>
+                            <p class="page-desc">Customer info collection and payment method selection</p>
+                            <a href="checkout.html" class="page-link">View Page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 4: Payment Processing -->
+            <div class="phase">
+                <div class="phase-number">4</div>
+                <div class="phase-content">
+                    <h2 class="phase-title">Payment Processing</h2>
+                    <p>Customers complete payment through their selected method</p>
+                    <div class="pages">
+                        <div class="page-card mobile">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <h3 class="page-title">Mobile Money Selection</h3>
+                            </div>
+                            <p class="page-desc">Choose between MTN or Orange Money</p>
+                            <a href="mobile pay.html" class="page-link">View Page</a>
+                        </div>
+                        
+                        <div class="page-card mtn">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <h3 class="page-title">MTN Mobile Money</h3>
+                            </div>
+                            <p class="page-desc">Complete payment via MTN Mobile Money</p>
+                            <a href="momo page.html" class="page-link">View Page</a>
+                        </div>
+                        
+                        <div class="page-card orange">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <h3 class="page-title">Orange Money</h3>
+                            </div>
+                            <p class="page-desc">Complete payment via Orange Money</p>
+                            <a href="OM money.html" class="page-link">View Page</a>
+                        </div>
+                        
+                        <div class="page-card paypal">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fab fa-paypal"></i>
+                                </div>
+                                <h3 class="page-title">PayPal Payment</h3>
+                            </div>
+                            <p class="page-desc">Complete payment via PayPal</p>
+                            <a href="paypal-payment.html" class="page-link">View Page</a>
+                        </div>
+                        
+                        <div class="page-card credit">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <h3 class="page-title">Credit Card Payment</h3>
+                            </div>
+                            <p class="page-desc">Complete payment via credit/debit card</p>
+                            <a href="card-payment.html" class="page-link">View Page</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 5: Confirmation -->
+            <div class="phase">
+                <div class="phase-number">5</div>
+                <div class="phase-content">
+                    <h2 class="phase-title">Order Confirmation</h2>
+                    <p>Customers receive confirmation of their successful payment</p>
+                    <div class="pages">
+                        <div class="page-card receipt">
+                            <div class="page-header">
+                                <div class="page-icon">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                                <h3 class="page-title">Payment Receipt</h3>
+                            </div>
+                            <p class="page-desc">Order confirmation with downloadable receipt</p>
+                            <span class="page-link">Available on all payment pages</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="connections">
+            <h2 class="connections-title">Key Data Flow Connections</h2>
+            
+            <div class="connection">
+                <div class="connection-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="connection-text">
+                    <strong>Cart Data:</strong> Items added in the Shop page are stored in localStorage and retrieved in the Shopping Cart page
+                </div>
+            </div>
+            
+            <div class="connection">
+                <div class="connection-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="connection-text">
+                    <strong>Checkout Integration:</strong> Shopping Cart passes item data to Checkout page via localStorage
+                </div>
+            </div>
+            
+            <div class="connection">
+                <div class="connection-icon">
+                    <i class="fas fa-money-check-alt"></i>
+                </div>
+                <div class="connection-text">
+                    <strong>Payment Processing:</strong> Checkout page redirects to appropriate payment processor based on user selection
+                </div>
+            </div>
+            
+            <div class="connection">
+                <div class="connection-icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <div class="connection-text">
+                    <strong>Receipt Generation:</strong> All payment pages generate receipts with consistent formatting and data
+                </div>
+            </div>
+            
+            <div class="connection">
+                <div class="connection-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="connection-text">
+                    <strong>Cart Clearing:</strong> Successful payments automatically clear the cart from localStorage
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to page cards
+            const pageCards = document.querySelectorAll('.page-card');
+            pageCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.5s ease forwards';
+            });
+            
+            // Add CSS for animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .page-card {
+                    opacity: 0;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

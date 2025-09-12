@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EarthyLocks | Premium Hair Care</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-brown: #5D4037;
+            --medium-brown: #8D6E63;
+            --light-brown: #D7CCC8;
+            --black: #212121;
+            --white: #FFFFFF;
+            --off-white: #F5F5F5;
+        }
+        
+        body {
+            background-color: var(--off-white);
+            color: var(--black);
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: linear-gradient(90deg, var(--dark-brown) 0%, var(--black) 100%);
+            box-shadow: 0 2px 10px rgba(93, 64, 55, 0.3);
+        }
+        
+        .navbar-item {
+            color: var(--white) !important;
+            font-weight: 500;
+        }
+        
+        .navbar-item:hover {
+            color: var(--light-brown) !important;
+            background-color: transparent !important;
+        }
+        
+        .brown-text {
+            color: var(--dark-brown) !important;
+        }
+        
+        .brown-bg {
+            background-color: var(--dark-brown) !important;
+            color: var(--white) !important;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(33, 33, 33, 0.7), rgba(33, 33, 33, 0.7)), url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80') no-repeat center center/cover;
+            padding: 6rem 1.5rem;
+        }
+        
+        .title {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .is-brown-button {
+            background-color: var(--dark-brown);
+            color: var(--white);
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .is-brown-button:hover {
+            background-color: var(--medium-brown);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(93, 64, 55, 0.3);
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+            border: 1px solid var(--light-brown);
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(93, 64, 55, 0.15);
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .product-image {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom: 2px solid var(--light-brown);
+        }
+        
+        .icon-box {
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            border: 2px solid var(--light-brown);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .icon-box:hover {
+            border-color: var(--medium-brown);
+            box-shadow: 0 5px 15px rgba(141, 110, 99, 0.2);
+        }
+        
+        .payment-option {
+            border: 2px solid var(--light-brown);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+        
+        .payment-option:hover {
+            background-color: rgba(141, 110, 99, 0.1);
+            border-color: var(--medium-brown);
+        }
+        
+        .footer {
+            background-color: var(--black);
+            padding: 3rem 1.5rem;
+            color: var(--white);
+        }
+        
+        .input, .textarea {
+            background-color: var(--off-white);
+            border-color: var(--light-brown);
+            color: var(--black);
+        }
+        
+        .input:focus, .textarea:focus {
+            border-color: var(--dark-brown);
+            box-shadow: 0 0 0 0.125em rgba(93, 64, 55, 0.25);
+        }
+        
+        .modal-card {
+            background-color: var(--white);
+            color: var(--black);
+        }
+        
+        .modal-card-head, .modal-card-foot {
+            background-color: var(--off-white);
+            border-color: var(--light-brown);
+        }
+        
+        .modal-card-title {
+            color: var(--dark-brown);
+        }
+        
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-brown);
+        }
+        
+        .divider {
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--dark-brown), transparent);
+            margin: 2rem 0;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial {
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
+            border-left: 4px solid var(--dark-brown);
+            padding: 1.5rem;
+        }
+        
+        .brand-logo {
+            filter: brightness(0) invert(0.3);
+            transition: filter 0.3s ease;
+        }
+        
+        .brand-logo:hover {
+            filter: brightness(0) invert(0.5) sepia(1) saturate(5) hue-rotate(5deg);
+        }
+        
+        /* Text visibility enhancements */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--dark-brown);
+        }
+        
+        p, li, span {
+            color: var(--black);
+        }
+        
+        .has-text-light-brown {
+            color: var(--light-brown) !important;
+        }
+        
+        .section {
+            padding: 4rem 1.5rem;
+        }
+        
+        .box {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-brown);
+        }
+        
+        .has-excellent-contrast {
+            color: var(--black);
+            background-color: var(--off-white);
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="#">
+                    <span class="icon-text">
+                        <span class="icon">
+                            <i class="fas fa-leaf brown-text"></i>
+                        </span>
+                        <span class="title is-4 has-text-white">EARTHYLOCKS</span>
+                    </span>
+                </a>
+                
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+            
+            <div id="navbarMenu" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="#">Home</a>
+                    <a class="navbar-item" href="#">Products</a>
+                    <a class="navbar-item" href="#">Brands</a>
+                    <a class="navbar-item" href="#">About</a>
+                    <a class="navbar-item" href="#">Contact</a>
+                </div>
+                
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-brown-button" id="signInBtn">
+                                <strong>Sign In</strong>
+                            </a>
+                            <a class="button is-outlined" style="border-color: var(--white); color: var(--white);">
+                                <span class="icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </span>
+                                <span>Cart (0)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container has-text-centered">
+            <h1 class="title is-1 has-text-white">
+                Natural Hair Care Solutions
+            </h1>
+            <p class="subtitle is-4 has-text-white">
+                Organic products for healthy, beautiful hair
+            </p>
+            <div class="buttons is-centered">
+                <button class="button is-brown-button is-large">
+                    <span>Shop Now</span>
+                    <span class="icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+                </button>
+                <button class="button is-outlined is-large" style="border-color: var(--white); color: var(--white);">
+                    <span>Learn More</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Brands Section -->
+    <section class="section" style="background-color: var(--off-white);">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered brown-text">Featured Brands</h2>
+            <p class="subtitle has-text-centered">Discover the world's finest natural hair care brands</p>
+            
+            <div class="columns is-vcentered is-multiline">
+                <div class="column has-text-centered">
+                    <img src="https://via.placeholder.com/180x80/FFFFFF/5D4037?text=NATURE+HAIR" alt="Brand 1" class="brand-logo">
+                </div>
+                <div class="column has-text-centered">
+                    <img src="https://via.placeholder.com/180x80/FFFFFF/5D4037?text=ORGANIC+GROWTH" alt="Brand 2" class="brand-logo">
+                </div>
+                <div class="column has-text-centered">
+                    <img src="https://via.placeholder.com/180x80/FFFFFF/5D4037?text=PURE+ESSENCE" alt="Brand 3" class="brand-logo">
+                </div>
+                <div class="column has-text-centered">
+                    <img src="https://via.placeholder.com/180x80/FFFFFF/5D4037?text=BOTANICAL+LAB" alt="Brand 4" class="brand-logo">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Products Section -->
+    <section class="section" style="background-color: var(--white);">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered brown-text">Our Products</h2>
+            <p class="subtitle has-text-centered">Crafted with natural ingredients for exceptional results</p>
+            
+            <div class="columns is-multiline">
+                <div class="column is-one-quarter">
+                    <div class="card">
+                        <div class="product-image">
+                            <i class="fas fa-pump-soap fa-4x brown-text"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title is-4 brown-text">Nourishing Shampoo</h3>
+                            <p>Deep cleansing formula with natural oils for vibrant hair</p>
+                            <div class="price-tag mt-3">$24.99</div>
+                            <button class="button is-brown-button is-fullwidth mt-4">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-one-quarter">
+                    <div class="card">
+                        <div class="product-image">
+                            <i class="fas fa-pump-soap fa-4x brown-text"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title is-4 brown-text">Hydrating Conditioner</h3>
+                            <p>Restores moisture and eliminates frizz for silky smooth hair</p>
+                            <div class="price-tag mt-3">$26.99</div>
+                            <button class="button is-brown-button is-fullwidth mt-4">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-one-quarter">
+                    <div class="card">
+                        <div class="product-image">
+                            <i class="fas fa-spa fa-4x brown-text"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title is-4 brown-text">Hair Treatment Oil</h3>
+                            <p>Intensive repair with argan oil for damaged hair</p>
+                            <div class="price-tag mt-3">$32.99</div>
+                            <button class="button is-brown-button is-fullwidth mt-4">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-one-quarter">
+                    <div class="card">
+                        <div class="product-image">
+                            <i class="fas fa-spray-can fa-4x brown-text"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="title is-4 brown-text">Heat Protectant Spray</h3>
+                            <p>Shields hair from styling damage and UV rays</p>
+                            <div class="price-tag mt-3">$21.99</div>
+                            <button class="button is-brown-button is-fullwidth mt-4">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="has-text-centered mt-6">
+                <button class="button is-outlined is-medium brown-text" style="border-color: var(--dark-brown); color: var(--dark-brown);">
+                    <span>View All Products</span>
+                    <span class="icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Product Categories -->
+    <section class="section" style="background-color: var(--off-white);">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered brown-text">Shop By Category</h2>
+            <p class="subtitle has-text-centered">Find the perfect products for your hair needs</p>
+            
+            <div class="columns is-multiline">
+                <div class="column is-one-third">
+                    <div class="icon-box">
+                        <i class="fas fa-pump-soap feature-icon"></i>
+                        <h3 class="title is-4 brown-text">Shampoos</h3>
+                        <p>Cleansing formulas for all hair types</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="icon-box">
+                        <i class="fas fa-pump-soap feature-icon"></i>
+                        <h3 class="title is-4 brown-text">Conditioners</h3>
+                        <p>Hydrating solutions for silky smooth hair</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="icon-box">
+                        <i class="fas fa-spa feature-icon"></i>
+                        <h3 class="title is-4 brown-text">Treatments</h3>
+                        <p>Repair and restore damaged hair</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="icon-box">
+                        <i class="fas fa-wind feature-icon"></i>
+                        <h3 class="title is-4 brown-text">Styling</h3>
+                        <p>Products for the perfect style</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="icon-box">
+                        <i class="fas fa-palette feature-icon"></i>
+                        <h3 class="title is-4 brown-text">Hair Color</h3>
+                        <p>Vibrant colors for every style</p>
+                    </div>
+                </div>
+                
+                <div class="column is-one-third">
+                    <div class="icon-box">
+                        <i class="fas fa-mirror feature-icon"></i>
+                        <h3 class="title is-4 brown-text">Accessories</h3>
+                        <p>Tools and accessories for perfect hair</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Checkout Section -->
+    <section class="section" style="background-color: var(--white);">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered brown-text">Secure Checkout</h2>
+            <p class="subtitle has-text-centered">Multiple payment options available</p>
+            
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-4 brown-text">Order Summary</h3>
+                        
+                        <div class="is-flex is-justify-content-space-between mb-4">
+                            <span>Nourishing Shampoo</span>
+                            <span class="brown-text has-text-weight-bold">$24.99</span>
+                        </div>
+                        
+                        <div class="is-flex is-justify-content-space-between mb-4">
+                            <span>Hydrating Conditioner</span>
+                            <span class="brown-text has-text-weight-bold">$26.99</span>
+                        </div>
+                        
+                        <div class="is-flex is-justify-content-space-between mb-4">
+                            <span>Shipping</span>
+                            <span class="brown-text has-text-weight-bold">$5.99</span>
+                        </div>
+                        
+                        <hr style="background-color: var(--dark-brown);">
+                        
+                        <div class="is-flex is-justify-content-space-between mb-4">
+                            <span class="has-text-weight-bold">Total</span>
+                            <span class="price-tag">$57.97</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column is-6">
+                    <div class="box">
+                        <h3 class="title is-4 brown-text">Payment Methods</h3>
+                        
+                        <div class="payment-option mb-3">
+                            <i class="fab fa-cc-visa fa-2x brown-text mb-3"></i>
+                            <p>Credit/Debit Card</p>
+                        </div>
+                        
+                        <div class="payment-option mb-3">
+                            <i class="fab fa-paypal fa-2x brown-text mb-3"></i>
+                            <p>PayPal</p>
+                        </div>
+                        
+                        <div class="payment-option mb-3">
+                            <i class="fas fa-mobile-alt fa-2x brown-text mb-3"></i>
+                            <p>MTN Money</p>
+                        </div>
+                        
+                        <div class="payment-option">
+                            <i class="fas fa-money-bill-wave fa-2x brown-text mb-3"></i>
+                            <p>Orange Money</p>
+                        </div>
+                        
+                        <button class="button is-brown-button is-fullwidth mt-5">
+                            <span>Complete Purchase</span>
+                            <span class="icon">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Text Visibility Demo -->
+    <section class="section" style="background-color: var(--dark-brown);">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered has-text-white">Superior Text Visibility</h2>
+            <p class="subtitle has-text-centered has-text-white">Our design ensures all text is clear and easy to read</p>
+            
+            <div class="columns is-multiline">
+                <div class="column is-4">
+                    <div class="has-excellent-contrast">
+                        <h3 class="title is-5 brown-text">Dark on Light</h3>
+                        <p>This combination provides maximum readability for extended reading sessions.</p>
+                    </div>
+                </div>
+                
+                <div class="column is-4">
+                    <div style="background-color: var(--dark-brown); color: var(--white); padding: 15px; border-radius: 5px;">
+                        <h3 class="title is-5 has-text-white">Light on Dark</h3>
+                        <p class="has-text-white">Perfect for highlights and important information that needs to stand out.</p>
+                    </div>
+                </div>
+                
+                <div class="column is-4">
+                    <div class="has-excellent-contrast">
+                        <h3 class="title is-5 brown-text">Accessibility Matters</h3>
+                        <p>Our color choices meet WCAG AA standards for contrast ratio, ensuring accessibility for all users.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="columns is-multiline">
+                <div class="column is-4">
+                    <h3 class="title is-4 has-text-white">EARTHYLOCKS</h3>
+                    <p class="has-text-white">Natural hair care products for those who value quality and sustainability.</p>
+                    <div class="mt-4">
+                        <span class="icon-text">
+                            <span class="icon has-text-white">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <span class="has-text-white">+1 (555) 123-4567</span>
+                        </span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="icon-text">
+                            <span class="icon has-text-white">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <span class="has-text-white">info@earthylocks.com</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="column is-2">
+                    <h4 class="title is-5 has-text-white">Shop</h4>
+                    <ul>
+                        <li><a class="has-text-white">Shampoos</a></li>
+                        <li><a class="has-text-white">Conditioners</a></li>
+                        <li><a class="has-text-white">Treatments</a></li>
+                        <li><a class="has-text-white">Styling</a></li>
+                    </ul>
+                </div>
+                
+                <div class="column is-2">
+                    <h4 class="title is-5 has-text-white">Company</h4>
+                    <ul>
+                        <li><a class="has-text-white">About Us</a></li>
+                        <li><a class="has-text-white">Careers</a></li>
+                        <li><a class="has-text-white">Press</a></li>
+                        <li><a class="has-text-white">Sustainability</a></li>
+                    </ul>
+                </div>
+                
+                <div class="column is-4">
+                    <h4 class="title is-5 has-text-white">Newsletter</h4>
+                    <p class="has-text-white">Subscribe for exclusive offers and updates</p>
+                    
+                    <div class="field has-addons mt-3">
+                        <div class="control is-expanded">
+                            <input class="input" type="email" placeholder="Your email address">
+                        </div>
+                        <div class="control">
+                            <button class="button is-brown-button">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="is-flex is-justify-content-flex-start">
+                            <a class="mr-3"><i class="fab fa-facebook-f fa-lg has-text-white"></i></a>
+                            <a class="mr-3"><i class="fab fa-instagram fa-lg has-text-white"></i></a>
+                            <a class="mr-3"><i class="fab fa-twitter fa-lg has-text-white"></i></a>
+                            <a><i class="fab fa-pinterest-p fa-lg has-text-white"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="is-flex is-justify-content-space-between is-align-items-center">
+                <p class="has-text-white">© 2023 EARTHYLOCKS. All rights reserved.</p>
+                <div>
+                    <a class="has-text-white mr-3">Privacy Policy</a>
+                    <a class="has-text-white mr-3">Terms of Service</a>
+                    <a class="has-text-white">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Sign In Modal -->
+    <div class="modal" id="signInModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title brown-text">Sign In</p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <input class="input" type="email" placeholder="Your email">
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Your password">
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox">
+                            Remember me
+                        </label>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-brown-button">Sign In</button>
+                <button class="button is-outlined" style="border-color: var(--dark-brown); color: var(--dark-brown);">Cancel</button>
+            </footer>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all "navbar-burger" elements
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            
+            // Add a click event on each of them
+            $navbarBurgers.forEach( el => {
+                el.addEventListener('click', () => {
+                    
+                    // Get the target from the "data-target" attribute
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
+                    
+                    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                    el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
+                    
+                });
+            });
+            
+            // Modal functionality
+            const signInBtn = document.getElementById('signInBtn');
+            const modal = document.getElementById('signInModal');
+            
+            signInBtn.addEventListener('click', () => {
+                modal.classList.add('is-active');
+            });
+            
+            modal.querySelector('.delete').addEventListener('click', () => {
+                modal.classList.remove('is-active');
+            });
+            
+            // Close modal when clicking on background
+            modal.querySelector('.modal-background').addEventListener('click', () => {
+                modal.classList.remove('is-active');
+            });
+        });
+    </script>
+</body>
+</html>

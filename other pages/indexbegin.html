@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeLocks | Premium Hair Care</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #8a6d3b;
+            --secondary: #f9f2e7;
+            --accent: #c8a67e;
+            --dark: #3a3a3a;
+            --light: #ffffff;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        .auth-buttons button {
+            background: var(--secondary);
+            color: var(--primary);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons button:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .cta-button:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Brands Section */
+        .brands {
+            padding: 50px 5%;
+            text-align: center;
+            background: var(--secondary);
+        }
+
+        .brands h2 {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--primary);
+        }
+
+        .brand-logos {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .brand-logos div {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .brand-logos div:hover {
+            transform: translateY(-10px);
+        }
+
+        .brand-logos i {
+            font-size: 40px;
+            color: var(--primary);
+        }
+
+        /* Products Section */
+        .products {
+            padding: 80px 5%;
+            text-align: center;
+        }
+
+        .products h2 {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--primary);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .product-img {
+            height: 200px;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-img i {
+            font-size: 80px;
+            color: var(--primary);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .product-info p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .product-info .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Product Icons Section */
+        .product-icons {
+            padding: 80px 5%;
+            background: var(--secondary);
+            text-align: center;
+        }
+
+        .product-icons h2 {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--primary);
+        }
+
+        .icons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .icon-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: var(--primary);
+            color: white;
+        }
+
+        .icon-item:hover i {
+            color: white;
+        }
+
+        .icon-item i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .icon-item p {
+            font-weight: 500;
+        }
+
+        /* Checkout Button */
+        .checkout-section {
+            padding: 50px 5%;
+            text-align: center;
+            background: white;
+        }
+
+        .checkout-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .checkout-btn:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Payment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        /* Payment Method Styles */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .payment-method {
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .payment-method i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .payment-method p {
+            font-weight: 500;
+        }
+
+        /* Payment Form Styles */
+        .payment-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .payment-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .pay-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .pay-btn:hover {
+            background: var(--accent);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .order-summary h3 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 5%;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid #555;
+        }
+
+        /* Security Notice */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .security-notice i {
+            color: #4caf50;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .brand-logos, .icons-container {
+                gap: 20px;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-spa"></i>
+            <span>LuxeLocks</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Brands</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button id="signInBtn">Sign In</button>
+            <button>Register</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Transform Your Hair Care Routine</h1>
+        <p>Discover our premium collection of hair products designed to nourish, strengthen, and beautify your hair</p>
+        <button class="cta-button">Shop Now</button>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="brands">
+        <h2>Featured Brands</h2>
+        <div class="brand-logos">
+            <div><i class="fas-crown">✨</i></div>
+            <div><i class="fas-star">⭐</i></div>
+            <div><i class="fas-gem">💎</i></div>
+            <div><i class="fas-feather">🪶</i></div>
+            <div><i class="fas-leaf">🍃</i></div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products">
+        <h2>Our Products</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-img">
+                    <i class="fas-pump-soap">🧴</i>
+                </div>
+                <div class="product-info">
+                    <h3>Nourishing Shampoo</h3>
+                    <p>Deep cleansing formula with natural oils</p>
+                    <div class="price">$24.99</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <i class="fas-pump-soap">🧴</i>
+                </div>
+                <div class="product-info">
+                    <h3>Hydrating Conditioner</h3>
+                    <p>Restores moisture and eliminates frizz</p>
+                    <div class="price">$26.99</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <i class="fas-spa">💆</i>
+                </div>
+                <div class="product-info">
+                    <h3>Hair Treatment Oil</h3>
+                    <p>Intensive repair with argan oil</p>
+                    <div class="price">$32.99</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <i class="fas-spray">💨</i>
+                </div>
+                <div class="product-info">
+                    <h3>Heat Protectant Spray</h3>
+                    <p>Shields hair from styling damage</p>
+                    <div class="price">$21.99</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Icons Section -->
+    <section class="product-icons">
+        <h2>Shop By Category</h2>
+        <div class="icons-container">
+            <div class="icon-item" onclick="showProduct('Shampoo')">
+                <i class="fas-pump-soap">🧴</i>
+                <p>Shampoos</p>
+            </div>
+            <div class="icon-item" onclick="showProduct('Conditioner')">
+                <i class="fas-pump-soap">🧴</i>
+                <p>Conditioners</p>
+            </div>
+            <div class="icon-item" onclick="showProduct('Treatment')">
+                <i class="fas-spa">💆</i>
+                <p>Treatments</p>
+            </div>
+            <div class="icon-item" onclick="showProduct('Styling')">
+                <i class="fas-wind">💨</i>
+                <p>Styling</p>
+            </div>
+            <div class="icon-item" onclick="showProduct('Color')">
+                <i class="fas-palette">🎨</i>
+                <p>Hair Color</p>
+            </div>
+            <div class="icon-item" onclick="showProduct('Accessories')">
+                <i class="fas-mirror">👑</i>
+                <p>Accessories</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Section -->
+    <section class="checkout-section">
+        <button class="checkout-btn" onclick="openPaymentModal()">Proceed to Checkout</button>
+    </section>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            <h2 class="modal-title">Complete Your Purchase</h2>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-item">
+                    <span>Nourishing Shampoo</span>
+                    <span>$24.99</span>
+                </div>
+                <div class="summary-item">
+                    <span>Hydrating Conditioner</span>
+                    <span>$26.99</span>
+                </div>
+                <div class="summary-item">
+                    <span>Shipping</span>
+                    <span>$5.99</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>$57.97</span>
+                </div>
+            </div>
+            
+            <!-- Payment Methods -->
+            <h3>Select Payment Method</h3>
+            <div class="payment-methods">
+                <div class="payment-method" onclick="selectPayment('creditCard')">
+                    <i class="fas fa-credit-card"></i>
+                    <p>Credit Card</p>
+                </div>
+                <div class="payment-method" onclick="selectPayment('paypal')">
+                    <i class="fab fa-paypal"></i>
+                    <p>PayPal</p>
+                </div>
+                <div class="payment-method" onclick="selectPayment('visa')">
+                    <i class="fab fa-cc-visa"></i>
+                    <p>Visa</p>
+                </div>
+                <div class="payment-method" onclick="selectPayment('mtn')">
+                    <i class="fas fa-mobile-alt"></i>
+                    <p>MTN Money</p>
+                </div>
+                <div class="payment-method" onclick="selectPayment('orange')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <p>Orange Money</p>
+                </div>
+                <div class="payment-method" onclick="selectPayment('bank')">
+                    <i class="fas fa-university"></i>
+                    <p>Bank Transfer</p>
+                </div>
+            </div>
+            
+            <!-- Credit Card Form -->
+            <div id="creditCardForm" class="payment-form">
+                <h3>Credit Card Details</h3>
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiryDate">Expiry Date</label>
+                        <input type="text" id="expiryDate" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" placeholder="123">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cardName">Name on Card</label>
+                    <input type="text" id="cardName" placeholder="John Doe">
+                </div>
+                <button class="pay-btn" onclick="processPayment()">Pay Now</button>
+            </div>
+            
+            <!-- PayPal Form -->
+            <div id="paypalForm" class="payment-form">
+                <h3>PayPal Payment</h3>
+                <div class="form-group">
+                    <label for="paypalEmail">PayPal Email</label>
+                    <input type="email" id="paypalEmail" placeholder="your@email.com">
+                </div>
+                <button class="pay-btn" onclick="processPayment()">Continue to PayPal</button>
+            </div>
+            
+            <!-- Mobile Money Forms -->
+            <div id="mtnForm" class="payment-form">
+                <h3>MTN Money Payment</h3>
+                <div class="form-group">
+                    <label for="mtnNumber">MTN Mobile Number</label>
+                    <input type="tel" id="mtnNumber" placeholder="+237 6XX XXX XXX">
+                </div>
+                <button class="pay-btn" onclick="processPayment()">Request Payment</button>
+            </div>
+            
+            <div id="orangeForm" class="payment-form">
+                <h3>Orange Money Payment</h3>
+                <div class="form-group">
+                    <label for="orangeNumber">Orange Mobile Number</label>
+                    <input type="tel" id="orangeNumber" placeholder="+237 6XX XXX XXX">
+                </div>
+                <button class="pay-btn" onclick="processPayment()">Request Payment</button>
+            </div>
+            
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <i class="fas fa-lock"></i>
+                <span>Your payment details are securely encrypted and processed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About LuxeLocks</h3>
+                <p>We provide premium hair care products made with natural ingredients for all hair types.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <p>Products</p>
+                <p>Special Offers</p>
+                <p>Gift Cards</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@luxelocks.com</p>
+                <p>Phone: (123) 456-7890</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 LuxeLocks Hair Care. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Payment functionality
+        function openPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            // Reset forms
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('selected');
+            });
+        }
+
+        function selectPayment(method) {
+            // Remove selected class from all methods
+            document.querySelectorAll('.payment-method').forEach(m => {
+                m.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked method
+            event.target.closest('.payment-method').classList.add('selected');
+            
+            // Hide all forms
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            // Show the selected form
+            document.getElementById(method + 'Form').classList.add('active');
+        }
+
+        function processPayment() {
+            // In a real implementation, this would process the payment
+            alert('Payment processed successfully! In a real application, this would connect to your payment gateway.');
+            closePaymentModal();
+            
+            // Show success message
+            setTimeout(() => {
+                alert('Thank you for your purchase! Your order is being processed.');
+            }, 300);
+        }
+
+        // Close modal if clicked outside content
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target == modal) {
+                closePaymentModal();
+            }
+        }
+
+        // Existing product modal functionality
+        function showProduct(category) {
+            alert('Viewing ' + category + ' products');
+        }
+
+        // Sign In button functionality
+        document.getElementById('signInBtn').addEventListener('click', function() {
+            alert('Sign In functionality would be implemented with PHP and MySQL backend.');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "Huile de Chèbe Original",
+  "category": "hair_oil",
+  "price": 24990,
+  "currency": "XAF",
+  "stock": 42,
+  "imageURL": "https://res.cloudinary.com/yourcloud/image/upload/v.../chebe.jpg",
+  "createdAt": { "$date": "2025-09-10T00:00:00Z" }
+}

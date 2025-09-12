@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -773,4 +774,781 @@
     });
   </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | Huile de Chèbe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    :root {
+      --golden-brown: #B76E22;
+      --dark-brown: #8B4513;
+      --light-gold: #D4AF37;
+      --cream: #FFF8E7;
+      --off-white: #FDF6E3;
+      --black: #333333;
+      --green: #2E8B57;
+      --blue: #4682B4;
+      --red: #DC3545;
+      --gray: #6C757D;
+      --mtn-yellow: #FFC107;
+      --orange: #FF6600;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+      color: var(--black);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--light-gold);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--dark-brown);
+    }
+    
+    .logo i {
+      margin-right: 10px;
+      color: var(--light-gold);
+    }
+    
+    .back-btn {
+      color: var(--dark-brown);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    
+    .back-btn i {
+      margin-right: 5px;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 25px;
+      display: none;
+    }
+    
+    .page-header h1 {
+      font-size: 28px;
+      color: var(--dark-brown);
+      margin-bottom: 10px;
+    }
+    
+    .page-header p {
+      font-size: 16px;
+      color: var(--black);
+    }
+    
+    .section {
+      margin-bottom: 25px;
+    }
+    
+    .section-title {
+      color: var(--dark-brown);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--light-gold);
+    }
+    
+    .order-summary {
+      background: var(--off-white);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+    }
+    
+    .order-total {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--dark-brown);
+      border-top: 2px solid var(--light-gold);
+      padding-top: 15px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-brown);
+    }
+    
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--golden-brown);
+      outline: none;
+    }
+    
+    .payment-options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .payment-option {
+      background: var(--off-white);
+      border-radius: 10px;
+      padding: 15px;
+      border: 2px solid var(--light-gold);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .payment-option:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .payment-option.selected {
+      border-color: var(--golden-brown);
+      background: rgba(183, 110, 34, 0.05);
+    }
+    
+    .payment-option.mtn.selected {
+      border-color: var(--mtn-yellow);
+      background: rgba(255, 193, 7, 0.05);
+    }
+    
+    .payment-option.orange.selected {
+      border-color: var(--orange);
+      background: rgba(255, 102, 0, 0.05);
+    }
+    
+    .payment-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .payment-icon {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+    
+    .mtn .payment-icon {
+      color: var(--mtn-yellow);
+    }
+    
+    .orange .payment-icon {
+      color: var(--orange);
+    }
+    
+    .payment-header h3 {
+      color: var(--dark-brown);
+      margin-bottom: 0;
+    }
+    
+    .payment-option p {
+      color: var(--black);
+      margin-left: 34px;
+    }
+    
+    .mobile-payment-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    @media (max-width: 600px) {
+      .mobile-payment-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .mobile-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    
+    .mtn-btn {
+      background: var(--mtn-yellow);
+      color: #000;
+      border: 2px solid var(--mtn-yellow);
+    }
+    
+    .mtn-btn:hover {
+      background: #e0a800;
+      border-color: #e0a800;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .orange-btn {
+      background: var(--orange);
+      color: white;
+      border: 2px solid var(--orange);
+    }
+    
+    .orange-btn:hover {
+      background: #e65c00;
+      border-color: #e65c00;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 102, 0, 0.3);
+    }
+    
+    .btn-icon {
+      margin-right: 8px;
+      font-size: 18px;
+    }
+    
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+    }
+    
+    .submit-btn:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .receipt {
+      margin-top: 25px;
+      padding: 20px;
+      border: 2px dashed var(--golden-brown);
+      border-radius: 10px;
+      background: var(--off-white);
+      display: none;
+    }
+    
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .receipt-header h2 {
+      color: var(--dark-brown);
+    }
+    
+    .receipt-details {
+      margin-bottom: 20px;
+    }
+    
+    .receipt-details p {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .receipt-details b {
+      color: var(--dark-brown);
+    }
+    
+    .receipt-footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid var(--light-gold);
+    }
+    
+    .receipt-footer small {
+      color: var(--gray);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      background: var(--green);
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--dark-brown);
+      border: 2px solid var(--light-gold);
+    }
+    
+    .processing {
+      text-align: center;
+      padding: 20px;
+      display: none;
+    }
+    
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--golden-brown);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-spa"></i>
+        <span>Huile de Chèbe</span>
+      </div>
+      <a href="shopping cart.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Cart
+      </a>
+    </header>
+    
+    <div class="page-header" id="pageHeader">
+      <h1>Checkout</h1>
+      <p>Complete your purchase with secure payment</p>
+    </div>
+    
+    <!-- Order Summary -->
+    <div class="section">
+      <h2 class="section-title">Order Summary</h2>
+      <div class="order-summary" id="orderSummary">
+        <!-- Order items will be dynamically inserted here -->
+      </div>
+    </div>
+    
+    <!-- Customer Information -->
+    <div class="section">
+      <h2 class="section-title">Customer Information</h2>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="address">Delivery Address</label>
+        <input type="text" id="address" required>
+      </div>
+    </div>
+    
+    <!-- Payment Method -->
+    <div class="section">
+      <h2 class="section-title">Payment Method</h2>
+      
+      <div class="payment-options">
+        <div class="payment-option" data-method="card">
+          <div class="payment-header">
+            <div class="payment-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <a href="card-payment.html" class="btn1">Credit/Debit Card</a>
+
+<style>
+.btn1 {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff7f0793; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.btn1:hover {
+    background-color: #b36b00e3;
+}
+</style>
+
+          </div>
+          <p>Pay securely with your credit or debit card</p>
+        </div>
+        
+        <div class="payment-option" data-method="paypal">
+          <div class="payment-header">
+            <div class="payment-icon">
+              <i class="fab fa-paypal"></i>
+            </div>
+            <a href="paypal-payment.html" class="btn">PayPal</a>
+            <style>
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0741ffb6; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.btn:hover {
+    background-color: #0c137aff;
+}
+</style>
+
+          </div>
+          <p>Pay with your PayPal account</p>
+        </div>
+        
+        <div class="payment-option mtn" data-method="mobile">
+          <div class="payment-header">
+            <div class="payment-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Mobile Money</h3>
+          </div>
+          <p>Pay with MTN or Orange Mobile Money</p>
+        </div>
+      </div>
+      
+      <!-- Mobile Payment Buttons (Shown only when Mobile Money is selected) -->
+      <div class="mobile-payment-buttons" id="mobilePaymentButtons">
+        <a href="momo page.html" class="mobile-btn mtn-btn">
+          <i class="fas fa-money-bill-wave btn-icon"></i> Pay with MTN Money
+        </a>
+        <a href="OM money.html" class="mobile-btn orange-btn">
+          <i class="fas fa-mobile-alt btn-icon"></i> Pay with Orange Money
+        </a>
+      </div>
+    </div>
+    
+    <!-- Submit Button (for non-mobile payments) -->
+    <button class="submit-btn" id="submitBtn">
+      <i class="fas fa-lock"></i> Complete Payment
+    </button>
+    
+    <!-- Receipt -->
+    <div class="receipt" id="receiptBox">
+      <div class="receipt-header">
+        <h2>Payment Receipt</h2>
+      </div>
+      
+      <div class="receipt-details">
+        <p><b>Name:</b> <span id="rName"></span></p>
+        <p><b>Phone:</b> <span id="rPhone"></span></p>
+        <p><b>Address:</b> <span id="rAddress"></span></p>
+        <p><b>Amount Paid:</b> <span id="rAmount"></span></p>
+        <p><b>Payment Method:</b> <span id="rMethod"></span></p>
+        <p><b>Status:</b> <span class="status-badge">Payment Approved ✅</span></p>
+      </div>
+      
+      <div class="receipt-footer">
+        <small>Generated on: <span id="rDate"></span></small>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="action-btn btn-secondary" id="printReceipt">
+          <i class="fas fa-print"></i> Print Receipt
+        </button>
+        <button class="action-btn btn-primary" id="downloadPDF">
+          <i class="fas fa-file-pdf"></i> Download PDF
+        </button>
+        <a href="index.html" class="action-btn btn-primary">
+          <i class="fas fa-home"></i> Return Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const paymentOptions = document.querySelectorAll('.payment-option');
+      const mobilePaymentButtons = document.getElementById('mobilePaymentButtons');
+      const submitBtn = document.getElementById('submitBtn');
+      const receiptBox = document.getElementById('receiptBox');
+      const printBtn = document.getElementById('printReceipt');
+      const downloadBtn = document.getElementById('downloadPDF');
+      const orderSummary = document.getElementById('orderSummary');
+      const pageHeader = document.getElementById('pageHeader');
+      
+      let selectedMethod = null;
+      
+      // Get cart data from localStorage
+      function getCartFromStorage() {
+        try {
+          const cartData = localStorage.getItem('cartItems');
+          return cartData ? JSON.parse(cartData) : [];
+        } catch (e) {
+          console.error('Error reading cart from localStorage:', e);
+          return [];
+        }
+      }
+      
+      // Currency exchange rates (relative to USD)
+      const exchangeRates = {
+        USD: 1,
+        EUR: 0.93,
+        GBP: 0.81,
+        XAF: 605.50, // CFA Franc
+        NGN: 770.50, // Nigerian Naira
+        GHS: 11.80, // Ghanaian Cedi
+        ZAR: 18.70, // South African Rand
+        CAD: 1.37, // Canadian Dollar
+        AUD: 1.54  // Australian Dollar
+      };
+      
+      // Format currency based on currency code
+      function formatCurrency(amount, currency) {
+        if (currency === 'XAF') {
+          return new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'XAF',
+            minimumFractionDigits: 0
+          }).format(amount);
+        }
+        
+        const formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: currency,
+          minimumFractionDigits: 2
+        });
+        
+        return formatter.format(amount);
+      }
+      
+      // Load cart items and display order summary
+      function loadOrderSummary() {
+        const cartItems = getCartFromStorage();
+        const cartTotal = localStorage.getItem('cartTotal') || 0;
+        const cartCurrency = localStorage.getItem('cartCurrency') || 'XAF';
+        const cartSubtotal = localStorage.getItem('cartSubtotal') || 0;
+        const cartShipping = localStorage.getItem('cartShipping') || 1000;
+        const cartTax = localStorage.getItem('cartTax') || 0;
+        
+        if (cartItems.length === 0) {
+          // If cart is empty, redirect back to shopping cart
+          window.location.href = 'shopping cart.html';
+          return;
+        }
+        
+        // Show page header
+        pageHeader.style.display = 'block';
+        
+        // Clear order summary
+        orderSummary.innerHTML = '';
+        
+        // Add cart items to order summary
+        cartItems.forEach(item => {
+          // Convert prices from USD to XAF (shop page uses USD prices)
+          const priceInXAF = item.price * exchangeRates['XAF'];
+          const itemTotal = priceInXAF * item.qty;
+          
+          const orderItem = document.createElement('div');
+          orderItem.className = 'order-item';
+          orderItem.innerHTML = `
+            <span>${item.name} (x${item.qty})</span>
+            <span>${formatCurrency(itemTotal, 'XAF')}</span>
+          `;
+          orderSummary.appendChild(orderItem);
+        });
+        
+        // Add shipping
+        const shippingItem = document.createElement('div');
+        shippingItem.className = 'order-item';
+        shippingItem.innerHTML = `
+          <span>Delivery Fee</span>
+          <span>${formatCurrency(cartShipping, 'XAF')}</span>
+        `;
+        orderSummary.appendChild(shippingItem);
+        
+        // Add total
+        const totalItem = document.createElement('div');
+        totalItem.className = 'order-total';
+        totalItem.innerHTML = `
+          <span>Total:</span>
+          <span>${formatCurrency(cartTotal, 'XAF')}</span>
+        `;
+        orderSummary.appendChild(totalItem);
+      }
+      
+      // Load order summary on page load
+      loadOrderSummary();
+      
+      // Payment method selection
+      paymentOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          // Remove selected class from all options
+          paymentOptions.forEach(o => o.classList.remove('selected'));
+          
+          // Add selected class to clicked option
+          this.classList.add('selected');
+          
+          // Get the selected method
+          selectedMethod = this.getAttribute('data-method');
+          
+          // Show/hide mobile payment buttons based on selection
+          if (selectedMethod === 'mobile') {
+            mobilePaymentButtons.style.display = 'grid';
+            submitBtn.style.display = 'none';
+          } else {
+            mobilePaymentButtons.style.display = 'none';
+            submitBtn.style.display = 'block';
+          }
+        });
+      });
+      
+      // Form submission for non-mobile payments
+      submitBtn.addEventListener('click', function() {
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
+        const cartTotal = localStorage.getItem('cartTotal') || 0;
+        
+        // Validate customer info
+        if (!name || !phone || !address) {
+          alert('Please fill in all customer information fields');
+          return;
+        }
+        
+        // Validate payment method selection
+        if (!selectedMethod) {
+          alert('Please select a payment method');
+          return;
+        }
+        
+        // Fill receipt details
+        document.getElementById('rName').textContent = name;
+        document.getElementById('rPhone').textContent = phone;
+        document.getElementById('rAddress').textContent = address;
+        document.getElementById('rAmount').textContent = formatCurrency(cartTotal, 'XAF');
+        
+        // Set payment method text
+        if (selectedMethod === 'card') {
+          document.getElementById('rMethod').textContent = 'Credit/Debit Card';
+        } else if (selectedMethod === 'paypal') {
+          document.getElementById('rMethod').textContent = 'PayPal';
+        }
+        
+        document.getElementById('rDate').textContent = new Date().toLocaleString();
+        
+        // Show receipt
+        receiptBox.style.display = 'block';
+        receiptBox.scrollIntoView({ behavior: 'smooth' });
+      });
+      
+      // Print receipt
+      printBtn.addEventListener('click', function() {
+        window.print();
+      });
+      
+      // Download PDF receipt
+      downloadBtn.addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(16);
+        doc.text('Huile de Chèbe - Payment Receipt', 20, 20);
+        doc.setFontSize(12);
+        doc.text('Name: ' + document.getElementById('rName').textContent, 20, 40);
+        doc.text('Phone: ' + document.getElementById('rPhone').textContent, 20, 50);
+        doc.text('Address: ' + document.getElementById('rAddress').textContent, 20, 60);
+        doc.text('Amount Paid: ' + document.getElementById('rAmount').textContent, 20, 70);
+        doc.text('Payment Method: ' + document.getElementById('rMethod').textContent, 20, 80);
+        doc.text('Status: Payment Approved ✅', 20, 90);
+        doc.text('Date: ' + document.getElementById('rDate').textContent, 20, 100);
+        
+        doc.save('receipt.pdf');
+      });
+    });
+  </script>
+</body>
+>>>>>>> 720c1e3 (Initial commit)
 </html>

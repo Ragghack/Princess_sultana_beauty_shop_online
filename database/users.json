@@ -1,0 +1,7 @@
+{
+  "name": "Amina S",
+  "email": "amina@example.com",
+  "passwordHash": "$2b$10$EXAMPLEHASH", 
+  "role": "admin",
+  "createdAt": { "$date": "2025-09-11T08:00:00Z" }
+}
