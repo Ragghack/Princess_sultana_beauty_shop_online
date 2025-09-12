@@ -4,3 +4,21 @@ josymambo858_db_user
 
 
 mongodb+srv://josymambo858_db_user:v3VSBGbeumlMZO9m@daviddbprogress.lgcze5s.mongodb.net/
+
+hairshop-backend/
+├─ .env
+├─ server.js
+├─ models/
+│  ├─ User.js
+│  ├─ Product.js
+│  ├─ Order.js
+│  └─ Ticket.js
+├─ routes/
+│  ├─ auth.js
+│  ├─ products.js
+│  ├─ orders.js
+│  └─ tickets.js
+└─ middleware/
+   └─ auth.js
+
+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
