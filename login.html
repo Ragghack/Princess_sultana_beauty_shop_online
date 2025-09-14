@@ -290,7 +290,7 @@
         .form-group input {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid var(--light-brown);
+            border: 2px solid var(--golden-brown);
             border-radius: 8px;
             font-size: 1rem;
             transition: border-color 0.3s ease;
@@ -376,7 +376,7 @@
             top: 50%;
             width: 40%;
             height: 1px;
-            background: var(--light-brown);
+            background: var(--golden-brown);
         }
 
         .social-login p::before {
@@ -572,7 +572,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="products.html">Products</a></li>
                 <li><a href="about.html">About</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="mailto:info@chebeoil.com">Contact</a></li>
             </ul>
         </nav>
         <div class="auth-buttons">
@@ -687,7 +687,7 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="products.html">Products</a></li>
                     <li><a href="about.html">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="mailto:info@chebeoil.com">Contact</a></li>
                 </ul>
             </div>
             
@@ -721,7 +721,7 @@
                 </div>
                 
                 <button type="submit" class="submit-btn">Send Reset Link</button>
-            </form>
+                </form>
         </div>
     </div>
 
@@ -771,22 +771,32 @@
             this.innerHTML = type === 'password' ? '<i class="far fa-eye"></i>' : '<i class="far fa-eye-slash"></i>';
         });
         
-        // Form validation
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Form validation and backend integration
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            
-            // Simple validation
             if (!email || !password) {
                 alert('Please fill in all fields');
                 return;
             }
-            
-            // In a real application, you would authenticate with a server here
-            alert('Login successful! Welcome back to Huile de Chèbe.');
-            window.location.href = 'index.html'; // Redirect to homepage
+            // Example backend call (replace URL with your backend endpoint)
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Login successful! Welcome back to Huile de Chèbe.');
+                    window.location.href = 'index.html';
+                } else {
+                    alert(data.message || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again later.');
+            }
         });
         
         // Forgot password functionality
