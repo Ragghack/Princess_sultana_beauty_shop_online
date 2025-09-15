@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Shop | Huile de Chèbe</title>
+  <title>Shop | Princesse Sultana Hair Care</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -18,22 +17,15 @@
       --deep-green: #2E8B57;
       --off-white: #FDF6E3;
       --black: #333333;
+      --light-brown: #d3bfa3;
     }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: 'Poppins', system-ui, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--black);
       background-color: var(--cream);
       overflow-x: hidden;
     }
-
-    /* ===== Background ===== */
     .bg-fallback {
       position: fixed;
       inset: 0;
@@ -43,8 +35,6 @@
         radial-gradient(circle at 20% 30%, rgba(214, 175, 55, 0.1) 0%, transparent 20%),
         radial-gradient(circle at 80% 70%, rgba(183, 110, 34, 0.1) 0%, transparent 20%);
     }
-
-    /* ===== Header ===== */
     header {
       position: sticky;
       top: 0;
@@ -58,7 +48,6 @@
       box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
       border-bottom: 3px solid var(--light-gold);
     }
-    
     .brand {
       display: flex;
       align-items: center;
@@ -68,31 +57,25 @@
       color: var(--light-gold);
       font-size: 24px;
     }
-    
     nav ul {
       list-style: none;
       display: flex;
       gap: 18px;
     }
-    
     nav a {
       color: white;
       text-decoration: none;
       font-weight: 500;
       transition: all 0.3s ease;
     }
-    
     nav a:hover {
       color: var(--light-gold);
     }
-
-    /* ===== Slider Shell ===== */
     .stage {
       max-width: 1100px;
       margin: 60px auto 40px;
       padding: 0 18px;
     }
-    
     .slider {
       position: relative;
       overflow: hidden;
@@ -101,26 +84,21 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--light-brown);
     }
-    
     .track {
       display: flex;
       transition: transform .6s cubic-bezier(.22, .61, .36, 1);
     }
-    
     .slide {
       min-width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: stretch;
     }
-
-    /* Image side */
     .media {
       position: relative;
       overflow: hidden;
       background: var(--off-white);
     }
-    
     .media img {
       width: 100%;
       height: 100%;
@@ -128,11 +106,9 @@
       transform: scale(1.02);
       transition: transform .6s ease;
     }
-    
     .slide:hover .media img {
       transform: scale(1.06);
     }
-    
     .glow {
       position: absolute;
       inset: auto auto 20px 20px;
@@ -142,8 +118,6 @@
       background: radial-gradient(closest-side, rgba(255, 215, 0, 0.35), transparent 70%);
       pointer-events: none;
     }
-
-    /* Content side */
     .content {
       padding: 36px 32px;
       display: flex;
@@ -151,7 +125,6 @@
       justify-content: center;
       gap: 16px;
     }
-    
     .pill {
       display: inline-flex;
       align-items: center;
@@ -164,24 +137,20 @@
       font-size: .85rem;
       color: var(--dark-brown);
     }
-    
     h2 {
       font-size: 2rem;
       color: var(--dark-brown);
     }
-    
     .desc {
       opacity: .95;
       line-height: 1.7;
       color: var(--black);
     }
-    
     .price {
       font-weight: 800;
       font-size: 1.25rem;
       color: var(--golden-brown);
     }
-
     .buy-row {
       display: flex;
       gap: 12px;
@@ -189,7 +158,6 @@
       flex-wrap: wrap;
       margin-top: 4px;
     }
-    
     .qty {
       display: flex;
       align-items: center;
@@ -199,7 +167,6 @@
       border-radius: 12px;
       padding: 8px 10px;
     }
-    
     .qty input {
       width: 56px;
       background: transparent;
@@ -210,7 +177,6 @@
       outline: none;
       font-size: 1rem;
     }
-    
     .qty button {
       width: 28px;
       height: 28px;
@@ -221,7 +187,6 @@
       cursor: pointer;
       font-weight: bold;
     }
-    
     .cta {
       display: inline-flex;
       align-items: center;
@@ -236,13 +201,10 @@
       box-shadow: 0 6px 18px rgba(139, 69, 19, 0.3);
       transition: transform .15s ease, box-shadow .2s ease;
     }
-    
     .cta:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 26px rgba(139, 69, 19, 0.4);
     }
-
-    /* Arrows */
     .arrow {
       position: absolute;
       top: 50%;
@@ -260,28 +222,18 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       transition: background .2s ease, color .2s ease;
     }
-    
     .arrow:hover {
       background: var(--golden-brown);
       color: white;
     }
-    
-    .prev {
-      left: 14px;
-    }
-    
-    .next {
-      right: 14px;
-    }
-
-    /* Dots */
+    .prev { left: 14px; }
+    .next { right: 14px; }
     .dots {
       display: flex;
       justify-content: center;
       gap: 10px;
       padding: 16px 0 22px;
     }
-    
     .dot {
       width: 10px;
       height: 10px;
@@ -291,13 +243,10 @@
       border: 1px solid rgba(139, 69, 19, 0.5);
       transition: transform .2s ease, background .2s ease;
     }
-    
     .dot.active {
       background: var(--golden-brown);
       transform: scale(1.15);
     }
-
-    /* Toast */
     .toast {
       position: fixed;
       right: 16px;
@@ -313,55 +262,40 @@
       transition: opacity .25s ease, transform .25s ease;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
-    
     .toast.show {
       opacity: 1;
       transform: translateY(0);
     }
-
-    /* Footer */
     footer {
       margin-top: 50px;
       background: linear-gradient(135deg, var(--dark-brown) 0%, var(--black) 100%);
       color: white;
       padding: 40px 8% 20px;
     }
-    
     .footer-content {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 30px;
     }
-    
-    footer h3 {
+    footer h3, footer h4 {
       color: var(--light-gold);
       margin-bottom: 12px;
     }
-    
-    footer h4 {
-      color: var(--light-gold);
-      margin-bottom: 10px;
-    }
-    
     footer ul {
       list-style: none;
       padding: 0;
     }
-    
     footer ul li {
       margin: 6px 0;
     }
-    
     footer ul li a {
       color: white;
       text-decoration: none;
       transition: color 0.3s ease;
     }
-    
     footer ul li a:hover {
       color: var(--light-gold);
     }
-    
     .socials a {
       display: inline-flex;
       justify-content: center;
@@ -374,12 +308,10 @@
       color: white;
       transition: all 0.3s ease;
     }
-    
     .socials a:hover {
       background: var(--light-gold);
       color: var(--dark-brown);
     }
-    
     .footer-bottom {
       text-align: center;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -388,65 +320,44 @@
       font-size: 0.9rem;
       color: #ccc;
     }
-
-    /* Responsive */
     @media (max-width: 900px) {
       .slide {
         grid-template-columns: 1fr;
       }
-      
-      .media {
-        height: 320px;
-      }
-      
-      .content {
-        padding: 26px 22px;
-      }
-      
-      h2 {
-        font-size: 1.6rem;
-      }
+      .media { height: 320px; }
+      .content { padding: 26px 22px; }
+      h2 { font-size: 1.6rem; }
     }
   </style>
 </head>
 <body>
-
-  <!-- Background -->
   <div class="bg-fallback" aria-hidden="true"></div>
-
-  <!-- Header -->
   <header>
-    <div class="brand"><i class="fas fa-spa"></i> 
-Princesse Sultana
-Hair care</div>
+    <div class="brand"><i class="fas fa-spa"></i> Princesse Sultana Hair Care</div>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="shop.html" aria-current="page">Shop</a></li>
-        <li><a href="shopping Cart.html" id="goCart">Cart</a></li>
-         <li><a href="Order Management.html" aria-current="page">Management</a></li>
-          <li><a href="user dashboard.html" aria-current="page">Myspace</a></li>
-       <!-- <li><a href="login.html">Login</a></li>-->
+        <li><a href="cart.html" id="goCart">Cart</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
       </ul>
     </nav>
   </header>
-
-  <!-- ===== Slider ===== -->
   <main class="stage">
     <section class="slider" id="slider">
       <button class="arrow prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
       <div class="track" id="track">
-
         <!-- Slide 1 -->
         <article class="slide">
           <figure class="media">
-            <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Huile de Chèbe Original bottle">
+            <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Huile de Chèbe Original" />
             <span class="glow"></span>
           </figure>
           <div class="content">
             <span class="pill"><i class="fa-solid fa-star"></i> Best Seller</span>
             <h2>Huile de Chèbe Original</h2>
-            <p class="desc">Hydrates deeply, strengthens roots, and helps reduce breakage for natural growth and shine.</p>
+            <p class="desc">Deeply hydrates, strengthens roots, and reduces breakage for natural hair growth and shine.</p>
             <div class="price">$24.99</div>
             <div class="buy-row">
               <div class="qty">
@@ -460,17 +371,16 @@ Hair care</div>
             </div>
           </div>
         </article>
-
         <!-- Slide 2 -->
         <article class="slide">
           <figure class="media">
-            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Chèbe Hair Butter in a jar">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Chèbe Hair Butter" />
             <span class="glow"></span>
           </figure>
           <div class="content">
             <span class="pill"><i class="fa-solid fa-fire-flame-curved"></i> Extra Nourish</span>
             <h2>Chèbe Hair Butter</h2>
-            <p class="desc">Rich, creamy butter locks in moisture all day and smooths frizz without heaviness.</p>
+            <p class="desc">Locks in moisture all day and smooths frizz without heaviness.</p>
             <div class="price">$19.99</div>
             <div class="buy-row">
               <div class="qty">
@@ -484,17 +394,16 @@ Hair care</div>
             </div>
           </div>
         </article>
-
         <!-- Slide 3 -->
         <article class="slide">
           <figure class="media">
-            <img src="https://images.unsplash.com/photo-1603712610494-70e75f2db26a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Chèbe Conditioner bottle">
+            <img src="https://images.unsplash.com/photo-1603712610494-70e75f2db26a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Chèbe Conditioner" />
             <span class="glow"></span>
           </figure>
           <div class="content">
             <span class="pill"><i class="fa-solid fa-droplet"></i> Hydration</span>
             <h2>Chèbe Conditioner</h2>
-            <p class="desc">Silky, manageable hair thanks to a balanced infusion of chèbe extracts and botanicals.</p>
+            <p class="desc">Infused with chèbe extracts and botanicals for silky, manageable hair.</p>
             <div class="price">$17.99</div>
             <div class="buy-row">
               <div class="qty">
@@ -511,20 +420,13 @@ Hair care</div>
       </div>
       <button class="arrow next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
     </section>
-
     <div class="dots" id="dots"></div>
   </main>
-
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
-  
-  <!-- ===== Footer ===== -->
   <footer>
     <div class="footer-content">
       <div class="col">
-        <h3>
-Princesse Sultana
-Hair care</h3>
+        <h3>Princesse Sultana Hair Care</h3>
         <p>100% natural hair care solutions made with love and tradition.</p>
       </div>
       <div class="col">
@@ -533,7 +435,7 @@ Hair care</h3>
           <li><a href="index.html">Home</a></li>
           <li><a href="shop.html">Shop</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div class="col">
@@ -547,23 +449,14 @@ Hair care</h3>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2023 Huile de Chèbe | All Rights Reserved</p>
+      <p>&copy; 2023 Princesse Sultana Hair Care | All Rights Reserved</p>
     </div>
   </footer>
-
   <script>
     function getCart() {
-      try {
-        return JSON.parse(localStorage.getItem('cart') || '[]');
-      } catch {
-        return [];
-      }
+      try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
     }
-    
-    function setCart(c) {
-      localStorage.setItem('cart', JSON.stringify(c));
-    }
-    
+    function setCart(c) { localStorage.setItem('cart', JSON.stringify(c)); }
     function addToCart(item) {
       const cart = getCart();
       const idx = cart.findIndex(p => p.id === item.id);
@@ -574,19 +467,12 @@ Hair care</h3>
       }
       setCart(cart);
     }
-
-   // document.getElementById('goCart').addEventListener('click', (e) => {
-     // e.preventDefault();
-     // alert('Cart page not implemented yet — items are saved locally.');
-    //});
-
     const track = document.getElementById('track');
     const slides = Array.from(track.children);
     const dotsWrap = document.getElementById('dots');
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
     let index = 0;
-
     function renderDots() {
       dotsWrap.innerHTML = '';
       slides.forEach((_, i) => {
@@ -596,23 +482,17 @@ Hair care</h3>
         dotsWrap.appendChild(d);
       });
     }
-    
     function go(i) {
       index = (i + slides.length) % slides.length;
       track.style.transform = `translateX(${-100 * index}%)`;
       renderDots();
     }
-    
     prev.addEventListener('click', () => go(index - 1));
     next.addEventListener('click', () => go(index + 1));
     renderDots();
     setInterval(() => go(index + 1), 7000);
-
     let startX = null;
-    track.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-    }, { passive: true });
-    
+    track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
     track.addEventListener('touchmove', (e) => {
       if (startX === null) return;
       const dx = e.touches[0].clientX - startX;
@@ -621,32 +501,19 @@ Hair care</h3>
         startX = null;
       }
     }, { passive: true });
-    
-    track.addEventListener('touchend', () => {
-      startX = null;
-    });
-
+    track.addEventListener('touchend', () => { startX = null; });
     const toast = document.getElementById('toast');
-    
     function showToast(msg) {
       toast.textContent = msg;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 1800);
     }
-    
     document.querySelectorAll('.slide').forEach(slide => {
       const dec = slide.querySelector('[data-dec]');
       const inc = slide.querySelector('[data-inc]');
       const input = slide.querySelector('input[type="number"]');
-      
-      dec.addEventListener('click', () => {
-        input.value = Math.max(1, (+input.value || 1) - 1);
-      });
-      
-      inc.addEventListener('click', () => {
-        input.value = (+input.value || 1) + 1;
-      });
-
+      dec.addEventListener('click', () => { input.value = Math.max(1, (+input.value || 1) - 1); });
+      inc.addEventListener('click', () => { input.value = (+input.value || 1) + 1; });
       const buy = slide.querySelector('[data-buy]');
       buy.addEventListener('click', () => {
         const qty = Math.max(1, parseInt(input.value || '1', 10));
@@ -662,669 +529,4 @@ Hair care</h3>
     });
   </script>
 </body>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Shop | Huile de Chèbe</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    :root {
-      --golden-brown: #B76E22;
-      --dark-brown: #8B4513;
-      --light-gold: #D4AF37;
-      --cream: #FFF8E7;
-      --groovy-orange: #FF8C42;
-      --groovy-pink: #FF6B6B;
-      --deep-green: #2E8B57;
-      --off-white: #FDF6E3;
-      --black: #333333;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--black);
-      background-color: var(--cream);
-      overflow-x: hidden;
-    }
-
-    /* ===== Background ===== */
-    .bg-fallback {
-      position: fixed;
-      inset: 0;
-      z-index: -3;
-      pointer-events: none;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(214, 175, 55, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 80% 70%, rgba(183, 110, 34, 0.1) 0%, transparent 20%);
-    }
-
-    /* ===== Header ===== */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 14px 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
-      color: white;
-      box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
-      border-bottom: 3px solid var(--light-gold);
-    }
-    
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: .3px;
-      color: var(--light-gold);
-      font-size: 24px;
-    }
-    
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 18px;
-    }
-    
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    
-    nav a:hover {
-      color: var(--light-gold);
-    }
-
-    /* ===== Slider Shell ===== */
-    .stage {
-      max-width: 1100px;
-      margin: 60px auto 40px;
-      padding: 0 18px;
-    }
-    
-    .slider {
-      position: relative;
-      overflow: hidden;
-      border-radius: 24px;
-      background: white;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      border: 1px solid var(--light-brown);
-    }
-    
-    .track {
-      display: flex;
-      transition: transform .6s cubic-bezier(.22, .61, .36, 1);
-    }
-    
-    .slide {
-      min-width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: stretch;
-    }
-
-    /* Image side */
-    .media {
-      position: relative;
-      overflow: hidden;
-      background: var(--off-white);
-    }
-    
-    .media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.02);
-      transition: transform .6s ease;
-    }
-    
-    .slide:hover .media img {
-      transform: scale(1.06);
-    }
-    
-    .glow {
-      position: absolute;
-      inset: auto auto 20px 20px;
-      width: 180px;
-      height: 180px;
-      filter: blur(40px);
-      background: radial-gradient(closest-side, rgba(255, 215, 0, 0.35), transparent 70%);
-      pointer-events: none;
-    }
-
-    /* Content side */
-    .content {
-      padding: 36px 32px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 16px;
-    }
-    
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: rgba(255, 215, 0, 0.15);
-      border: 1px solid rgba(139, 69, 19, 0.2);
-      width: max-content;
-      font-size: .85rem;
-      color: var(--dark-brown);
-    }
-    
-    h2 {
-      font-size: 2rem;
-      color: var(--dark-brown);
-    }
-    
-    .desc {
-      opacity: .95;
-      line-height: 1.7;
-      color: var(--black);
-    }
-    
-    .price {
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--golden-brown);
-    }
-
-    .buy-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    
-    .qty {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid var(--light-brown);
-      border-radius: 12px;
-      padding: 8px 10px;
-    }
-    
-    .qty input {
-      width: 56px;
-      background: transparent;
-      border: none;
-      color: var(--black);
-      text-align: center;
-      font-weight: 600;
-      outline: none;
-      font-size: 1rem;
-    }
-    
-    .qty button {
-      width: 28px;
-      height: 28px;
-      border-radius: 10px;
-      border: 1px solid var(--light-brown);
-      background: var(--cream);
-      color: var(--dark-brown);
-      cursor: pointer;
-      font-weight: bold;
-    }
-    
-    .cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 18px;
-      border-radius: 14px;
-      cursor: pointer;
-      border: none;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
-      color: white;
-      box-shadow: 0 6px 18px rgba(139, 69, 19, 0.3);
-      transition: transform .15s ease, box-shadow .2s ease;
-    }
-    
-    .cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 26px rgba(139, 69, 19, 0.4);
-    }
-
-    /* Arrows */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 1px solid var(--light-brown);
-      background: white;
-      color: var(--dark-brown);
-      cursor: pointer;
-      z-index: 2;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: background .2s ease, color .2s ease;
-    }
-    
-    .arrow:hover {
-      background: var(--golden-brown);
-      color: white;
-    }
-    
-    .prev {
-      left: 14px;
-    }
-    
-    .next {
-      right: 14px;
-    }
-
-    /* Dots */
-    .dots {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding: 16px 0 22px;
-    }
-    
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(139, 69, 19, 0.3);
-      cursor: pointer;
-      border: 1px solid rgba(139, 69, 19, 0.5);
-      transition: transform .2s ease, background .2s ease;
-    }
-    
-    .dot.active {
-      background: var(--golden-brown);
-      transform: scale(1.15);
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      z-index: 20;
-      background: var(--dark-brown);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--light-gold);
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity .25s ease, transform .25s ease;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 50px;
-      background: linear-gradient(135deg, var(--dark-brown) 0%, var(--black) 100%);
-      color: white;
-      padding: 40px 8% 20px;
-    }
-    
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 30px;
-    }
-    
-    footer h3 {
-      color: var(--light-gold);
-      margin-bottom: 12px;
-    }
-    
-    footer h4 {
-      color: var(--light-gold);
-      margin-bottom: 10px;
-    }
-    
-    footer ul {
-      list-style: none;
-      padding: 0;
-    }
-    
-    footer ul li {
-      margin: 6px 0;
-    }
-    
-    footer ul li a {
-      color: white;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    
-    footer ul li a:hover {
-      color: var(--light-gold);
-    }
-    
-    .socials a {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      width: 34px;
-      height: 34px;
-      margin-right: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      transition: all 0.3s ease;
-    }
-    
-    .socials a:hover {
-      background: var(--light-gold);
-      color: var(--dark-brown);
-    }
-    
-    .footer-bottom {
-      text-align: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: 20px;
-      padding-top: 15px;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .slide {
-        grid-template-columns: 1fr;
-      }
-      
-      .media {
-        height: 320px;
-      }
-      
-      .content {
-        padding: 26px 22px;
-      }
-      
-      h2 {
-        font-size: 1.6rem;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Background -->
-  <div class="bg-fallback" aria-hidden="true"></div>
-
-  <!-- Header -->
-  <header>
-    <div class="brand"><i class="fas fa-spa"></i> 
-Princesse Sultana
-Hair care</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="shop.html" aria-current="page">Shop</a></li>
-        <li><a href="shopping Cart.html" id="goCart">Cart</a></li>
-         <li><a href="Order Management.html" aria-current="page">Management</a></li>
-          <li><a href="user dashboard.html" aria-current="page">Myspace</a></li>
-       <!-- <li><a href="login.html">Login</a></li>-->
-      </ul>
-    </nav>
-  </header>
-
-  <!-- ===== Slider ===== -->
-  <main class="stage">
-    <section class="slider" id="slider">
-      <button class="arrow prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
-      <div class="track" id="track">
-
-        <!-- Slide 1 -->
-        <article class="slide">
-          <figure class="media">
-            <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Huile de Chèbe Original bottle">
-            <span class="glow"></span>
-          </figure>
-          <div class="content">
-            <span class="pill"><i class="fa-solid fa-star"></i> Best Seller</span>
-            <h2>Huile de Chèbe Original</h2>
-            <p class="desc">Hydrates deeply, strengthens roots, and helps reduce breakage for natural growth and shine.</p>
-            <div class="price">$24.99</div>
-            <div class="buy-row">
-              <div class="qty">
-                <button type="button" data-dec>-</button>
-                <input type="number" min="1" value="1">
-                <button type="button" data-inc>+</button>
-              </div>
-              <button class="cta" data-buy data-id="p1" data-name="Huile de Chèbe Original" data-price="24.99">
-                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <!-- Slide 2 -->
-        <article class="slide">
-          <figure class="media">
-            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Chèbe Hair Butter in a jar">
-            <span class="glow"></span>
-          </figure>
-          <div class="content">
-            <span class="pill"><i class="fa-solid fa-fire-flame-curved"></i> Extra Nourish</span>
-            <h2>Chèbe Hair Butter</h2>
-            <p class="desc">Rich, creamy butter locks in moisture all day and smooths frizz without heaviness.</p>
-            <div class="price">$19.99</div>
-            <div class="buy-row">
-              <div class="qty">
-                <button type="button" data-dec>-</button>
-                <input type="number" min="1" value="1">
-                <button type="button" data-inc>+</button>
-              </div>
-              <button class="cta" data-buy data-id="p2" data-name="Chèbe Hair Butter" data-price="19.99">
-                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <!-- Slide 3 -->
-        <article class="slide">
-          <figure class="media">
-            <img src="https://images.unsplash.com/photo-1603712610494-70e75f2db26a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Chèbe Conditioner bottle">
-            <span class="glow"></span>
-          </figure>
-          <div class="content">
-            <span class="pill"><i class="fa-solid fa-droplet"></i> Hydration</span>
-            <h2>Chèbe Conditioner</h2>
-            <p class="desc">Silky, manageable hair thanks to a balanced infusion of chèbe extracts and botanicals.</p>
-            <div class="price">$17.99</div>
-            <div class="buy-row">
-              <div class="qty">
-                <button type="button" data-dec>-</button>
-                <input type="number" min="1" value="1">
-                <button type="button" data-inc>+</button>
-              </div>
-              <button class="cta" data-buy data-id="p3" data-name="Chèbe Conditioner" data-price="17.99">
-                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </article>
-      </div>
-      <button class="arrow next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
-    </section>
-
-    <div class="dots" id="dots"></div>
-  </main>
-
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
-  
-  <!-- ===== Footer ===== -->
-  <footer>
-    <div class="footer-content">
-      <div class="col">
-        <h3>
-Princesse Sultana
-Hair care</h3>
-        <p>100% natural hair care solutions made with love and tradition.</p>
-      </div>
-      <div class="col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="shop.html">Shop</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-      <div class="col">
-        <h4>Follow Us</h4>
-        <div class="socials">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-whatsapp"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2023 Huile de Chèbe | All Rights Reserved</p>
-    </div>
-  </footer>
-
-  <script>
-    function getCart() {
-      try {
-        return JSON.parse(localStorage.getItem('cart') || '[]');
-      } catch {
-        return [];
-      }
-    }
-    
-    function setCart(c) {
-      localStorage.setItem('cart', JSON.stringify(c));
-    }
-    
-    function addToCart(item) {
-      const cart = getCart();
-      const idx = cart.findIndex(p => p.id === item.id);
-      if (idx > -1) {
-        cart[idx].qty += item.qty;
-      } else {
-        cart.push(item);
-      }
-      setCart(cart);
-    }
-
-   // document.getElementById('goCart').addEventListener('click', (e) => {
-     // e.preventDefault();
-     // alert('Cart page not implemented yet — items are saved locally.');
-    //});
-
-    const track = document.getElementById('track');
-    const slides = Array.from(track.children);
-    const dotsWrap = document.getElementById('dots');
-    const prev = document.querySelector('.prev');
-    const next = document.querySelector('.next');
-    let index = 0;
-
-    function renderDots() {
-      dotsWrap.innerHTML = '';
-      slides.forEach((_, i) => {
-        const d = document.createElement('button');
-        d.className = 'dot' + (i === index ? ' active' : '');
-        d.addEventListener('click', () => go(i));
-        dotsWrap.appendChild(d);
-      });
-    }
-    
-    function go(i) {
-      index = (i + slides.length) % slides.length;
-      track.style.transform = `translateX(${-100 * index}%)`;
-      renderDots();
-    }
-    
-    prev.addEventListener('click', () => go(index - 1));
-    next.addEventListener('click', () => go(index + 1));
-    renderDots();
-    setInterval(() => go(index + 1), 7000);
-
-    let startX = null;
-    track.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-    }, { passive: true });
-    
-    track.addEventListener('touchmove', (e) => {
-      if (startX === null) return;
-      const dx = e.touches[0].clientX - startX;
-      if (Math.abs(dx) > 60) {
-        go(index + (dx < 0 ? 1 : -1));
-        startX = null;
-      }
-    }, { passive: true });
-    
-    track.addEventListener('touchend', () => {
-      startX = null;
-    });
-
-    const toast = document.getElementById('toast');
-    
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 1800);
-    }
-    
-    document.querySelectorAll('.slide').forEach(slide => {
-      const dec = slide.querySelector('[data-dec]');
-      const inc = slide.querySelector('[data-inc]');
-      const input = slide.querySelector('input[type="number"]');
-      
-      dec.addEventListener('click', () => {
-        input.value = Math.max(1, (+input.value || 1) - 1);
-      });
-      
-      inc.addEventListener('click', () => {
-        input.value = (+input.value || 1) + 1;
-      });
-
-      const buy = slide.querySelector('[data-buy]');
-      buy.addEventListener('click', () => {
-        const qty = Math.max(1, parseInt(input.value || '1', 10));
-        const item = {
-          id: buy.dataset.id,
-          name: buy.dataset.name,
-          price: parseFloat(buy.dataset.price),
-          qty
-        };
-        addToCart(item);
-        showToast(`${item.name} ×${item.qty} added to cart`);
-      });
-    });
-  </script>
-</body>
->>>>>>> 720c1e3 (Initial commit)
 </html>
