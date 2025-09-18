@@ -614,6 +614,7 @@ Hair care</span>
                                 <i class="far fa-eye"></i>
                             </span>
                         </div>
+                        <div id="passwordStrength" style="margin-top:8px;font-size:0.95rem;color:#8B4513;"></div>
                     </div>
 
                     <div class="form-group">
@@ -753,29 +754,79 @@ Hair care</span>
             // Password visibility toggle
             const togglePassword = document.getElementById('togglePassword');
             const password = document.getElementById('password');
+            const passwordStrength = document.getElementById('passwordStrength');
             
             togglePassword.addEventListener('click', function() {
                 const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                 password.setAttribute('type', type);
-                
                 this.innerHTML = type === 'password' ? '<i class="far fa-eye"></i>' : '<i class="far fa-eye-slash"></i>';
+            });
+
+            // Password strength meter
+            password.addEventListener('input', function() {
+                const val = password.value;
+                let score = 0;
+                if (val.length >= 8) score++;
+                if (/[A-Z]/.test(val)) score++;
+                if (/[a-z]/.test(val)) score++;
+                if (/[0-9]/.test(val)) score++;
+                if (/[^A-Za-z0-9]/.test(val)) score++;
+                let strength = '';
+                switch(score) {
+                    case 0:
+                    case 1:
+                        strength = 'Very Weak'; break;
+                    case 2:
+                        strength = 'Weak'; break;
+                    case 3:
+                        strength = 'Medium'; break;
+                    case 4:
+                        strength = 'Strong'; break;
+                    case 5:
+                        strength = 'Very Strong'; break;
+                }
+                passwordStrength.textContent = val ? `Password Strength: ${strength}` : '';
+                passwordStrength.style.color = ['#DC3545','#DC3545','#FF8C42','#2E8B57','#4682B4','#B76E22'][score];
             });
             
             // Form validation
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+                const fullName = document.getElementById('fullName').value;
+                const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
-                
+                const terms = document.getElementById('terms').checked;
+                if (!fullName || !email || !password || !confirmPassword) {
+                    alert('Please fill in all fields');
+                    return;
+                }
                 if (password !== confirmPassword) {
                     alert('Passwords do not match!');
                     return;
                 }
-                
-                // In a real application, you would submit the form to a server here
-                alert('Registration successful! You can now login to your account.');
-                window.location.href = 'index.html'; // Redirect to homepage
+                if (!terms) {
+                    alert('You must agree to the Terms of Service and Privacy Policy');
+                    return;
+                }
+                // Backend API call for registration
+                fetch('http://localhost:5000/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: fullName, email, password })
+                })
+                .then(async response => {
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Registration successful! Please check your email to verify your account before logging in.');
+                        window.location.href = 'login.html';
+                    } else {
+                        alert(data.message || 'Registration failed. Please try again.');
+                    }
+                })
+                .catch(() => {
+                    alert('An error occurred. Please try again later.');
+                });
             });
             
             // Subscription modal functionality

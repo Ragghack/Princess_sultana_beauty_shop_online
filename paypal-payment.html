@@ -479,44 +479,50 @@
       // Form submission
       paypalForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const cartTotal = localStorage.getItem('cartTotal') || 0;
-        
+        const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
         // Validate form
         if (!email || !password) {
           alert('Please fill in all PayPal credentials');
           return;
         }
-        
         // Show processing indicator
         processing.style.display = 'block';
         paypalForm.style.display = 'none';
-        
-        // Simulate payment processing
-        setTimeout(function() {
-          // Hide processing indicator
+        // Send payment request to backend
+        fetch('http://localhost:5000/api/paypal/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, cartTotal, cartItems })
+        })
+        .then(async response => {
           processing.style.display = 'none';
-          
-          // Generate random transaction ID
-          const txnId = 'PP' + Math.floor(100000 + Math.random() * 900000);
-          
-          // Fill receipt details
-          document.getElementById('rTxnId').textContent = txnId;
-          document.getElementById('rAmount').textContent = formatCurrency(cartTotal, 'XAF');
-          document.getElementById('rDate').textContent = new Date().toLocaleString();
-          
-          // Show receipt
-          receiptBox.style.display = 'block';
-          receiptBox.scrollIntoView({ behavior: 'smooth' });
-          
-          // Clear cart after successful payment
-          localStorage.removeItem('cart');
-          localStorage.removeItem('cartItems');
-          localStorage.removeItem('cartTotal');
-          localStorage.removeItem('cartCurrency');
-        }, 3000);
+          if (response.ok) {
+            const data = await response.json();
+            // Fill receipt details from backend response
+            document.getElementById('rTxnId').textContent = data.txnId || ('PP' + Math.floor(100000 + Math.random() * 900000));
+            document.getElementById('rAmount').textContent = formatCurrency(cartTotal, 'XAF');
+            document.getElementById('rDate').textContent = new Date().toLocaleString();
+            receiptBox.style.display = 'block';
+            receiptBox.scrollIntoView({ behavior: 'smooth' });
+            // Clear cart after successful payment
+            localStorage.removeItem('cart');
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('cartTotal');
+            localStorage.removeItem('cartCurrency');
+          } else {
+            const data = await response.json();
+            alert(data.message || 'Payment failed. Please try again.');
+            paypalForm.style.display = 'block';
+          }
+        })
+        .catch(() => {
+          processing.style.display = 'none';
+          alert('An error occurred. Please try again later.');
+          paypalForm.style.display = 'block';
+        });
       });
       
       // Print receipt

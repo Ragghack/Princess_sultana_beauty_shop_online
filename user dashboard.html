@@ -527,15 +527,36 @@
     </div>
 
     <script>
-        // Simple JavaScript to demonstrate functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // This would typically fetch user data from an API
-            console.log('Account dashboard loaded');
-            
+        // User authentication and dashboard logic
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is authenticated (simple demo: check localStorage 'token')
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // Not logged in, redirect to login page
+                window.location.href = 'login.html';
+                return;
+            }
+            // Fetch user data from backend
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const user = await res.json();
+                    document.querySelector('.user-name').textContent = user.name;
+                    document.querySelector('.user-email').textContent = user.email;
+                    // Optionally update dashboard stats/orders from user object
+                } else {
+                    // Invalid token, redirect to login
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }
+            } catch {
+                window.location.href = 'login.html';
+            }
             // Add active class to current menu item
             const currentPage = window.location.pathname.split('/').pop();
             const menuLinks = document.querySelectorAll('.menu-link');
-            
             menuLinks.forEach(link => {
                 const href = link.getAttribute('href');
                 if (href === currentPage) {

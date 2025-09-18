@@ -347,77 +347,7 @@
   <main class="stage">
     <section class="slider" id="slider">
       <button class="arrow prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
-      <div class="track" id="track">
-        <!-- Slide 1 -->
-        <article class="slide">
-          <figure class="media">
-            <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Huile de Chèbe Original" />
-            <span class="glow"></span>
-          </figure>
-          <div class="content">
-            <span class="pill"><i class="fa-solid fa-star"></i> Best Seller</span>
-            <h2>Huile de Chèbe Original</h2>
-            <p class="desc">Deeply hydrates, strengthens roots, and reduces breakage for natural hair growth and shine.</p>
-            <div class="price">$24.99</div>
-            <div class="buy-row">
-              <div class="qty">
-                <button type="button" data-dec>-</button>
-                <input type="number" min="1" value="1">
-                <button type="button" data-inc>+</button>
-              </div>
-              <button class="cta" data-buy data-id="p1" data-name="Huile de Chèbe Original" data-price="24.99">
-                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </article>
-        <!-- Slide 2 -->
-        <article class="slide">
-          <figure class="media">
-            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Chèbe Hair Butter" />
-            <span class="glow"></span>
-          </figure>
-          <div class="content">
-            <span class="pill"><i class="fa-solid fa-fire-flame-curved"></i> Extra Nourish</span>
-            <h2>Chèbe Hair Butter</h2>
-            <p class="desc">Locks in moisture all day and smooths frizz without heaviness.</p>
-            <div class="price">$19.99</div>
-            <div class="buy-row">
-              <div class="qty">
-                <button type="button" data-dec>-</button>
-                <input type="number" min="1" value="1">
-                <button type="button" data-inc>+</button>
-              </div>
-              <button class="cta" data-buy data-id="p2" data-name="Chèbe Hair Butter" data-price="19.99">
-                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </article>
-        <!-- Slide 3 -->
-        <article class="slide">
-          <figure class="media">
-            <img src="https://images.unsplash.com/photo-1603712610494-70e75f2db26a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Chèbe Conditioner" />
-            <span class="glow"></span>
-          </figure>
-          <div class="content">
-            <span class="pill"><i class="fa-solid fa-droplet"></i> Hydration</span>
-            <h2>Chèbe Conditioner</h2>
-            <p class="desc">Infused with chèbe extracts and botanicals for silky, manageable hair.</p>
-            <div class="price">$17.99</div>
-            <div class="buy-row">
-              <div class="qty">
-                <button type="button" data-dec>-</button>
-                <input type="number" min="1" value="1">
-                <button type="button" data-inc>+</button>
-              </div>
-              <button class="cta" data-buy data-id="p3" data-name="Chèbe Conditioner" data-price="17.99">
-                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-              </button>
-            </div>
-          </div>
-        </article>
-      </div>
+      <div class="track" id="track"></div>
       <button class="arrow next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
     </section>
     <div class="dots" id="dots"></div>
@@ -453,6 +383,7 @@
     </div>
   </footer>
   <script>
+    // Cart functions
     function getCart() {
       try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
     }
@@ -467,13 +398,117 @@
       }
       setCart(cart);
     }
-    const track = document.getElementById('track');
-    const slides = Array.from(track.children);
+
+    // Admin check (simple demo: check localStorage 'isAdmin')
+    function isAdmin() {
+      return localStorage.getItem('isAdmin') === 'true';
+    }
+
+    // Fetch products from backend
+    async function fetchProducts() {
+      const res = await fetch('http://localhost:5000/api/products');
+      if (!res.ok) return [];
+      return await res.json();
+    }
+
+    // Render products as slides
+    async function renderProducts() {
+      const products = await fetchProducts();
+      const track = document.getElementById('track');
+      track.innerHTML = '';
+      products.forEach(product => {
+        const slide = document.createElement('article');
+        slide.className = 'slide';
+        slide.innerHTML = `
+          <figure class="media">
+            <img src="${product.image || 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'}" alt="${product.name}" />
+            <span class="glow"></span>
+          </figure>
+          <div class="content">
+            <span class="pill"><i class="fa-solid fa-star"></i> ${product.tag || ''}</span>
+            <h2>${product.name}</h2>
+            <p class="desc">${product.description || ''}</p>
+            <div class="price">$${product.price}</div>
+            <div class="buy-row">
+              <div class="qty">
+                <button type="button" data-dec>-</button>
+                <input type="number" min="1" value="1">
+                <button type="button" data-inc>+</button>
+              </div>
+              <button class="cta" data-buy data-id="${product._id}" data-name="${product.name}" data-price="${product.price}">
+                <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+              </button>
+              ${isAdmin() ? `<button class="cta" data-remove data-id="${product._id}" style="background:#FF6B6B;margin-left:8px;">Remove</button>` : ''}
+            </div>
+            ${isAdmin() ? `<button class="cta" data-add style="background:#2E8B57;margin-top:10px;">Add New Product</button>` : ''}
+          </div>
+        `;
+        track.appendChild(slide);
+      });
+      setupSlideEvents();
+      renderDots();
+    }
+
+    // Setup slide events (buy, qty, admin)
+    function setupSlideEvents() {
+      document.querySelectorAll('.slide').forEach(slide => {
+        const dec = slide.querySelector('[data-dec]');
+        const inc = slide.querySelector('[data-inc]');
+        const input = slide.querySelector('input[type="number"]');
+        dec.addEventListener('click', () => { input.value = Math.max(1, (+input.value || 1) - 1); });
+        inc.addEventListener('click', () => { input.value = (+input.value || 1) + 1; });
+        const buy = slide.querySelector('[data-buy]');
+        buy.addEventListener('click', () => {
+          const qty = Math.max(1, parseInt(input.value || '1', 10));
+          const item = {
+            id: buy.dataset.id,
+            name: buy.dataset.name,
+            price: parseFloat(buy.dataset.price),
+            qty
+          };
+          addToCart(item);
+          showToast(`${item.name} ×${item.qty} added to cart`);
+        });
+        // Admin remove
+        const remove = slide.querySelector('[data-remove]');
+        if (remove) {
+          remove.addEventListener('click', async () => {
+            if (confirm('Remove this product?')) {
+              await fetch(`http://localhost:5000/api/products/${remove.dataset.id}`, { method: 'DELETE' });
+              showToast('Product removed');
+              renderProducts();
+            }
+          });
+        }
+        // Admin add
+        const add = slide.querySelector('[data-add]');
+        if (add) {
+          add.addEventListener('click', async () => {
+            const name = prompt('Product name:');
+            const price = prompt('Product price:');
+            const description = prompt('Product description:');
+            if (name && price) {
+              await fetch('http://localhost:5000/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price, description })
+              });
+              showToast('Product added');
+              renderProducts();
+            }
+          });
+        }
+      });
+    }
+
+    // Dots and slider navigation
     const dotsWrap = document.getElementById('dots');
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
     let index = 0;
     function renderDots() {
+      const track = document.getElementById('track');
+      const slides = Array.from(track.children);
       dotsWrap.innerHTML = '';
       slides.forEach((_, i) => {
         const d = document.createElement('button');
@@ -483,17 +518,19 @@
       });
     }
     function go(i) {
+      const track = document.getElementById('track');
+      const slides = Array.from(track.children);
       index = (i + slides.length) % slides.length;
       track.style.transform = `translateX(${-100 * index}%)`;
       renderDots();
     }
     prev.addEventListener('click', () => go(index - 1));
     next.addEventListener('click', () => go(index + 1));
-    renderDots();
     setInterval(() => go(index + 1), 7000);
     let startX = null;
-    track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
-    track.addEventListener('touchmove', (e) => {
+    const trackEl = document.getElementById('track');
+    trackEl.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    trackEl.addEventListener('touchmove', (e) => {
       if (startX === null) return;
       const dx = e.touches[0].clientX - startX;
       if (Math.abs(dx) > 60) {
@@ -501,32 +538,18 @@
         startX = null;
       }
     }, { passive: true });
-    track.addEventListener('touchend', () => { startX = null; });
+    trackEl.addEventListener('touchend', () => { startX = null; });
+
+    // Toast
     const toast = document.getElementById('toast');
     function showToast(msg) {
       toast.textContent = msg;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 1800);
     }
-    document.querySelectorAll('.slide').forEach(slide => {
-      const dec = slide.querySelector('[data-dec]');
-      const inc = slide.querySelector('[data-inc]');
-      const input = slide.querySelector('input[type="number"]');
-      dec.addEventListener('click', () => { input.value = Math.max(1, (+input.value || 1) - 1); });
-      inc.addEventListener('click', () => { input.value = (+input.value || 1) + 1; });
-      const buy = slide.querySelector('[data-buy]');
-      buy.addEventListener('click', () => {
-        const qty = Math.max(1, parseInt(input.value || '1', 10));
-        const item = {
-          id: buy.dataset.id,
-          name: buy.dataset.name,
-          price: parseFloat(buy.dataset.price),
-          qty
-        };
-        addToCart(item);
-        showToast(`${item.name} ×${item.qty} added to cart`);
-      });
-    });
+
+    // Initial render
+    renderProducts();
   </script>
 </body>
 </html>

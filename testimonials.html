@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -284,6 +283,9 @@
       font-weight: 500;
       transition: 0.3s ease;
     }
+    .footer-content ul li a {
+      color: white;
+    }
 
     nav ul li a:hover {
       color: var(--light-gold);
@@ -413,7 +415,7 @@
                 <li><a href="how-to-use.html">How to Use</a></li>
                 <li><a href="testimonials.html">Testimonials</a></li>
                 <li><a href="about.html">About</a></li>
-                <div class="close-menu" id="closeMenu">x</div>
+                <li><span class="close-menu" id="closeMenu">x</span></li>
             </ul>
         </nav>
   </header>
@@ -421,50 +423,8 @@
   <!-- Testimonials Section -->
   <section class="testimonial-section">
     <h1>What Our Customers Say</h1>
-    <div class="testimonial-grid">
-      <div class="testimonial-card">
-        <p class="testimonial-text">“After 2 months of using Huile de Chèbe, my hair feels stronger and thicker. Breakage has reduced a lot.”</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">L</div>
-          <div>
-            <h4>Linda M.</h4>
-            <p>Verified Customer</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">“I noticed new growth around my edges within 4 weeks. The oil is natural and smells amazing!”</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">S</div>
-          <div>
-            <h4>Sandra K.</h4>
-            <p>Verified Customer</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">“This is the best hair oil I’ve tried. It hydrates and adds shine without being too greasy.”</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">D</div>
-          <div>
-            <h4>Diane F.</h4>
-            <p>Verified Customer</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <p class="testimonial-text">“Huile de Chèbe transformed my dry hair. I recommend it to anyone looking for natural hair growth solutions.”</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">R</div>
-          <div>
-            <h4>Rita O.</h4>
-            <p>Verified Customer</p>
-          </div>
-        </div>
-      </div>
+    <div class="testimonial-grid" id="testimonialGrid">
+      <!-- Testimonials will be loaded here by JS -->
     </div>
   </section>
 
@@ -478,9 +438,9 @@
       <div class="footer-section">
         <h3>Quick Links</h3>
         <ul>
-          <li><a href="index.html" style="color:white;">Home</a></li>
-          <li><a href="login.html" style="color:white;">Login</a></li>
-          <li><a href="register.html" style="color:white;">Register</a></li>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
         </ul>
       </div>
     </div>
@@ -571,6 +531,36 @@
             window.addEventListener('scroll', checkScroll);
             checkScroll(); // Check on initial load
         });
+        
+        // --- API Call to fetch testimonials ---
+        fetch('http://localhost:5000/api/testimonials')
+            .then(response => response.json())
+            .then(data => {
+                const grid = document.getElementById('testimonialGrid');
+                grid.innerHTML = '';
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(t => {
+                        const card = document.createElement('div');
+                        card.className = 'testimonial-card';
+                        card.innerHTML = `
+                            <p class="testimonial-text">${t.text}</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">${t.author[0]}</div>
+                                <div>
+                                    <h4>${t.author}</h4>
+                                    <p>Verified Customer</p>
+                                </div>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                } else {
+                    grid.innerHTML = '<p>No testimonials available.</p>';
+                }
+            })
+            .catch(err => {
+                document.getElementById('testimonialGrid').innerHTML = '<p>Failed to load testimonials.</p>';
+            });
     </script>
 </body>
 </html>
