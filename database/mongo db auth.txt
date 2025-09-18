@@ -22,3 +22,5 @@ hairshop-backend/
    └─ auth.js
 
 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
+
+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
