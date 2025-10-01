@@ -806,7 +806,7 @@
                 <li><a href="testimonials.html">Testimonials</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
-            <div class="close-menu" id="closeMenu">x</div>
+            <!-- <div class="close-menu" id="closeMenu">x</div> -->
         </nav>
         <div class="auth-buttons">
             <button id="loginBtn" aria-label="Sign In">Sign In</button>
@@ -829,7 +829,7 @@
                     <li><i class="fas fa-check"></i> Visible results in weeks</li>
                 </ul>
                 
-                <button onclick="window.location.href='login.html';"class="cta-button" id="shopNowBtn">
+                <button onclick="window.location.href='shop.html';"class="cta-button" id="shopNowBtn">
                     <span>Shop Now</span>
                     <i class="fas fa-arrow-right" aria-label="Shop Now Arrow"></i>
                 </button>
@@ -981,6 +981,14 @@
     </footer>
 
     <script>
+
+        window.addEventListener("DOMContentLoaded", () =>{
+            const token = localStorage.getItem("token");
+            if(token){
+                document.querySelector(".auth-buttons").style.display = "none";
+            }
+        })
+
         // Burger menu functionality
         document.addEventListener('DOMContentLoaded', function() {
             const burgerMenu = document.getElementById('burgerMenu');

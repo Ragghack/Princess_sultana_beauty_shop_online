@@ -19,11 +19,17 @@ app.get("/", (req, res) => {
   res.send("Backend running with MongoDB Atlas!");
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
+// Import and use route files
+const authRoutes = require("./routes/auth");
+app.use("/api/auth", authRoutes);
+const productRoutes = require("./routes/products");
+app.use("/api/products", productRoutes);
 const adminRoutes = require("./routes/admin");
 app.use("/api/admin", adminRoutes);
 const commandRoutes = require("./routes/commands");
 app.use("/api/commands", commandRoutes);
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

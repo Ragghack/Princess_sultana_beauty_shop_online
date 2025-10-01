@@ -2,8 +2,8 @@
 // Database configuration
 $db_host = 'localhost';
 $db_name = 'huile_de_chebe';
-$db_user = 'your_database_username';
-$db_pass = 'your_secure_password';
+$db_user = 'root';
+$db_pass = '';
 
 // Create connection
 try {

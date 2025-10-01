@@ -726,12 +726,6 @@
     </div>
 
     <script>
-        fetch("http://localhost:5000/api/auth/signup", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name, email, password })
-});
-
         // Mobile Navigation Functionality
         const burgerMenu = document.getElementById('burgerMenu');
         const mobileNav = document.getElementById('mobileNav');
@@ -786,6 +780,7 @@
                 alert('Please fill in all fields');
                 return;
             }
+
             // Example backend call (replace URL with your backend endpoint)
             try {
                 const response = await fetch('http://localhost:5000/api/auth/login', {
@@ -795,10 +790,11 @@
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    alert('Login successful! Welcome back to Huile de Chèbe.');
+                    alert('Login successful! Welcome back, ' + data.user.name + '.');
+                    localStorage.setItem('token', data.token);
                     window.location.href = 'index.html';
                 } else {
-                    alert(data.message || 'Login failed. Please check your credentials.');
+                    alert(data.error || data.message || 'Login failed. Please check your credentials.');
                 }
             } catch (error) {
                 alert('An error occurred. Please try again later.');

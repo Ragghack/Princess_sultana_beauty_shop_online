@@ -85,4 +85,4 @@ router.patch("/update-command/:id", async (req, res) => {
   }
 });
 
-module.e
+module.exports = router;
