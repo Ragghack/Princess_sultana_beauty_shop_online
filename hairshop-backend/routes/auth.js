@@ -2,6 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const authMiddleware = require('../middleware/Auth');
 
 router.post('/register', async (req, res) => {
   try {
@@ -30,4 +31,8 @@ router.post('/login', async (req, res) => {
   }
   });
 
-module.exports = router;
+router.get('/me', authMiddleware, async (req, res) => {
+  res.json(req.user);
+});
+
+  module.exports = router;
