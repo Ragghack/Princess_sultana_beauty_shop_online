@@ -3,10 +3,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['http://127.0.0.1:5501', 'http://localhost:3000', 'http://localhost:5501'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Connect to MongoDB Atlas

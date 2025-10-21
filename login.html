@@ -772,35 +772,42 @@
         });
         
         // Form validation and backend integration
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            if (!email || !password) {
-                alert('Please fill in all fields');
-                return;
-            }
+       // In login.html - CHANGE THIS LINE:
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+    }
 
-            // Example backend call (replace URL with your backend endpoint)
-            try {
-                const response = await fetch('http://localhost:5000/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    localStorage.setItem('token', data.token);
-                    alert('Login successful! Welcome back, ' + data.user.name + '.');
-                    window.location.href = 'user dashboard.html';
-                } else {
-                    alert(data.error || data.message || 'Login failed. Please check your credentials.');
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again later.');
-            }
+    try {
+        // CORRECT ENDPOINT - changed from /api/user/login to /api/auth/login
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
         });
         
+        // Add error handling for network issues
+        if (!response.ok) {
+            const errorData = await response.json();
+            alert(errorData.error || 'Login failed. Please check your credentials.');
+            return;
+        }
+        
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        console.log('Token stored:', data.token);
+        alert('Login successful! Welcome back, ' + data.user.name + '.');
+        window.location.href = 'user dashboard.html';
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Cannot connect to server. Please make sure the backend is running on localhost:5000');
+    }
+});
         // Forgot password functionality
         const forgotPasswordLink = document.querySelector('.forgot-password');
         const forgotPasswordModal = document.getElementById('forgotPasswordModal');

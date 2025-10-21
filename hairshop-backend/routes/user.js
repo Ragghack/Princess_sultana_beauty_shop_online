@@ -2,9 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { generateToken } = require('../utils/jwtUtils');
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
@@ -48,15 +48,8 @@ router.post('/register', async (req, res) => {
         // Save user to database
         const savedUser = await newUser.save();
 
-        // Create token
-        const token = jwt.sign(
-            { 
-                userId: savedUser._id,
-                email: savedUser.email 
-            }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
-        );
+        // Create token using the utility function
+        const token = generateToken(savedUser._id, savedUser.email);
 
         // Return user data and token
         res.status(201).json({
@@ -108,15 +101,8 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        // Create token
-        const token = jwt.sign(
-            { 
-                userId: user._id,
-                email: user.email 
-            }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
-        );
+        // Create token using the utility function
+        const token = generateToken(user._id, user.email);
 
         // Return user data and token
         res.json({

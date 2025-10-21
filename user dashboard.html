@@ -340,6 +340,73 @@ git<!DOCTYPE html>
         .action-text {
             font-weight: 600;
         }
+        /* Add to your existing CSS */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    background: #fee;
+    border: 1px solid #fcc;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+    color: #d00;
+}
+
+.success-message {
+    background: #efe;
+    border: 1px solid #cfc;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+    color: #0a0;
+}
+.error-message {
+    background: #fee;
+    border: 1px solid #fcc;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+    color: #d00;
+}
+
+.success-message {
+    background: #efe;
+    border: 1px solid #cfc;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+    color: #0a0;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
     </style>
 </head>
 <body>
@@ -376,8 +443,9 @@ git<!DOCTYPE html>
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
                     </div>
-                    <div class="user-name">Marie Nguema</div>
-                    <div class="user-email">marie.nguema@example.com</div>
+                    <div class="user-name">Loading...</div>
+
+                    <div class="user-email">Loading...</div>
                 </div>
                 
                 <ul class="account-menu">
@@ -439,7 +507,7 @@ git<!DOCTYPE html>
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="card-title">Completed</div>
-                        <div class="card-value">4</div>
+                        <div class="card-value"></div>
                     </div>
                     
                     <div class="dashboard-card">
@@ -447,7 +515,7 @@ git<!DOCTYPE html>
                             <i class="fas fa-truck"></i>
                         </div>
                         <div class="card-title">In Progress</div>
-                        <div class="card-value">2</div>
+                        <div class="card-value"></div>
                     </div>
                     
                     <div class="dashboard-card">
@@ -525,46 +593,494 @@ git<!DOCTYPE html>
             </div>
         </div>
     </div>
+<script>
+    // User authentication and dashboard logic
+    document.addEventListener('DOMContentLoaded', async function() {
+        const token = localStorage.getItem('token');
+        console.log('Dashboard loaded, token:', token ? 'Exists' : 'Missing');
+        
+        // Debug token contents immediately
+        debugTokenContents();
+        
+        if (!token) {
+            console.log('No token found, redirecting to login');
+            window.location.href = 'login.html';
+            return;
+        }
 
-    <script>
-        // User authentication and dashboard logic
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Check if user is authenticated (simple demo: check localStorage 'token')
-            const token = localStorage.getItem('token');
-            if (!token) {
-                // Not logged in, redirect to login page
-                window.location.href = 'login.html';
+        // Enhanced token validation
+        console.log('Token format check:', isValidToken(token));
+        debugToken(); // Comprehensive token analysis
+
+        // Show loading state
+        showLoadingState();
+
+        try {
+            // CORRECTED ENDPOINT with proper error handling
+            const response = await fetch('http://localhost:5000/api/auth/me', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('API Response status:', response.status);
+            console.log('API Response headers:', response.headers);
+            
+            if (response.status === 401) {
+                // Token is invalid/expired
+                console.log('Token rejected by server - 401 Unauthorized');
+                localStorage.removeItem('token');
+                showErrorMessage('Session expired. Please login again.');
+                setTimeout(() => window.location.href = 'login.html', 2000);
                 return;
             }
-            // Fetch user data from backend
-            try {
-                const res = await fetch('http://localhost:5000/api/auth/me', {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    const user = await res.json();
-                    document.querySelector('.user-name').textContent = user.name;
-                    document.querySelector('.user-email').textContent = user.email;
-                    // Optionally update dashboard stats/orders from user object
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server response error:', response.status, errorText);
+                
+                // Enhanced error categorization
+                if (response.status === 400) {
+                    showErrorMessage('Bad request. Please try logging in again.');
+                } else if (response.status === 403) {
+                    showErrorMessage('Access forbidden. Please contact support.');
+                } else if (response.status === 404) {
+                    showErrorMessage('Service endpoint not found.');
+                } else if (response.status === 422) {
+                    showErrorMessage('Validation error. Please check your data.');
+                } else if (response.status >= 500) {
+                    showErrorMessage('Server error. Please try again later.');
                 } else {
-                    // Invalid token, redirect to login
-                    localStorage.removeItem('token');
-                    window.location.href = 'login.html';
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            } catch {
-                window.location.href = 'login.html';
+                return;
             }
-            // Add active class to current menu item
-            const currentPage = window.location.pathname.split('/').pop();
-            const menuLinks = document.querySelectorAll('.menu-link');
-            menuLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href === currentPage) {
-                    link.classList.add('active');
+
+            const data = await response.json();
+            console.log('User data received:', data);
+            
+            if (data.user) {
+                // Success - update UI with user data
+                updateUserInterface(data.user);
+                hideLoadingState();
+                
+                // Load additional user data
+                await loadUserAdditionalData();
+            } else {
+                throw new Error('Invalid user data received');
+            }
+            
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            hideLoadingState();
+            
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                showErrorMessage('Cannot connect to server. Please check if the backend is running on localhost:5000');
+            } else if (error.name === 'SyntaxError') {
+                showErrorMessage('Invalid response from server. Please try again.');
+            } else {
+                handleAuthError(error);
+            }
+        }
+
+        // Add active class to current menu item
+        setupMenuNavigation();
+
+        // Add logout functionality
+        setupLogoutHandler();
+        
+        // Add session monitoring
+        startSessionMonitoring();
+    });
+
+    // Enhanced token contents debugging
+    function debugTokenContents() {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const parts = token.split('.');
+                if (parts.length === 3) {
+                    const payload = JSON.parse(atob(parts[1]));
+                    console.log('🔍 TOKEN DEBUG - Payload contents:', payload);
+                    console.log('🔍 TOKEN DEBUG - UserID in token:', payload.userId);
+                    console.log('🔍 TOKEN DEBUG - Email in token:', payload.email);
+                    console.log('🔍 TOKEN DEBUG - Token issued:', payload.iat ? new Date(payload.iat * 1000) : 'N/A');
+                    console.log('🔍 TOKEN DEBUG - Token expires:', payload.exp ? new Date(payload.exp * 1000) : 'N/A');
+                    
+                    // Check if token is expired
+                    if (payload.exp && Date.now() >= payload.exp * 1000) {
+                        console.log('🔍 TOKEN DEBUG - Token is EXPIRED');
+                        showErrorMessage('Your session has expired. Please login again.');
+                        setTimeout(() => {
+                            localStorage.removeItem('token');
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    }
+                } else {
+                    console.log('🔍 TOKEN DEBUG - Invalid token structure');
+                }
+            } catch (e) {
+                console.log('🔍 TOKEN DEBUG - Cannot decode token:', e.message);
+            }
+        } else {
+            console.log('🔍 TOKEN DEBUG - No token found in localStorage');
+        }
+    }
+
+    // Enhanced token validation function
+    function isValidToken(token) {
+        if (typeof token !== 'string') {
+            console.log('Token is not a string');
+            return false;
+        }
+        
+        if (token.length < 10) {
+            console.log('Token too short');
+            return false;
+        }
+        
+        // Basic JWT structure validation (3 parts separated by dots)
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+            console.log('Token does not have 3 parts');
+            return false;
+        }
+        
+        // Check if parts are valid base64
+        try {
+            const payload = JSON.parse(atob(parts[1]));
+            
+            // Additional validation for required fields
+            if (!payload.userId) {
+                console.log('Token missing userId field');
+                return false;
+            }
+            
+            if (!payload.email) {
+                console.log('Token missing email field');
+                return false;
+            }
+            
+            // Check expiration
+            if (payload.exp && Date.now() >= payload.exp * 1000) {
+                console.log('Token is expired');
+                return false;
+            }
+            
+            return true;
+        } catch (e) {
+            console.log('Token payload is not valid:', e.message);
+            return false;
+        }
+    }
+
+    // Enhanced debug function to check token
+    function debugToken() {
+        const token = localStorage.getItem('token');
+        console.log('=== COMPREHENSIVE TOKEN DEBUG INFO ===');
+        console.log('Token exists:', !!token);
+        console.log('Token length:', token ? token.length : 'No token');
+        console.log('Token value (first 50 chars):', token ? token.substring(0, 50) + '...' : 'No token');
+        
+        if (token) {
+            const parts = token.split('.');
+            console.log('Token parts:', parts.length);
+            
+            try {
+                // Try to decode the payload (second part)
+                const payload = JSON.parse(atob(parts[1]));
+                console.log('Token payload:', payload);
+                
+                if (payload.iat) {
+                    console.log('Token issued:', new Date(payload.iat * 1000));
+                }
+                
+                if (payload.exp) {
+                    console.log('Token expiration:', new Date(payload.exp * 1000));
+                    console.log('Token is expired:', Date.now() >= payload.exp * 1000);
+                    console.log('Time until expiration:', Math.round((payload.exp * 1000 - Date.now()) / 1000 / 60) + ' minutes');
+                }
+                
+                console.log('User ID in token:', payload.userId);
+                console.log('Email in token:', payload.email);
+                
+            } catch (e) {
+                console.log('Cannot decode token payload:', e.message);
+            }
+        }
+        
+        console.log('=== END TOKEN DEBUG ===');
+    }
+
+    // Enhanced error handling
+    function handleAuthError(error) {
+        console.log('Auth error details:', error);
+        console.log('Error name:', error.name);
+        console.log('Error message:', error.message);
+        
+        if (error.message.includes('401') || 
+            error.message.includes('token') || 
+            error.message.includes('auth') ||
+            error.message.includes('unauthorized')) {
+            
+            localStorage.removeItem('token');
+            showErrorMessage('Authentication failed. Please login again.');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+            showErrorMessage('Network error. Please check your connection and try again.');
+        } else {
+            showErrorMessage('An unexpected error occurred. Please try again.');
+        }
+    }
+
+    // Enhanced loading state with progress indication
+    function showLoadingState() {
+        document.querySelector('.user-name').textContent = 'Loading...';
+        document.querySelector('.user-email').textContent = 'Loading...';
+        document.querySelector('.content-title').textContent = 'Loading Dashboard...';
+        
+        const existingSpinner = document.getElementById('loadingSpinner');
+        if (!existingSpinner) {
+            const spinner = document.createElement('div');
+            spinner.id = 'loadingSpinner';
+            spinner.innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: var(--golden-brown); margin-bottom: 15px;"></i>
+                    <p style="margin-top: 15px; font-size: 16px; color: var(--dark-brown);">Loading your dashboard...</p>
+                    <div style="width: 100px; height: 4px; background: #f0f0f0; border-radius: 2px; margin: 15px auto; overflow: hidden;">
+                        <div style="width: 100%; height: 100%; background: var(--golden-brown); animation: loadingBar 2s infinite;"></div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes loadingBar {
+                        0% { transform: translateX(-100%); }
+                        50% { transform: translateX(0%); }
+                        100% { transform: translateX(100%); }
+                    }
+                </style>
+            `;
+            document.querySelector('.account-content').prepend(spinner);
+        }
+    }
+
+    function hideLoadingState() {
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) {
+            spinner.remove();
+        }
+    }
+
+    // Enhanced error message with auto-dismiss
+    function showErrorMessage(message, autoDismiss = true) {
+        const existingError = document.getElementById('errorMessage');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        const errorDiv = document.createElement('div');
+        errorDiv.id = 'errorMessage';
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                <i class="fas fa-exclamation-triangle" style="color: #d00; margin-right: 10px; font-size: 18px;"></i>
+                <div style="flex: 1;">
+                    <strong style="display: block; margin-bottom: 5px;">Error</strong>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        style="background: none; border: none; cursor: pointer; padding: 5px; margin-left: 10px;">
+                    <i class="fas fa-times" style="color: #d00;"></i>
+                </button>
+            </div>
+        `;
+        document.querySelector('.account-content').prepend(errorDiv);
+
+        if (autoDismiss) {
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+    }
+
+    function showSuccessMessage(message, autoDismiss = true) {
+        const existingMessage = document.getElementById('successMessage');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        const successDiv = document.createElement('div');
+        successDiv.id = 'successMessage';
+        successDiv.className = 'success-message';
+        successDiv.innerHTML = `
+            <div style="display: flex; align-items: center;">
+                <i class="fas fa-check-circle" style="color: #0a0; margin-right: 10px; font-size: 18px;"></i>
+                <div style="flex: 1;">
+                    <strong style="display: block; margin-bottom: 5px;">Success</strong>
+                    <span>${message}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" 
+                        style="background: none; border: none; cursor: pointer; padding: 5px; margin-left: 10px;">
+                    <i class="fas fa-times" style="color: #0a0;"></i>
+                </button>
+            </div>
+        `;
+        document.querySelector('.account-content').prepend(successDiv);
+
+        if (autoDismiss) {
+            setTimeout(() => {
+                if (successDiv.parentElement) {
+                    successDiv.remove();
+                }
+            }, 3000);
+        }
+    }
+
+    function updateUserInterface(user) {
+        document.querySelector('.user-name').textContent = user.name;
+        document.querySelector('.user-email').textContent = user.email;
+
+        document.querySelector('.content-title').textContent = `Welcome back, ${user.name}!`;
+        document.querySelector('.content-header p').textContent = `Here's your account overview.`;
+
+        updateDashboardStats(user);
+
+        console.log('Dashboard loaded successfully for user:', user.name);
+        showSuccessMessage('Dashboard loaded successfully!');
+    }
+
+    function updateDashboardStats(user) {
+        // Update basic user info in dashboard cards if needed
+        fetchOrderStats();
+    }
+
+    async function fetchOrderStats() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const response = await fetch('http://localhost:5000/api/user/orders/stats', {
+                method: 'GET',
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const stats = await response.json();
+                // Update dashboard cards with actual data
+                updateOrderStatsUI(stats);
+            }
+        } catch (error) {
+            console.log('Could not load order statistics:', error);
+        }
+    }
+
+    function updateOrderStatsUI(stats) {
+        // Update the dashboard cards with real data
+        const cards = document.querySelectorAll('.dashboard-card');
+        cards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent;
+            const valueElement = card.querySelector('.card-value');
+            
+            if (title === 'Total Orders' && stats.totalOrders !== undefined) {
+                valueElement.textContent = stats.totalOrders;
+            } else if (title === 'Completed' && stats.completed !== undefined) {
+                valueElement.textContent = stats.completed;
+            } else if (title === 'In Progress' && stats.inProgress !== undefined) {
+                valueElement.textContent = stats.inProgress;
+            }
+        });
+    }
+
+    async function loadUserAdditionalData() {
+        // Load any additional user data needed for the dashboard
+        try {
+            await Promise.all([
+                fetchOrderStats(),
+                // Add other data fetching functions here
+            ]);
+        } catch (error) {
+            console.log('Error loading additional user data:', error);
+        }
+    }
+
+    function setupMenuNavigation() {
+        const menuLinks = document.querySelectorAll('.menu-link');
+        
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                    if (this.textContent.includes('Logout')) {
+                        handleLogout();
+                    } else {
+                        // Handle other # links
+                        showErrorMessage('This feature is not yet implemented.');
+                    }
                 }
             });
         });
-    </script>
+    }
+
+    function setupLogoutHandler() {
+        const logoutLink = document.querySelector('.menu-link[href="#"]:last-child');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+        }
+    }
+
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            // Clear all user data
+            localStorage.removeItem('token');
+            sessionStorage.clear();
+            
+            showSuccessMessage('Logging out...', false);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1000);
+        }
+    }
+
+    // Session monitoring for security
+    function startSessionMonitoring() {
+        // Check token validity every minute
+        setInterval(() => {
+            const token = localStorage.getItem('token');
+            if (token && !isValidToken(token)) {
+                console.log('Session monitoring: Token invalid, redirecting to login');
+                showErrorMessage('Your session has expired. Redirecting to login...');
+                setTimeout(() => {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        }, 60000); // Check every minute
+
+        // Add visibility change handler
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // Tab became active, verify session
+                const token = localStorage.getItem('token');
+                if (!token || !isValidToken(token)) {
+                    console.log('Session invalid after tab focus');
+                    window.location.href = 'login.html';
+                }
+            }
+        });
+    }
+
+    // Export functions for global access if needed
+    window.debugTokenContents = debugTokenContents;
+    window.handleLogout = handleLogout;
+</script>
 </body>
 </html>
