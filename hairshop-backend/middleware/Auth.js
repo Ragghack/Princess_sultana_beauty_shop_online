@@ -49,25 +49,37 @@ module.exports = async function(req, res, next) {
         }
 
         // Check if user exists in database
-        const user = await User.findById(decoded.userId).select('-password');
-        if (!user) {
-            console.log('User not found in database:', decoded.userId);
-            return res.status(401).json({ 
-                error: 'Access denied',
-                message: 'User account no longer exists',
-                code: 'USER_NOT_FOUND'
-            });
-        }
+const user = await User.findById(decoded.userId).select('-password');
+if (!user) {
+    console.log('User not found in database:', decoded.userId);
+    return res.status(401).json({ 
+        error: 'Access denied',
+        message: 'User account no longer exists',
+        code: 'USER_NOT_FOUND'
+    });
+}
 
-        console.log('User found:', user.email);
-        
-        // Add complete user data to request
-        req.user = {
-            userId: user._id,
-            email: user.email,
-            name: user.name,
-            role: user.role
-        };
+console.log('User found:', user.email);
+
+// ✅ FIX: Ensure consistent user ID format
+req.user = {
+    userId: user._id.toString(), // ✅ Convert to string for consistency
+    email: user.email,
+    name: user.name,
+    role: user.role
+};
+        // Add this after setting req.user
+console.log('User role:', req.user.role);
+
+// For admin routes, check if user is admin
+if (req.originalUrl.startsWith('/api/admin') && req.user.role !== 'admin') {
+  console.log('Admin access denied for user:', req.user.email);
+  return res.status(403).json({ 
+    error: 'Access denied',
+    message: 'Administrator privileges required',
+    code: 'ADMIN_REQUIRED'
+  });
+}
 
         console.log('Auth middleware completed successfully');
         next();

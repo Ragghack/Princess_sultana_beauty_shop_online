@@ -1,4 +1,4 @@
-git<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -24,6 +24,7 @@ git<!DOCTYPE html>
             --blue: #4682B4;
             --red: #DC3545;
             --gray: #6C757D;
+            --light-gray: #E9ECEF;
         }
         
         body {
@@ -188,6 +189,7 @@ git<!DOCTYPE html>
             border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             padding: 30px;
+            min-height: 500px;
         }
         
         .content-header {
@@ -201,6 +203,7 @@ git<!DOCTYPE html>
             margin-bottom: 10px;
         }
         
+        /* Dashboard Styles */
         .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -257,6 +260,11 @@ git<!DOCTYPE html>
             padding: 15px;
             border: 1px solid #eee;
             border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .order-item:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
         
         .order-info h3 {
@@ -276,14 +284,29 @@ git<!DOCTYPE html>
             font-weight: 600;
         }
         
-        .status-processing {
+        .status-pending {
             background: #FFF3CD;
             color: #856404;
+        }
+        
+        .status-processing {
+            background: #CCE5FF;
+            color: #004085;
+        }
+        
+        .status-shipped {
+            background: #D1ECF1;
+            color: #0C5460;
         }
         
         .status-delivered {
             background: #D4EDDA;
             color: #155724;
+        }
+        
+        .status-cancelled {
+            background: #F8D7DA;
+            color: #721C24;
         }
         
         .view-orders-btn {
@@ -340,73 +363,244 @@ git<!DOCTYPE html>
         .action-text {
             font-weight: 600;
         }
-        /* Add to your existing CSS */
-.loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.error-message {
-    background: #fee;
-    border: 1px solid #fcc;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 20px 0;
-    text-align: center;
-    color: #d00;
-}
-
-.success-message {
-    background: #efe;
-    border: 1px solid #cfc;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 20px 0;
-    text-align: center;
-    color: #0a0;
-}
-.error-message {
-    background: #fee;
-    border: 1px solid #fcc;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 20px 0;
-    text-align: center;
-    color: #d00;
-}
-
-.success-message {
-    background: #efe;
-    border: 1px solid #cfc;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 20px 0;
-    text-align: center;
-    color: #0a0;
-}
-
-.loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+        
+        /* Order Management Styles */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .orders-table th {
+            background: var(--light-gold);
+            color: var(--dark-brown);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .orders-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .orders-table tr:hover {
+            background: var(--off-white);
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .order-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view {
+            background: var(--blue);
+            color: white;
+        }
+        
+        .btn-track {
+            background: var(--green);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: var(--red);
+            color: white;
+        }
+        
+        .btn-view:hover, .btn-track:hover, .btn-cancel:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Profile Form Styles */
+        .profile-form {
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--golden-brown);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        /* Payment Methods Styles */
+        .payment-methods {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .payment-card {
+            background: var(--off-white);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+        }
+        
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .payment-icon {
+            font-size: 2rem;
+            color: var(--golden-brown);
+        }
+        
+        .payment-details h3 {
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .payment-details p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-remove {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-remove:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .add-payment-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .add-payment-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-3px);
+        }
+        
+        /* Loading and Message Styles */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: #d00;
+        }
+        
+        .success-message {
+            background: #efe;
+            border: 1px solid #cfc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: #0a0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--light-gold);
+        }
+        
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -426,7 +620,7 @@ git<!DOCTYPE html>
                 <a href="shopping cart.html" class="nav-link">
                     <i class="fas fa-shopping-cart"></i> Cart
                 </a>
-                <a href="account.html" class="nav-link active">
+                <a href="#" class="nav-link active">
                     <i class="fas fa-user"></i> Account
                 </a>
             </div>
@@ -444,43 +638,32 @@ git<!DOCTYPE html>
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-name">Loading...</div>
-
                     <div class="user-email">Loading...</div>
                 </div>
                 
                 <ul class="account-menu">
                     <li class="menu-item">
-                        <a href="account.html" class="menu-link active">
+                        <a href="#" class="menu-link active" data-section="dashboard">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="order-management.html" class="menu-link">
+                        <a href="#" class="menu-link" data-section="orders">
                             <i class="fas fa-clipboard-list"></i> My Orders
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="menu-link">
+                        <a href="#" class="menu-link" data-section="profile">
                             <i class="fas fa-user-edit"></i> Profile
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="menu-link">
-                            <i class="fas fa-lock"></i> Password
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="#" class="menu-link">
-                            <i class="fas fa-map-marker-alt"></i> Addresses
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="#" class="menu-link">
+                        <a href="#" class="menu-link" data-section="payments">
                             <i class="fas fa-credit-card"></i> Payment Methods
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="menu-link">
+                        <a href="#" class="menu-link" id="logoutBtn">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
                     </li>
@@ -488,599 +671,676 @@ git<!DOCTYPE html>
             </div>
             
             <div class="account-content">
-                <div class="content-header">
-                    <h2 class="content-title">Account Dashboard</h2>
-                    <p>Welcome back, Marie! Here's your account overview.</p>
-                </div>
-                
-                <div class="dashboard-cards">
-                    <div class="dashboard-card">
-                        <div class="card-icon">
-                            <i class="fas fa-shopping-bag"></i>
-                        </div>
-                        <div class="card-title">Total Orders</div>
-                        <div class="card-value">7</div>
+                <!-- Dashboard Section -->
+                <div id="dashboard-section">
+                    <div class="content-header">
+                        <h2 class="content-title">Account Dashboard</h2>
+                        <p>Welcome back! Here's your account overview.</p>
                     </div>
                     
-                    <div class="dashboard-card">
-                        <div class="card-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="card-title">Completed</div>
-                        <div class="card-value"></div>
-                    </div>
-                    
-                    <div class="dashboard-card">
-                        <div class="card-icon">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                        <div class="card-title">In Progress</div>
-                        <div class="card-value"></div>
-                    </div>
-                    
-                    <div class="dashboard-card">
-                        <div class="card-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="card-title">Loyalty Points</div>
-                        <div class="card-value">350</div>
-                    </div>
-                </div>
-                
-                <div class="recent-orders">
-                    <h3 class="section-title">Recent Orders</h3>
-                    
-                    <div class="orders-list">
-                        <div class="order-item">
-                            <div class="order-info">
-                                <h3>Order #HC-98432</h3>
-                                <p>Placed on Nov 10, 2023 • Total: 33,485 XAF</p>
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-shopping-bag"></i>
                             </div>
-                            <span class="order-status status-processing">Processing</span>
+                            <div class="card-title">Total Orders</div>
+                            <div class="card-value" id="total-orders">0</div>
                         </div>
                         
-                        <div class="order-item">
-                            <div class="order-info">
-                                <h3>Order #HC-97541</h3>
-                                <p>Placed on Nov 5, 2023 • Total: 19,995 XAF</p>
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-check-circle"></i>
                             </div>
-                            <span class="order-status status-delivered">Delivered</span>
+                            <div class="card-title">Completed</div>
+                            <div class="card-value" id="completed-orders">0</div>
                         </div>
                         
-                        <div class="order-item">
-                            <div class="order-info">
-                                <h3>Order #HC-96328</h3>
-                                <p>Placed on Oct 28, 2023 • Total: 19,990 XAF</p>
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-truck"></i>
                             </div>
-                            <span class="order-status status-delivered">Delivered</span>
+                            <div class="card-title">In Progress</div>
+                            <div class="card-value" id="progress-orders">0</div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="card-title">Loyalty Points</div>
+                            <div class="card-value" id="loyalty-points">0</div>
                         </div>
                     </div>
                     
-                    <a href="order-management.html" class="view-orders-btn">
-                        <i class="fas fa-clipboard-list"></i> View All Orders
-                    </a>
+                    <div class="recent-orders">
+                        <h3 class="section-title">Recent Orders</h3>
+                        
+                        <div class="orders-list" id="recent-orders-list">
+                            <!-- Recent orders will be loaded here -->
+                        </div>
+                        
+                        <button class="view-orders-btn" data-section="orders">
+                            <i class="fas fa-clipboard-list"></i> View All Orders
+                        </button>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <a href="shop.html" class="action-btn">
+                            <div class="action-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="action-text">Continue Shopping</div>
+                        </a>
+                        
+                        <a href="#" class="action-btn" data-section="orders">
+                            <div class="action-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="action-text">Track Orders</div>
+                        </a>
+                        
+                        <a href="#" class="action-btn">
+                            <div class="action-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="action-text">Wishlist</div>
+                        </a>
+                        
+                        <a href="#" class="action-btn" data-section="profile">
+                            <div class="action-icon">
+                                <i class="fas fa-user-cog"></i>
+                            </div>
+                            <div class="action-text">Account Settings</div>
+                        </a>
+                    </div>
                 </div>
                 
-                <div class="quick-actions">
-                    <a href="shop.html" class="action-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-shopping-bag"></i>
-                        </div>
-                        <div class="action-text">Continue Shopping</div>
-                    </a>
+                <!-- Orders Section -->
+                <div id="orders-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">My Orders</h2>
+                        <p>View and manage your orders</p>
+                    </div>
                     
-                    <a href="order-management.html" class="action-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <div class="action-text">Track Orders</div>
-                    </a>
+                    <div id="orders-content">
+                        <!-- Orders will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Profile Section -->
+                <div id="profile-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Profile Settings</h2>
+                        <p>Manage your account information</p>
+                    </div>
                     
-                    <a href="#" class="action-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-heart"></i>
+                    <form id="profile-form" class="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="profile-name">Full Name</label>
+                                <input type="text" id="profile-name" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="profile-email">Email Address</label>
+                                <input type="email" id="profile-email" class="form-control" required>
+                            </div>
                         </div>
-                        <div class="action-text">Wishlist</div>
-                    </a>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="profile-phone">Phone Number</label>
+                            <input type="tel" id="profile-phone" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="profile-address">Address</label>
+                            <textarea id="profile-address" class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Payment Methods Section -->
+                <div id="payments-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Payment Methods</h2>
+                        <p>Manage your saved payment methods</p>
+                    </div>
                     
-                    <a href="#" class="action-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-history"></i>
-                        </div>
-                        <div class="action-text">Order History</div>
-                    </a>
+                    <div class="payment-methods" id="payment-methods-list">
+                        <!-- Payment methods will be loaded here -->
+                    </div>
+                    
+                    <button class="add-payment-btn">
+                        <i class="fas fa-plus"></i> Add New Payment Method
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-<script>
-    // User authentication and dashboard logic
-    document.addEventListener('DOMContentLoaded', async function() {
-        const token = localStorage.getItem('token');
-        console.log('Dashboard loaded, token:', token ? 'Exists' : 'Missing');
-        
-        // Debug token contents immediately
-        debugTokenContents();
-        
-        if (!token) {
-            console.log('No token found, redirecting to login');
-            window.location.href = 'login.html';
-            return;
-        }
 
-        // Enhanced token validation
-        console.log('Token format check:', isValidToken(token));
-        debugToken(); // Comprehensive token analysis
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userOrders = [];
+        let userPayments = [];
 
-        // Show loading state
-        showLoadingState();
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            setupEventListeners();
+        });
 
-        try {
-            // CORRECTED ENDPOINT with proper error handling
-            const response = await fetch('http://localhost:5000/api/auth/me', {
-                method: 'GET',
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+        // Initialize dashboard
+        async function initializeDashboard() {
+            const token = localStorage.getItem('token');
             
-            console.log('API Response status:', response.status);
-            console.log('API Response headers:', response.headers);
-            
-            if (response.status === 401) {
-                // Token is invalid/expired
-                console.log('Token rejected by server - 401 Unauthorized');
-                localStorage.removeItem('token');
-                showErrorMessage('Session expired. Please login again.');
-                setTimeout(() => window.location.href = 'login.html', 2000);
+            if (!token) {
+                window.location.href = 'login.html';
                 return;
             }
+
+            showLoadingState();
             
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Server response error:', response.status, errorText);
+            try {
+                // Load user data
+                await loadUserData(token);
                 
-                // Enhanced error categorization
-                if (response.status === 400) {
-                    showErrorMessage('Bad request. Please try logging in again.');
-                } else if (response.status === 403) {
-                    showErrorMessage('Access forbidden. Please contact support.');
-                } else if (response.status === 404) {
-                    showErrorMessage('Service endpoint not found.');
-                } else if (response.status === 422) {
-                    showErrorMessage('Validation error. Please check your data.');
-                } else if (response.status >= 500) {
-                    showErrorMessage('Server error. Please try again later.');
-                } else {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return;
-            }
-
-            const data = await response.json();
-            console.log('User data received:', data);
-            
-            if (data.user) {
-                // Success - update UI with user data
-                updateUserInterface(data.user);
+                // Load dashboard data
+                await loadDashboardData(token);
+                
+                // Set active section
+                showSection('dashboard');
+                
                 hideLoadingState();
-                
-                // Load additional user data
-                await loadUserAdditionalData();
-            } else {
-                throw new Error('Invalid user data received');
-            }
-            
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            hideLoadingState();
-            
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                showErrorMessage('Cannot connect to server. Please check if the backend is running on localhost:5000');
-            } else if (error.name === 'SyntaxError') {
-                showErrorMessage('Invalid response from server. Please try again.');
-            } else {
-                handleAuthError(error);
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                showErrorMessage('Failed to load dashboard data');
+                hideLoadingState();
             }
         }
 
-        // Add active class to current menu item
-        setupMenuNavigation();
-
-        // Add logout functionality
-        setupLogoutHandler();
-        
-        // Add session monitoring
-        startSessionMonitoring();
-    });
-
-    // Enhanced token contents debugging
-    function debugTokenContents() {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const parts = token.split('.');
-                if (parts.length === 3) {
-                    const payload = JSON.parse(atob(parts[1]));
-                    console.log('🔍 TOKEN DEBUG - Payload contents:', payload);
-                    console.log('🔍 TOKEN DEBUG - UserID in token:', payload.userId);
-                    console.log('🔍 TOKEN DEBUG - Email in token:', payload.email);
-                    console.log('🔍 TOKEN DEBUG - Token issued:', payload.iat ? new Date(payload.iat * 1000) : 'N/A');
-                    console.log('🔍 TOKEN DEBUG - Token expires:', payload.exp ? new Date(payload.exp * 1000) : 'N/A');
+        // Setup event listeners
+        function setupEventListeners() {
+            // Menu navigation
+            document.querySelectorAll('.menu-link[data-section]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
                     
-                    // Check if token is expired
-                    if (payload.exp && Date.now() >= payload.exp * 1000) {
-                        console.log('🔍 TOKEN DEBUG - Token is EXPIRED');
-                        showErrorMessage('Your session has expired. Please login again.');
-                        setTimeout(() => {
-                            localStorage.removeItem('token');
-                            window.location.href = 'login.html';
-                        }, 2000);
-                    }
-                } else {
-                    console.log('🔍 TOKEN DEBUG - Invalid token structure');
-                }
-            } catch (e) {
-                console.log('🔍 TOKEN DEBUG - Cannot decode token:', e.message);
-            }
-        } else {
-            console.log('🔍 TOKEN DEBUG - No token found in localStorage');
-        }
-    }
+                    // Update active menu item
+                    document.querySelectorAll('.menu-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
 
-    // Enhanced token validation function
-    function isValidToken(token) {
-        if (typeof token !== 'string') {
-            console.log('Token is not a string');
-            return false;
-        }
-        
-        if (token.length < 10) {
-            console.log('Token too short');
-            return false;
-        }
-        
-        // Basic JWT structure validation (3 parts separated by dots)
-        const parts = token.split('.');
-        if (parts.length !== 3) {
-            console.log('Token does not have 3 parts');
-            return false;
-        }
-        
-        // Check if parts are valid base64
-        try {
-            const payload = JSON.parse(atob(parts[1]));
-            
-            // Additional validation for required fields
-            if (!payload.userId) {
-                console.log('Token missing userId field');
-                return false;
-            }
-            
-            if (!payload.email) {
-                console.log('Token missing email field');
-                return false;
-            }
-            
-            // Check expiration
-            if (payload.exp && Date.now() >= payload.exp * 1000) {
-                console.log('Token is expired');
-                return false;
-            }
-            
-            return true;
-        } catch (e) {
-            console.log('Token payload is not valid:', e.message);
-            return false;
-        }
-    }
+            // View orders buttons
+            document.querySelectorAll('.view-orders-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active menu item
+                    document.querySelectorAll('.menu-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.querySelector(`.menu-link[data-section="${section}"]`).classList.add('active');
+                });
+            });
 
-    // Enhanced debug function to check token
-    function debugToken() {
-        const token = localStorage.getItem('token');
-        console.log('=== COMPREHENSIVE TOKEN DEBUG INFO ===');
-        console.log('Token exists:', !!token);
-        console.log('Token length:', token ? token.length : 'No token');
-        console.log('Token value (first 50 chars):', token ? token.substring(0, 50) + '...' : 'No token');
-        
-        if (token) {
-            const parts = token.split('.');
-            console.log('Token parts:', parts.length);
-            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+
+            // Profile form submission
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProfile();
+            });
+
+            // Add payment method button
+            document.querySelector('.add-payment-btn').addEventListener('click', function() {
+                addPaymentMethod();
+            });
+        }
+
+        // Load user data from backend
+        async function loadUserData(token) {
             try {
-                // Try to decode the payload (second part)
-                const payload = JSON.parse(atob(parts[1]));
-                console.log('Token payload:', payload);
-                
-                if (payload.iat) {
-                    console.log('Token issued:', new Date(payload.iat * 1000));
+                const response = await fetch('http://localhost:5000/api/user/profile', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
                 }
+
+                const data = await response.json();
+                currentUser = data.user;
                 
-                if (payload.exp) {
-                    console.log('Token expiration:', new Date(payload.exp * 1000));
-                    console.log('Token is expired:', Date.now() >= payload.exp * 1000);
-                    console.log('Time until expiration:', Math.round((payload.exp * 1000 - Date.now()) / 1000 / 60) + ' minutes');
-                }
+                // Update UI with user data
+                document.querySelector('.user-name').textContent = currentUser.name;
+                document.querySelector('.user-email').textContent = currentUser.email;
                 
-                console.log('User ID in token:', payload.userId);
-                console.log('Email in token:', payload.email);
+                // Pre-fill profile form
+                document.getElementById('profile-name').value = currentUser.name;
+                document.getElementById('profile-email').value = currentUser.email;
                 
-            } catch (e) {
-                console.log('Cannot decode token payload:', e.message);
+                return data;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                throw error;
             }
         }
-        
-        console.log('=== END TOKEN DEBUG ===');
-    }
 
-    // Enhanced error handling
-    function handleAuthError(error) {
-        console.log('Auth error details:', error);
-        console.log('Error name:', error.name);
-        console.log('Error message:', error.message);
-        
-        if (error.message.includes('401') || 
-            error.message.includes('token') || 
-            error.message.includes('auth') ||
-            error.message.includes('unauthorized')) {
-            
-            localStorage.removeItem('token');
-            showErrorMessage('Authentication failed. Please login again.');
-            setTimeout(() => window.location.href = 'login.html', 2000);
-        } else if (error.message.includes('network') || error.message.includes('fetch')) {
-            showErrorMessage('Network error. Please check your connection and try again.');
-        } else {
-            showErrorMessage('An unexpected error occurred. Please try again.');
+        // Load dashboard data
+        async function loadDashboardData(token) {
+            try {
+                // Load orders for dashboard
+                const ordersResponse = await fetch('http://localhost:5000/api/user/orders', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (ordersResponse.ok) {
+                    const ordersData = await ordersResponse.json();
+                    userOrders = ordersData.orders || [];
+                    updateDashboardStats();
+                    updateRecentOrders();
+                }
+
+                // Load payment methods
+                const paymentsResponse = await fetch('http://localhost:5000/api/user/payments', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (paymentsResponse.ok) {
+                    const paymentsData = await paymentsResponse.json();
+                    userPayments = paymentsData.payments || [];
+                    updatePaymentMethods();
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                throw error;
+            }
         }
-    }
 
-    // Enhanced loading state with progress indication
-    function showLoadingState() {
-        document.querySelector('.user-name').textContent = 'Loading...';
-        document.querySelector('.user-email').textContent = 'Loading...';
-        document.querySelector('.content-title').textContent = 'Loading Dashboard...';
-        
-        const existingSpinner = document.getElementById('loadingSpinner');
-        if (!existingSpinner) {
-            const spinner = document.createElement('div');
-            spinner.id = 'loadingSpinner';
-            spinner.innerHTML = `
-                <div style="text-align: center; padding: 30px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 32px; color: var(--golden-brown); margin-bottom: 15px;"></i>
-                    <p style="margin-top: 15px; font-size: 16px; color: var(--dark-brown);">Loading your dashboard...</p>
-                    <div style="width: 100px; height: 4px; background: #f0f0f0; border-radius: 2px; margin: 15px auto; overflow: hidden;">
-                        <div style="width: 100%; height: 100%; background: var(--golden-brown); animation: loadingBar 2s infinite;"></div>
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            const totalOrders = userOrders.length;
+            const completedOrders = userOrders.filter(order => order.status === 'delivered').length;
+            const progressOrders = userOrders.filter(order => 
+                ['pending', 'processing', 'shipped'].includes(order.status)
+            ).length;
+
+            document.getElementById('total-orders').textContent = totalOrders;
+            document.getElementById('completed-orders').textContent = completedOrders;
+            document.getElementById('progress-orders').textContent = progressOrders;
+            document.getElementById('loyalty-points').textContent = completedOrders * 50; // 50 points per completed order
+        }
+
+        // Update recent orders in dashboard
+        function updateRecentOrders() {
+            const recentOrdersList = document.getElementById('recent-orders-list');
+            const recentOrders = userOrders.slice(0, 3); // Show last 3 orders
+
+            if (recentOrders.length === 0) {
+                recentOrdersList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No Orders Yet</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            recentOrdersList.innerHTML = recentOrders.map(order => `
+                <div class="order-item">
+                    <div class="order-info">
+                        <h3>Order #${order.orderNumber}</h3>
+                        <p>Placed on ${new Date(order.createdAt).toLocaleDateString()} • Total: ${order.amount ? order.amount.toLocaleString() : '0'} XAF</p>
+                    </div>
+                    <span class="order-status status-${order.status}">
+                        ${formatOrderStatus(order.status)}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Show specific section
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.account-content > div').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            const section = document.getElementById(`${sectionName}-section`);
+            if (section) {
+                section.classList.remove('hidden');
+                
+                // Load section-specific data if needed
+                if (sectionName === 'orders') {
+                    loadOrdersSection();
+                } else if (sectionName === 'payments') {
+                    loadPaymentsSection();
+                }
+            }
+        }
+
+        // Load orders section
+        function loadOrdersSection() {
+            const ordersContent = document.getElementById('orders-content');
+
+            if (userOrders.length === 0) {
+                ordersContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersContent.innerHTML = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${userOrders.map(order => `
+                            <tr>
+                                <td>${order.orderNumber}</td>
+                                <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                                <td>${order.amount ? order.amount.toLocaleString() : '0'} XAF</td>
+                                <td><span class="order-status status-${order.status}">${formatOrderStatus(order.status)}</span></td>
+                                <td>
+                                    <div class="order-actions">
+                                        <button class="order-action-btn btn-view" onclick="viewOrder('${order._id}')">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                        ${order.status === 'processing' || order.status === 'shipped' ? `
+                                            <button class="order-action-btn btn-track" onclick="trackOrder('${order._id}')">
+                                                <i class="fas fa-map-marker-alt"></i> Track
+                                            </button>
+                                        ` : ''}
+                                        ${order.status === 'pending' ? `
+                                            <button class="order-action-btn btn-cancel" onclick="cancelOrder('${order._id}')">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Load payments section
+        function loadPaymentsSection() {
+            updatePaymentMethods();
+        }
+
+        // Update payment methods display
+        function updatePaymentMethods() {
+            const paymentsList = document.getElementById('payment-methods-list');
+
+            if (userPayments.length === 0) {
+                paymentsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>No Payment Methods</h3>
+                        <p>You haven't added any payment methods yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            paymentsList.innerHTML = userPayments.map(payment => `
+                <div class="payment-card">
+                    <div class="payment-info">
+                        <div class="payment-icon">
+                            <i class="fab fa-${getPaymentIcon(payment.type)}"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h3>${payment.type.toUpperCase()} •••• ${payment.last4}</h3>
+                            <p>Expires ${payment.expiry}</p>
+                        </div>
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn-remove" onclick="removePaymentMethod('${payment._id}')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
                     </div>
                 </div>
-                <style>
-                    @keyframes loadingBar {
-                        0% { transform: translateX(-100%); }
-                        50% { transform: translateX(0%); }
-                        100% { transform: translateX(100%); }
+            `).join('');
+        }
+
+        // Update user profile
+        async function updateProfile() {
+            const token = localStorage.getItem('token');
+            const formData = {
+                name: document.getElementById('profile-name').value,
+                email: document.getElementById('profile-email').value,
+                phone: document.getElementById('profile-phone').value,
+                address: document.getElementById('profile-address').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/user/profile', {
+                    method: 'PUT',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Profile updated successfully!');
+                    // Update user data in UI
+                    currentUser = { ...currentUser, ...formData };
+                    document.querySelector('.user-name').textContent = currentUser.name;
+                } else {
+                    throw new Error('Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showErrorMessage('Failed to update profile');
+            }
+        }
+
+        // Add payment method
+        function addPaymentMethod() {
+            // In a real app, this would integrate with a payment processor like Stripe
+            showErrorMessage('Payment method integration is not yet implemented. This would connect to services like Stripe in a production environment.');
+        }
+
+        // Remove payment method
+        async function removePaymentMethod(paymentId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/user/payments/${paymentId}`, {
+                    method: 'DELETE',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
-                </style>
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Payment method removed successfully!');
+                    // Reload payments
+                    await loadDashboardData(token);
+                } else {
+                    throw new Error('Failed to remove payment method');
+                }
+            } catch (error) {
+                console.error('Error removing payment method:', error);
+                showErrorMessage('Failed to remove payment method');
+            }
+        }
+
+        // Order actions
+        function viewOrder(orderId) {
+            const order = userOrders.find(o => o._id === orderId);
+            if (order) {
+                alert(`Order Details:\nOrder #: ${order.orderNumber}\nStatus: ${formatOrderStatus(order.status)}\nTotal: ${order.amount ? order.amount.toLocaleString() : '0'} XAF`);
+            }
+        }
+
+        function trackOrder(orderId) {
+            const order = userOrders.find(o => o._id === orderId);
+            if (order) {
+                alert(`Tracking information for order ${order.orderNumber} would be displayed here.`);
+            }
+        }
+
+        async function cancelOrder(orderId) {
+            const token = localStorage.getItem('token');
+            
+            if (!confirm('Are you sure you want to cancel this order?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/user/orders/${orderId}/cancel`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Order cancelled successfully!');
+                    // Reload orders
+                    await loadDashboardData(token);
+                    loadOrdersSection();
+                } else {
+                    throw new Error('Failed to cancel order');
+                }
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                showErrorMessage('Failed to cancel order');
+            }
+        }
+
+        // Utility functions
+        function formatOrderStatus(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'processing': 'Processing',
+                'shipped': 'Shipped',
+                'delivered': 'Delivered',
+                'cancelled': 'Cancelled'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getPaymentIcon(type) {
+            const iconMap = {
+                'visa': 'cc-visa',
+                'mastercard': 'cc-mastercard',
+                'paypal': 'cc-paypal',
+                'amex': 'cc-amex'
+            };
+            return iconMap[type] || 'credit-card';
+        }
+
+        function showLoadingState() {
+            document.querySelector('.user-name').textContent = 'Loading...';
+            document.querySelector('.user-email').textContent = 'Loading...';
+        }
+
+        function hideLoadingState() {
+            // Loading state is hidden when data is loaded
+        }
+
+        function showErrorMessage(message) {
+            // Remove existing messages
+            document.querySelectorAll('.error-message, .success-message').forEach(msg => msg.remove());
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                ${message}
             `;
-            document.querySelector('.account-content').prepend(spinner);
-        }
-    }
-
-    function hideLoadingState() {
-        const spinner = document.getElementById('loadingSpinner');
-        if (spinner) {
-            spinner.remove();
-        }
-    }
-
-    // Enhanced error message with auto-dismiss
-    function showErrorMessage(message, autoDismiss = true) {
-        const existingError = document.getElementById('errorMessage');
-        if (existingError) {
-            existingError.remove();
-        }
-
-        const errorDiv = document.createElement('div');
-        errorDiv.id = 'errorMessage';
-        errorDiv.className = 'error-message';
-        errorDiv.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <i class="fas fa-exclamation-triangle" style="color: #d00; margin-right: 10px; font-size: 18px;"></i>
-                <div style="flex: 1;">
-                    <strong style="display: block; margin-bottom: 5px;">Error</strong>
-                    <span>${message}</span>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" 
-                        style="background: none; border: none; cursor: pointer; padding: 5px; margin-left: 10px;">
-                    <i class="fas fa-times" style="color: #d00;"></i>
-                </button>
-            </div>
-        `;
-        document.querySelector('.account-content').prepend(errorDiv);
-
-        if (autoDismiss) {
+            document.querySelector('.account-content').prepend(errorDiv);
+            
             setTimeout(() => {
                 if (errorDiv.parentElement) {
                     errorDiv.remove();
                 }
             }, 5000);
         }
-    }
 
-    function showSuccessMessage(message, autoDismiss = true) {
-        const existingMessage = document.getElementById('successMessage');
-        if (existingMessage) {
-            existingMessage.remove();
-        }
-
-        const successDiv = document.createElement('div');
-        successDiv.id = 'successMessage';
-        successDiv.className = 'success-message';
-        successDiv.innerHTML = `
-            <div style="display: flex; align-items: center;">
-                <i class="fas fa-check-circle" style="color: #0a0; margin-right: 10px; font-size: 18px;"></i>
-                <div style="flex: 1;">
-                    <strong style="display: block; margin-bottom: 5px;">Success</strong>
-                    <span>${message}</span>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" 
-                        style="background: none; border: none; cursor: pointer; padding: 5px; margin-left: 10px;">
-                    <i class="fas fa-times" style="color: #0a0;"></i>
-                </button>
-            </div>
-        `;
-        document.querySelector('.account-content').prepend(successDiv);
-
-        if (autoDismiss) {
+        function showSuccessMessage(message) {
+            // Remove existing messages
+            document.querySelectorAll('.error-message, .success-message').forEach(msg => msg.remove());
+            
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ${message}
+            `;
+            document.querySelector('.account-content').prepend(successDiv);
+            
             setTimeout(() => {
                 if (successDiv.parentElement) {
                     successDiv.remove();
                 }
             }, 3000);
         }
-    }
 
-    function updateUserInterface(user) {
-        document.querySelector('.user-name').textContent = user.name;
-        document.querySelector('.user-email').textContent = user.email;
-
-        document.querySelector('.content-title').textContent = `Welcome back, ${user.name}!`;
-        document.querySelector('.content-header p').textContent = `Here's your account overview.`;
-
-        updateDashboardStats(user);
-
-        console.log('Dashboard loaded successfully for user:', user.name);
-        showSuccessMessage('Dashboard loaded successfully!');
-    }
-
-    function updateDashboardStats(user) {
-        // Update basic user info in dashboard cards if needed
-        fetchOrderStats();
-    }
-
-    async function fetchOrderStats() {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        try {
-            const response = await fetch('http://localhost:5000/api/user/orders/stats', {
-                method: 'GET',
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const stats = await response.json();
-                // Update dashboard cards with actual data
-                updateOrderStatsUI(stats);
-            }
-        } catch (error) {
-            console.log('Could not load order statistics:', error);
-        }
-    }
-
-    function updateOrderStatsUI(stats) {
-        // Update the dashboard cards with real data
-        const cards = document.querySelectorAll('.dashboard-card');
-        cards.forEach(card => {
-            const title = card.querySelector('.card-title').textContent;
-            const valueElement = card.querySelector('.card-value');
-            
-            if (title === 'Total Orders' && stats.totalOrders !== undefined) {
-                valueElement.textContent = stats.totalOrders;
-            } else if (title === 'Completed' && stats.completed !== undefined) {
-                valueElement.textContent = stats.completed;
-            } else if (title === 'In Progress' && stats.inProgress !== undefined) {
-                valueElement.textContent = stats.inProgress;
-            }
-        });
-    }
-
-    async function loadUserAdditionalData() {
-        // Load any additional user data needed for the dashboard
-        try {
-            await Promise.all([
-                fetchOrderStats(),
-                // Add other data fetching functions here
-            ]);
-        } catch (error) {
-            console.log('Error loading additional user data:', error);
-        }
-    }
-
-    function setupMenuNavigation() {
-        const menuLinks = document.querySelectorAll('.menu-link');
-        
-        menuLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                if (this.getAttribute('href') === '#') {
-                    e.preventDefault();
-                    if (this.textContent.includes('Logout')) {
-                        handleLogout();
-                    } else {
-                        // Handle other # links
-                        showErrorMessage('This feature is not yet implemented.');
-                    }
-                }
-            });
-        });
-    }
-
-    function setupLogoutHandler() {
-        const logoutLink = document.querySelector('.menu-link[href="#"]:last-child');
-        if (logoutLink) {
-            logoutLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                handleLogout();
-            });
-        }
-    }
-
-    function handleLogout() {
-        if (confirm('Are you sure you want to logout?')) {
-            // Clear all user data
-            localStorage.removeItem('token');
-            sessionStorage.clear();
-            
-            showSuccessMessage('Logging out...', false);
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1000);
-        }
-    }
-
-    // Session monitoring for security
-    function startSessionMonitoring() {
-        // Check token validity every minute
-        setInterval(() => {
-            const token = localStorage.getItem('token');
-            if (token && !isValidToken(token)) {
-                console.log('Session monitoring: Token invalid, redirecting to login');
-                showErrorMessage('Your session has expired. Redirecting to login...');
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                showSuccessMessage('Logging out...');
                 setTimeout(() => {
-                    localStorage.removeItem('token');
                     window.location.href = 'login.html';
-                }, 2000);
+                }, 1000);
             }
-        }, 60000); // Check every minute
-
-        // Add visibility change handler
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden) {
-                // Tab became active, verify session
-                const token = localStorage.getItem('token');
-                if (!token || !isValidToken(token)) {
-                    console.log('Session invalid after tab focus');
-                    window.location.href = 'login.html';
-                }
-            }
-        });
-    }
-
-    // Export functions for global access if needed
-    window.debugTokenContents = debugTokenContents;
-    window.handleLogout = handleLogout;
-</script>
+        }
+    </script>
 </body>
 </html>

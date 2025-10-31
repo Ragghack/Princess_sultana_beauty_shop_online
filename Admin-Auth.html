@@ -385,224 +385,323 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elements
-            const loginTab = document.querySelector('[data-tab="login"]');
-            const registerTab = document.querySelector('[data-tab="register"]');
-            const loginPanel = document.getElementById('loginPanel');
-            const registerPanel = document.getElementById('registerPanel');
-            const errorAlert = document.getElementById('errorAlert');
-            const errorMessage = document.getElementById('errorMessage');
-            const successAlert = document.getElementById('successAlert');
-            const successMessage = document.getElementById('successMessage');
-            const loginPasswordToggle = document.getElementById('loginPasswordToggle');
-            const registerPasswordToggle = document.getElementById('registerPasswordToggle');
-            const loginPassword = document.getElementById('loginPassword');
-            const registerPassword = document.getElementById('registerPassword');
-            const passwordStrengthBar = document.getElementById('passwordStrengthBar');
-            
-            fetch('/api/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email, password })
-}).then(r=>r.json()).then(data => {
-  localStorage.setItem('token', data.token);
-});
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // API Configuration - FIXED: Use correct backend URL
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Elements
+        const loginTab = document.querySelector('[data-tab="login"]');
+        const registerTab = document.querySelector('[data-tab="register"]');
+        const loginPanel = document.getElementById('loginPanel');
+        const registerPanel = document.getElementById('registerPanel');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorMessage = document.getElementById('errorMessage');
+        const successAlert = document.getElementById('successAlert');
+        const successMessage = document.getElementById('successMessage');
+        const loginPasswordToggle = document.getElementById('loginPasswordToggle');
+        const registerPasswordToggle = document.getElementById('registerPasswordToggle');
+        const loginPassword = document.getElementById('loginPassword');
+        const registerPassword = document.getElementById('registerPassword');
+        const passwordStrengthBar = document.getElementById('passwordStrengthBar');
 
-            // Switch between login and register tabs
-            loginTab.addEventListener('click', function() {
+        // Switch between login and register tabs
+        loginTab.addEventListener('click', function() {
+            switchToTab('login');
+        });
+        
+        registerTab.addEventListener('click', function() {
+            switchToTab('register');
+        });
+        
+        // Toggle password visibility
+        function setupPasswordToggle(toggleElement, passwordField) {
+            toggleElement.addEventListener('click', function() {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                
+                const eyeIcon = toggleElement.querySelector('i');
+                eyeIcon.classList.toggle('fa-eye');
+                eyeIcon.classList.toggle('fa-eye-slash');
+            });
+        }
+        
+        setupPasswordToggle(loginPasswordToggle, loginPassword);
+        setupPasswordToggle(registerPasswordToggle, registerPassword);
+        
+        // Password strength indicator
+        registerPassword.addEventListener('input', function() {
+            updatePasswordStrength(registerPassword.value);
+        });
+        
+        // Form submission handlers
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleRegister();
+        });
+        
+        // Forgot password
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            handleForgotPassword();
+        });
+
+        // ==================== CORE FUNCTIONS ====================
+
+        function switchToTab(tabName) {
+            if (tabName === 'login') {
                 loginTab.classList.add('active');
                 registerTab.classList.remove('active');
                 loginPanel.classList.add('active');
                 registerPanel.classList.remove('active');
-                hideAlerts();
-            });
-            
-            registerTab.addEventListener('click', function() {
+            } else {
                 registerTab.classList.add('active');
                 loginTab.classList.remove('active');
                 registerPanel.classList.add('active');
                 loginPanel.classList.remove('active');
-                hideAlerts();
-            });
-            
-            // Toggle password visibility
-            function setupPasswordToggle(toggleElement, passwordField) {
-                toggleElement.addEventListener('click', function() {
-                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordField.setAttribute('type', type);
-                    
-                    // Toggle eye icon
-                    const eyeIcon = toggleElement.querySelector('i');
-                    eyeIcon.classList.toggle('fa-eye');
-                    eyeIcon.classList.toggle('fa-eye-slash');
-                });
             }
+            hideAlerts();
+        }
+
+        function updatePasswordStrength(password) {
+            let strength = 0;
             
-            setupPasswordToggle(loginPasswordToggle, loginPassword);
-            setupPasswordToggle(registerPasswordToggle, registerPassword);
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
             
-            // Password strength indicator
-            registerPassword.addEventListener('input', function() {
-                const password = registerPassword.value;
-                let strength = 0;
-                
-                // Check password strength
-                if (password.length >= 8) strength++;
-                if (/[A-Z]/.test(password)) strength++;
-                if (/[0-9]/.test(password)) strength++;
-                if (/[^A-Za-z0-9]/.test(password)) strength++;
-                
-                // Update strength bar
-                passwordStrengthBar.className = 'password-strength-bar';
-                if (strength === 0) {
-                    // Do nothing
-                } else if (strength <= 2) {
+            passwordStrengthBar.className = 'password-strength-bar';
+            if (strength > 0) {
+                if (strength <= 2) {
                     passwordStrengthBar.classList.add('strength-weak');
                 } else if (strength === 3) {
                     passwordStrengthBar.classList.add('strength-medium');
                 } else {
                     passwordStrengthBar.classList.add('strength-strong');
                 }
-            });
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
             
-            // Form validation and submission
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                
-                if (!email || !password) {
-                    showError('Please fill in all fields');
-                    return;
-                }
-                
-                // Simulate login process
-                simulateLogin(email, password);
-            });
+            if (!validateRequiredFields([email, password])) {
+                showError('Please fill in all fields');
+                return;
+            }
             
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('registerName').value;
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('registerConfirmPassword').value;
-                const termsAgreed = document.getElementById('termsAgree').checked;
-                
-                if (!name || !email || !password || !confirmPassword) {
-                    showError('Please fill in all fields');
-                    return;
-                }
-                
-                if (!termsAgreed) {
-                    showError('You must agree to the terms and conditions');
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    showError('Passwords do not match');
-                    return;
-                }
-                
-                if (password.length < 8) {
-                    showError('Password must be at least 8 characters long');
-                    return;
-                }
-                
-                if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])/.test(password)) {
-                    showError('Password must include uppercase, lowercase, number, and special character');
-                    return;
-                }
-                
-                // Simulate registration process
-                simulateRegistration(name, email, password);
-            });
+            await performLogin(email, password);
+        }
+
+        async function handleRegister() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const termsAgreed = document.getElementById('termsAgree').checked;
             
-            // Forgot password functionality
-            document.getElementById('forgotPassword').addEventListener('click', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value || prompt('Please enter your email address:');
-                
-                if (!email) {
-                    showError('Please enter your email address');
-                    return;
-                }
-                
-                // Simulate password reset
-                simulatePasswordReset(email);
-            });
+            // Validation
+            if (!validateRequiredFields([name, email, password, confirmPassword])) {
+                showError('Please fill in all fields');
+                return;
+            }
             
-            // Simulation functions (would be replaced with actual API calls)
-            function simulateLogin(email, password) {
-                // This would be an API call to your backend in a real application
+            if (!termsAgreed) {
+                showError('You must agree to the terms and conditions');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+            
+            if (!validatePasswordStrength(password)) {
+                showError('Password must be at least 8 characters with uppercase, lowercase, number, and special character');
+                return;
+            }
+            
+            await performRegistration(name, email, password);
+        }
+
+        function handleForgotPassword() {
+            const email = document.getElementById('loginEmail').value || prompt('Please enter your email address:');
+            
+            if (!email) {
+                showError('Please enter your email address');
+                return;
+            }
+            
+            simulatePasswordReset(email);
+        }
+
+        // ==================== API FUNCTIONS ====================
+
+        async function performLogin(email, password) {
+            try {
                 showLoading('Signing in...');
                 
-                setTimeout(() => {
-                    // Check against hardcoded admin credentials for demo
-                    if (email === 'admin@sultana.com' && password === 'Admin123!') {
-                        showSuccess('Login successful! Redirecting to admin dashboard...');
-                        setTimeout(() => {
-                            window.location.href = 'admin-dashboard.html';
-                        }, 1500);
-                    } else {
-                        showError('Invalid email or password');
-                    }
-                }, 1000);
-            }
-            
-            function simulateRegistration(name, email, password) {
-                showLoading('Creating account...');
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await parseResponse(response);
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.message || `Login failed with status ${response.status}`);
+                }
+
+                // Check if user is admin
+                if (data.user && data.user.role !== 'admin') {
+                    throw new Error('Access denied: Administrator privileges required');
+                }
+
+                // Store token and redirect
+                localStorage.setItem('adminToken', data.token);
+                showSuccess('Login successful! Redirecting to admin dashboard...');
                 
                 setTimeout(() => {
-                    // Check if email is already registered
-                    if (email === 'admin@sultana.com') {
-                        showError('This email is already registered');
-                    } else {
-                        showSuccess('Account created successfully! You can now sign in.');
-                        // Switch to login tab
-                        loginTab.click();
-                        // Pre-fill the email field
-                        document.getElementById('loginEmail').value = email;
-                    }
+                    window.location.href = 'admin dashboard.html';
                 }, 1500);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || 'Login failed. Please try again.');
             }
-            
-            function simulatePasswordReset(email) {
-                showLoading('Sending reset instructions...');
+        }
+
+        async function performRegistration(name, email, password) {
+            try {
+                showLoading('Creating admin account...');
+                
+                // Use the direct admin registration endpoint
+                const response = await fetch(`${API_BASE_URL}/admin/register`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                console.log('📨 Registration response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Server error response:', errorText);
+                    
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch (e) {
+                        throw new Error(`Server error: ${response.status} - ${errorText}`);
+                    }
+                    
+                    throw new Error(errorData.error || errorData.message || `Registration failed with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('✅ Registration success:', data);
+
+                // Store token and redirect
+                if (data.token) {
+                    localStorage.setItem('adminToken', data.token);
+                }
+                
+                showSuccess('Admin account created successfully! Redirecting to dashboard...');
                 
                 setTimeout(() => {
-                    showSuccess(`Password reset instructions sent to ${email}`);
+                    window.location.href = 'admin dashboard.html';
                 }, 1500);
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError(error.message || 'Registration failed. Please try again.');
+            }
+        }
+
+        function simulatePasswordReset(email) {
+            showLoading('Sending reset instructions...');
+            
+            setTimeout(() => {
+                showSuccess(`Password reset instructions sent to ${email}`);
+            }, 1500);
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+
+        async function parseResponse(response) {
+            const text = await response.text();
+            
+            if (!text) {
+                return { message: 'Empty response from server' };
             }
             
-            // Helper functions
-            function showError(message) {
-                errorMessage.textContent = message;
-                errorAlert.style.display = 'block';
-                successAlert.style.display = 'none';
+            try {
+                return JSON.parse(text);
+            } catch (parseError) {
+                console.error('Failed to parse JSON response:', parseError);
+                return { error: 'Invalid response from server', raw: text };
             }
-            
-            function showSuccess(message) {
-                successMessage.textContent = message;
-                successAlert.style.display = 'block';
-                errorAlert.style.display = 'none';
-            }
-            
-            function showLoading(message) {
-                successMessage.textContent = message;
-                successAlert.style.display = 'block';
-                errorAlert.style.display = 'none';
-                
-                // Add loading animation
-                successAlert.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + message;
-            }
-            
-            function hideAlerts() {
-                errorAlert.style.display = 'none';
-                successAlert.style.display = 'none';
-            }
-        });
-    </script>
+        }
+
+        function validateRequiredFields(fields) {
+            return fields.every(field => field && field.trim() !== '');
+        }
+
+        function validatePasswordStrength(password) {
+            return password.length >= 8 &&
+                   /[A-Z]/.test(password) &&
+                   /[a-z]/.test(password) &&
+                   /[0-9]/.test(password) &&
+                   /[^A-Za-z0-9]/.test(password);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+            successAlert.style.display = 'none';
+            console.error('Error:', message);
+        }
+        
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successAlert.style.display = 'block';
+            errorAlert.style.display = 'none';
+            console.log('Success:', message);
+        }
+        
+        function showLoading(message) {
+            successMessage.textContent = message;
+            successAlert.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + message;
+            successAlert.style.display = 'block';
+            errorAlert.style.display = 'none';
+        }
+        
+        function hideAlerts() {
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+        }
+
+        // Initialize
+        hideAlerts();
+        
+        // Check if we have a stored token
+        const storedToken = localStorage.getItem('adminToken');
+        if (storedToken) {
+            console.log('Found stored token');
+        }
+    });
+</script>
 </body>
 </html>

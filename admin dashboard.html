@@ -51,6 +51,33 @@
             padding: 0 20px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--light-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 3px solid white;
+        }
+        
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .logo-placeholder i {
+            font-size: 2rem;
+            color: var(--dark-brown);
         }
         
         .sidebar-header h2 {
@@ -188,121 +215,44 @@
             color: var(--dark-brown);
         }
         
-        /* Image Upload */
-        .image-upload-area {
-            border: 2px dashed var(--light-gold);
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* Product Management */
+        .product-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
-        .image-upload-area:hover {
-            border-color: var(--golden-brown);
-            background: rgba(183, 110, 34, 0.05);
-        }
-        
-        .upload-icon {
-            font-size: 3rem;
-            color: var(--light-gold);
+        .form-group {
             margin-bottom: 15px;
         }
         
-        /* Database Query Interface */
-        .query-interface {
-            background: var(--off-white);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .query-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .query-tab {
-            padding: 8px 15px;
-            background: white;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        
-        .query-tab.active {
-            background: var(--golden-brown);
-            color: white;
-            border-color: var(--golden-brown);
-        }
-        
-        .query-editor {
-            width: 100%;
-            min-height: 150px;
-            padding: 15px;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-            font-family: monospace;
-            resize: vertical;
-            margin-bottom: 15px;
-        }
-        
-        .query-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background: var(--golden-brown);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--dark-brown);
-        }
-        
-        .btn-secondary {
-            background: var(--light-gray);
-            color: var(--black);
-        }
-        
-        .btn-secondary:hover {
-            background: #dcdcdc;
-        }
-        
-        /* Results Table */
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .results-table th, .results-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .results-table th {
-            background: var(--off-white);
             color: var(--dark-brown);
-            font-weight: 600;
         }
         
-        .results-table tr:hover {
-            background: rgba(183, 110, 34, 0.05);
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--light-gold);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
         }
         
         /* Order Tracking */
@@ -452,6 +402,138 @@
             margin-top: 10px;
         }
         
+        /* Settings */
+        .settings-form {
+            max-width: 600px;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .settings-section h3 {
+            margin-bottom: 15px;
+            color: var(--dark-brown);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--golden-brown);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--dark-brown);
+        }
+        
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--black);
+        }
+        
+        .btn-secondary:hover {
+            background: #dcdcdc;
+        }
+        
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #247a48;
+        }
+        
+        .btn-danger {
+            background: var(--red);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #bd2130;
+        }
+        
+        /* Results Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .results-table th {
+            background: var(--off-white);
+            color: var(--dark-brown);
+            font-weight: 600;
+        }
+        
+        .results-table tr:hover {
+            background: rgba(183, 110, 34, 0.05);
+        }
+        
+        /* Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: white;
+            max-width: 350px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .toast-success {
+            background: var(--green);
+        }
+        
+        .toast-error {
+            background: var(--red);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
         /* Responsive */
         @media (max-width: 992px) {
             .admin-container {
@@ -476,6 +558,14 @@
                 padding: 10px 15px;
                 white-space: nowrap;
             }
+            
+            .product-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-details {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 768px) {
@@ -483,7 +573,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .order-details {
+            .pricing-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -503,16 +593,19 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
+                <div class="logo-placeholder" id="logoPlaceholder">
+                    <i class="fas fa-spa"></i>
+                </div>
                 <h2><i class="fas fa-spa"></i> Admin Dashboard</h2>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="#" class="active" data-panel="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#" data-panel="image-management"><i class="fas fa-images"></i> Image Management</a></li>
-                <li><a href="#" data-panel="database-queries"><i class="fas fa-database"></i> Database Queries</a></li>
+                <li><a href="#" data-panel="product-management"><i class="fas fa-cube"></i> Product Management</a></li>
                 <li><a href="#" data-panel="order-tracking"><i class="fas fa-shipping-fast"></i> Order Tracking</a></li>
                 <li><a href="#" data-panel="customer-care"><i class="fas fa-headset"></i> Customer Care</a></li>
                 <li><a href="#" data-panel="settings"><i class="fas fa-cog"></i> Settings</a></li>
-                <li><a href="index.html"><i class="fas fa-sign-out-alt"></i> Back to Site</a></li>
+                <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="index.html"><i class="fas fa-store"></i> Back to Shop</a></li>
             </ul>
         </div>
         
@@ -522,7 +615,7 @@
                 <h1>Admin Dashboard</h1>
                 <div class="user-info">
                     <div class="user-avatar">A</div>
-                    <span>Admin User</span>
+                    <span id="admin-name">Loading...</span>
                 </div>
             </div>
             
@@ -534,7 +627,7 @@
                             <i class="fas fa-shopping-cart"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>152</h3>
+                            <h3 id="total-orders">--</h3>
                             <p>Total Orders</p>
                         </div>
                     </div>
@@ -544,7 +637,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>486</h3>
+                            <h3 id="total-users">--</h3>
                             <p>Registered Users</p>
                         </div>
                     </div>
@@ -554,7 +647,7 @@
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>3,542,800 XAF</h3>
+                            <h3 id="total-revenue">--</h3>
                             <p>Total Revenue</p>
                         </div>
                     </div>
@@ -564,7 +657,7 @@
                             <i class="fas fa-cube"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>12</h3>
+                            <h3 id="total-products">--</h3>
                             <p>Products</p>
                         </div>
                     </div>
@@ -573,176 +666,126 @@
                 <div class="content-section">
                     <div class="section-header">
                         <h2 class="section-title">Recent Orders</h2>
-                        <a href="#" class="btn btn-primary">View All</a>
+                        <a href="#" class="btn btn-primary" id="view-all-orders">View All</a>
                     </div>
                     
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Order #HC-98765</div>
-                            <div class="order-date">Nov 15, 2023</div>
-                        </div>
-                        <div class="order-details">
-                            <div>
-                                <strong>Customer:</strong> Amina S.<br>
-                                <strong>Products:</strong> Huile de Chèbe Original (x2)
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> 49,980 XAF<br>
-                                <strong>Payment:</strong> Completed
-                            </div>
-                            <div>
-                                <span class="order-status status-processing">Processing</span>
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary">View Details</button>
-                            <button class="btn btn-secondary">Update Status</button>
-                        </div>
-                    </div>
-                    
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Order #HC-98764</div>
-                            <div class="order-date">Nov 14, 2023</div>
-                        </div>
-                        <div class="order-details">
-                            <div>
-                                <strong>Customer:</strong> Fatou D.<br>
-                                <strong>Products:</strong> Hair Growth Bundle
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> 74,970 XAF<br>
-                                <strong>Payment:</strong> Completed
-                            </div>
-                            <div>
-                                <span class="order-status status-shipped">Shipped</span>
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary">View Details</button>
-                            <button class="btn btn-secondary">Update Status</button>
-                        </div>
+                    <div id="recent-orders-container">
+                        <div class="loading-message">Loading recent orders...</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Image Management Panel -->
-            <div class="content-panel" id="image-management">
+            <!-- Product Management Panel -->
+            <div class="content-panel" id="product-management">
                 <div class="content-section">
                     <div class="section-header">
-                        <h2 class="section-title">Upload Product Images</h2>
+                        <h2 class="section-title">Add New Product</h2>
                     </div>
                     
-                    <div class="image-upload-area" id="dropZone">
-                        <div class="upload-icon">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                        </div>
-                        <h3>Drag & Drop to Upload</h3>
-                        <p>or</p>
-                        <input type="file" id="fileInput" style="display: none;" accept="image/*" multiple>
-                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Browse Files</button>
-                    </div>
-                    
-                    <div class="section-header">
-                        <h2 class="section-title">Manage Images</h2>
+                    <form class="product-form" id="productForm">
                         <div>
-                            <input type="text" placeholder="Search images..." style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <div class="form-group">
+                                <label for="productName">Product Name</label>
+                                <input type="text" id="productName" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productDescription">Product Description</label>
+                                <textarea id="productDescription" class="form-control" rows="4" required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productCategory">Category</label>
+                                <select id="productCategory" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="hair-oil">Hair Oil</option>
+                                    <option value="shampoo">Shampoo</option>
+                                    <option value="conditioner">Conditioner</option>
+                                    <option value="treatment">Treatment</option>
+                                    <option value="styling">Styling</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productImage">Product Image</label>
+                                <input type="file" id="productImage" class="form-control" accept="image/*">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="form-group">
+                                <label>Pricing</label>
+                                <div class="pricing-grid">
+                                    <div>
+                                        <label for="retailPrice">Retail Price (XAF)</label>
+                                        <input type="number" id="retailPrice" class="form-control" min="0" step="0.01" required>
+                                    </div>
+                                    <div>
+                                        <label for="wholesalePrice">Wholesale Price (XAF)</label>
+                                        <input type="number" id="wholesalePrice" class="form-control" min="0" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Inventory</label>
+                                <div class="pricing-grid">
+                                    <div>
+                                        <label for="retailQuantity">Retail Quantity</label>
+                                        <input type="number" id="retailQuantity" class="form-control" min="0" required>
+                                    </div>
+                                    <div>
+                                        <label for="bulkQuantity">Bulk Quantity (Cartons/Packs)</label>
+                                        <input type="number" id="bulkQuantity" class="form-control" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bulkUnit">Bulk Unit Description</label>
+                                <input type="text" id="bulkUnit" class="form-control" placeholder="e.g., Carton of 12, Pack of 6">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productStatus">Status</label>
+                                <select id="productStatus" class="form-control" required>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="out-of-stock">Out of Stock</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Add Product</button>
+                                <button type="reset" class="btn btn-secondary">Reset Form</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Manage Products</h2>
+                        <div>
+                            <input type="text" id="product-search" placeholder="Search products..." class="form-control" style="width: 250px;">
                         </div>
                     </div>
                     
                     <table class="results-table">
                         <thead>
                             <tr>
-                                <th>Preview</th>
-                                <th>Filename</th>
-                                <th>Product</th>
-                                <th>Uploaded</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Retail Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="products-table-body">
                             <tr>
-                                <td><img src="https://via.placeholder.com/50" alt="Product" style="width: 50px; height: 50px; object-fit: cover;"></td>
-                                <td>chebe-oil.jpg</td>
-                                <td>Huile de Chèbe Original</td>
-                                <td>Nov 10, 2023</td>
-                                <td>
-                                    <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">Edit</button>
-                                    <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;">Delete</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><img src="https://via.placeholder.com/50" alt="Product" style="width: 50px; height: 50px; object-fit: cover;"></td>
-                                <td>growth-bundle.jpg</td>
-                                <td>Hair Growth Bundle</td>
-                                <td>Nov 5, 2023</td>
-                                <td>
-                                    <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">Edit</button>
-                                    <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Database Query Panel -->
-            <div class="content-panel" id="database-queries">
-                <div class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Database Query Interface</h2>
-                    </div>
-                    
-                    <div class="query-tabs">
-                        <div class="query-tab active">Find</div>
-                        <div class="query-tab">Insert</div>
-                        <div class="query-tab">Update</div>
-                        <div class="query-tab">Delete</div>
-                        <div class="query-tab">Aggregate</div>
-                    </div>
-                    
-                    <div class="query-interface">
-                        <textarea class="query-editor" placeholder="Enter your MongoDB query here...">db.products.find({ category: "hair_oil" })</textarea>
-                        
-                        <div class="query-buttons">
-                            <button class="btn btn-primary">Execute Query</button>
-                            <button class="btn btn-secondary">Validate</button>
-                            <button class="btn btn-secondary">Save Query</button>
-                            <button class="btn btn-secondary">Clear</button>
-                        </div>
-                    </div>
-                    
-                    <div class="section-header">
-                        <h2 class="section-title">Query Results</h2>
-                        <div>
-                            <span>Execution time: 45ms</span>
-                        </div>
-                    </div>
-                    
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>5f8d7a5d6b3c2a1e</td>
-                                <td>Huile de Chèbe Original</td>
-                                <td>hair_oil</td>
-                                <td>24,990 XAF</td>
-                                <td>42</td>
-                            </tr>
-                            <tr>
-                                <td>6a9b8c7d5e4f3g2h</td>
-                                <td>Huile de Chèbe Fortifiante</td>
-                                <td>hair_oil</td>
-                                <td>27,990 XAF</td>
-                                <td>35</td>
+                                <td colspan="7" style="text-align: center;">Loading products...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -757,68 +800,15 @@
                     </div>
                     
                     <div class="order-filters">
-                        <div class="filter-btn active">All Orders</div>
-                        <div class="filter-btn">Processing</div>
-                        <div class="filter-btn">Shipped</div>
-                        <div class="filter-btn">Delivered</div>
-                        <div class="filter-btn">Cancelled</div>
-                        <input type="text" placeholder="Search orders..." style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <button class="filter-btn active" data-status="all">All Orders</button>
+                        <button class="filter-btn" data-status="processing">Processing</button>
+                        <button class="filter-btn" data-status="shipped">Shipped</button>
+                        <button class="filter-btn" data-status="delivered">Delivered</button>
+                        <button class="filter-btn" data-status="cancelled">Cancelled</button>
                     </div>
                     
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Order #HC-98765</div>
-                            <div class="order-date">Nov 15, 2023</div>
-                        </div>
-                        <div class="order-details">
-                            <div>
-                                <strong>Customer:</strong> Amina S.<br>
-                                <strong>Email:</strong> amina@example.com<br>
-                                <strong>Phone:</strong> +237 6XX XXX XXX
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> 49,980 XAF<br>
-                                <strong>Payment:</strong> Completed<br>
-                                <strong>Method:</strong> Mobile Money
-                            </div>
-                            <div>
-                                <span class="order-status status-processing">Processing</span><br>
-                                <strong>Last Updated:</strong> Today, 10:30 AM
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary">View Details</button>
-                            <button class="btn btn-secondary">Update Status</button>
-                            <button class="btn btn-secondary">Print Invoice</button>
-                        </div>
-                    </div>
-                    
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Order #HC-98764</div>
-                            <div class="order-date">Nov 14, 2023</div>
-                        </div>
-                        <div class="order-details">
-                            <div>
-                                <strong>Customer:</strong> Fatou D.<br>
-                                <strong>Email:</strong> fatou@example.com<br>
-                                <strong>Phone:</strong> +221 7XX XXX XXX
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> 74,970 XAF<br>
-                                <strong>Payment:</strong> Completed<br>
-                                <strong>Method:</strong> Credit Card
-                            </div>
-                            <div>
-                                <span class="order-status status-shipped">Shipped</span><br>
-                                <strong>Tracking #:</strong> SH-789654321
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary">View Details</button>
-                            <button class="btn btn-secondary">Update Status</button>
-                            <button class="btn btn-secondary">Print Invoice</button>
-                        </div>
+                    <div id="orders-container">
+                        <div class="loading-message">Loading orders...</div>
                     </div>
                 </div>
             </div>
@@ -830,50 +820,170 @@
                         <h2 class="section-title">Customer Support Tickets</h2>
                     </div>
                     
-                    <div class="ticket">
-                        <div class="ticket-header">
-                            <div class="ticket-subject">Product arrived damaged</div>
-                            <div class="ticket-date">Nov 15, 2023</div>
-                        </div>
-                        <div class="ticket-meta">
-                            <div class="ticket-customer">By: Aisha M.</div>
-                            <div class="ticket-priority priority-high">High Priority</div>
-                            <div>Order: #HC-98760</div>
-                        </div>
-                        <p>Hello, I received my order today but one of the bottles was leaking and the box was damaged. Can you please help me with this?</p>
-                        <div class="ticket-actions">
-                            <button class="btn btn-primary">Respond</button>
-                            <button class="btn btn-secondary">Mark as Resolved</button>
-                            <button class="btn btn-secondary">Assign to Me</button>
-                        </div>
+                    <div id="tickets-container">
+                        <div class="loading-message">Loading support tickets...</div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Customer Comments & Reviews</h2>
                     </div>
                     
-                    <div class="ticket">
-                        <div class="ticket-header">
-                            <div class="ticket-subject">Question about ingredients</div>
-                            <div class="ticket-date">Nov 14, 2023</div>
-                        </div>
-                        <div class="ticket-meta">
-                            <div class="ticket-customer">By: Chantal K.</div>
-                            <div class="ticket-priority priority-medium">Medium Priority</div>
-                            <div>No Order Reference</div>
-                        </div>
-                        <p>I have allergies to certain nuts. Can you tell me if your Huile de Chèbe contains any nut oils?</p>
-                        <div class="ticket-actions">
-                            <button class="btn btn-primary">Respond</button>
-                            <button class="btn btn-secondary">Mark as Resolved</button>
-                            <button class="btn btn-secondary">Assign to Me</button>
-                        </div>
+                    <div id="comments-container">
+                        <div class="loading-message">Loading customer comments...</div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Settings Panel -->
+            <div class="content-panel" id="settings">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Admin Settings</h2>
+                    </div>
+                    
+                    <form class="settings-form" id="settingsForm">
+                        <div class="settings-section">
+                            <h3>Personal Information</h3>
+                            
+                            <div class="form-group">
+                                <label for="adminName">Full Name</label>
+                                <input type="text" id="adminName" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="adminEmail">Email Address</label>
+                                <input type="email" id="adminEmail" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="adminPhone">Phone Number</label>
+                                <input type="tel" id="adminPhone" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="adminAvatar">Profile Picture</label>
+                                <input type="file" id="adminAvatar" class="form-control" accept="image/*">
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary" id="updateProfileBtn">Update Profile</button>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>Security Settings</h3>
+                            
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-control">
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>Company Logo</h3>
+                            
+                            <div class="form-group">
+                                <label>Current Logo</label>
+                                <div class="logo-placeholder" id="settingsLogoPlaceholder" style="margin-top: 10px;">
+                                    <i class="fas fa-spa"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="companyLogo">Upload New Logo</label>
+                                <input type="file" id="companyLogo" class="form-control" accept="image/*">
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary" id="updateLogoBtn">Update Logo</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // API Endpoints
+        const API_ENDPOINTS = {
+            LOGIN: '/auth/login',
+            REGISTER: '/admin/register',
+            STATS: '/admin/stats',
+            ORDERS: '/admin/orders',
+            PRODUCTS: '/admin/products',
+            PROFILE: '/admin/profile',
+            TICKETS: '/admin/tickets',
+            COMMENTS: '/admin/comments',
+            CHANGE_PASSWORD: '/admin/change-password',
+            LOGO: '/admin/logo'
+        };
+
+        let authToken = '';
+        
+        // Generic function for authenticated API requests
+        async function makeAuthenticatedRequest(url, options = {}) {
+            const token = localStorage.getItem('adminToken');
+            
+            if (!token) {
+                redirectToLogin();
+                throw new Error('No authentication token found');
+            }
+            
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            };
+            
+            const mergedOptions = { ...defaultOptions, ...options };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, mergedOptions);
+                
+                if (response.status === 401) {
+                    // Unauthorized - token expired or invalid
+                    redirectToLogin();
+                    throw new Error('Authentication required');
+                }
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API request failed:', error);
+                throw error;
+            }
+        }
+        
+        function redirectToLogin() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'Admin-Auth.html';
+        }
+        
         // Panel switching functionality
         document.querySelectorAll('.sidebar-menu a').forEach(link => {
             link.addEventListener('click', function(e) {
+                if (this.id === 'logout-btn') return; // Skip for logout button
+                
                 e.preventDefault();
                 
                 // Remove active class from all links
@@ -892,43 +1002,473 @@
                 // Show the selected panel
                 const panelId = this.getAttribute('data-panel');
                 document.getElementById(panelId).classList.add('active');
+                
+                // Load data for the selected panel
+                loadPanelData(panelId);
             });
         });
         
-        // File upload functionality
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.borderColor = '#B76E22';
-            dropZone.style.backgroundColor = 'rgba(183, 110, 34, 0.1)';
+        // Order filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const status = this.getAttribute('data-status');
+                loadOrders(status);
+            });
         });
-        
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.borderColor = '#D4AF37';
-            dropZone.style.backgroundColor = 'transparent';
-        });
-        
-        dropZone.addEventListener('drop', (e) => {
+
+        // Product form submission
+        document.getElementById('productForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            dropZone.style.borderColor = '#D4AF37';
-            dropZone.style.backgroundColor = 'transparent';
+            addProduct();
+        });
+
+        // Settings buttons
+        document.getElementById('updateProfileBtn').addEventListener('click', updateProfile);
+        document.getElementById('changePasswordBtn').addEventListener('click', changePassword);
+        document.getElementById('updateLogoBtn').addEventListener('click', updateLogo);
+        
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('adminToken');
+            redirectToLogin();
+        });
+
+        // Load data for a specific panel
+        async function loadPanelData(panelId) {
+            switch(panelId) {
+                case 'dashboard':
+                    await loadDashboardData();
+                    break;
+                case 'product-management':
+                    await loadProducts();
+                    break;
+                case 'order-tracking':
+                    await loadOrders('all');
+                    break;
+                case 'customer-care':
+                    await loadTickets();
+                    await loadComments();
+                    break;
+                case 'settings':
+                    await loadAdminSettings();
+                    break;
+            }
+        }
+
+        // Load dashboard statistics
+        async function loadDashboardData() {
+            try {
+                const data = await makeAuthenticatedRequest(API_ENDPOINTS.STATS);
+                
+                // Update dashboard cards
+                document.getElementById('total-orders').textContent = data.totalOrders || '0';
+                document.getElementById('total-users').textContent = data.totalUsers || '0';
+                document.getElementById('total-revenue').textContent = data.totalRevenue ? `${data.totalRevenue} XAF` : '0 XAF';
+                document.getElementById('total-products').textContent = data.totalProducts || '0';
+                
+                // Load recent orders
+                await loadRecentOrders();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showError('Failed to load dashboard data: ' + error.message);
+            }
+        }
+
+        // Load recent orders for dashboard
+        async function loadRecentOrders() {
+            try {
+                const orders = await makeAuthenticatedRequest(`${API_ENDPOINTS.ORDERS}/recent`);
+                const container = document.getElementById('recent-orders-container');
+                
+                if (orders.length === 0) {
+                    container.innerHTML = '<div class="no-data">No recent orders</div>';
+                    return;
+                }
+                
+                container.innerHTML = orders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-id">Order #${order.id}</div>
+                            <div class="order-date">${formatDate(order.createdAt)}</div>
+                        </div>
+                        <div class="order-details">
+                            <div>
+                                <strong>Customer:</strong> ${order.customerName}<br>
+                                <strong>Products:</strong> ${order.products}
+                            </div>
+                            <div>
+                                <strong>Amount:</strong> ${order.amount} XAF<br>
+                                <strong>Payment:</strong> ${order.paymentStatus}
+                            </div>
+                            <div>
+                                <span class="order-status status-${order.status}">${order.status}</span>
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="viewOrderDetails('${order.id}')">View Details</button>
+                            <button class="btn btn-secondary" onclick="updateOrderStatus('${order.id}')">Update Status</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recent orders:', error);
+                document.getElementById('recent-orders-container').innerHTML = '<div class="error-message">Failed to load recent orders</div>';
+            }
+        }
+
+        // Load all orders with optional status filter
+        async function loadOrders(status = 'all') {
+            try {
+                const url = status === 'all' 
+                    ? API_ENDPOINTS.ORDERS
+                    : `${API_ENDPOINTS.ORDERS}?status=${status}`;
+                
+                const orders = await makeAuthenticatedRequest(url);
+                const container = document.getElementById('orders-container');
+                
+                if (orders.length === 0) {
+                    container.innerHTML = '<div class="no-data">No orders found</div>';
+                    return;
+                }
+                
+                container.innerHTML = orders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-id">Order #${order.id}</div>
+                            <div class="order-date">${formatDate(order.createdAt)}</div>
+                        </div>
+                        <div class="order-details">
+                            <div>
+                                <strong>Customer:</strong> ${order.customerName}<br>
+                                <strong>Email:</strong> ${order.customerEmail}<br>
+                                <strong>Phone:</strong> ${order.customerPhone}<br>
+                                <strong>Address:</strong> ${order.shippingAddress}
+                            </div>
+                            <div>
+                                <strong>Amount:</strong> ${order.amount} XAF<br>
+                                <strong>Payment:</strong> ${order.paymentStatus}<br>
+                                <strong>Method:</strong> ${order.paymentMethod}
+                            </div>
+                            <div>
+                                <span class="order-status status-${order.status}">${order.status}</span><br>
+                                ${order.trackingNumber ? `<strong>Tracking #:</strong> ${order.trackingNumber}` : `<strong>Last Updated:</strong> ${formatDate(order.updatedAt)}`}
+                            </div>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn btn-primary" onclick="viewOrderDetails('${order.id}')">View Details</button>
+                            <button class="btn btn-success" onclick="updateOrderStatus('${order.id}', 'processing')">Mark as Processing</button>
+                            <button class="btn btn-primary" onclick="updateOrderStatus('${order.id}', 'shipped')">Mark as Shipped</button>
+                            <button class="btn btn-success" onclick="updateOrderStatus('${order.id}', 'delivered')">Mark as Delivered</button>
+                            <button class="btn btn-danger" onclick="updateOrderStatus('${order.id}', 'cancelled')">Cancel Order</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('orders-container').innerHTML = '<div class="error-message">Failed to load orders</div>';
+            }
+        }
+
+        // Load support tickets
+        async function loadTickets() {
+            try {
+                const tickets = await makeAuthenticatedRequest(API_ENDPOINTS.TICKETS);
+                const container = document.getElementById('tickets-container');
+                
+                if (tickets.length === 0) {
+                    container.innerHTML = '<div class="no-data">No support tickets</div>';
+                    return;
+                }
+                
+                container.innerHTML = tickets.map(ticket => `
+                    <div class="ticket">
+                        <div class="ticket-header">
+                            <div class="ticket-subject">${ticket.subject}</div>
+                            <div class="ticket-date">${formatDate(ticket.createdAt)}</div>
+                        </div>
+                        <div class="ticket-meta">
+                            <div class="ticket-customer">${ticket.customerName}</div>
+                            <div class="ticket-priority priority-${ticket.priority}">${ticket.priority}</div>
+                            <div class="ticket-status">${ticket.status}</div>
+                        </div>
+                        <div class="ticket-message">
+                            ${ticket.message}
+                        </div>
+                        <div class="ticket-actions">
+                            <button class="btn btn-primary" onclick="replyToTicket('${ticket.id}')">Reply</button>
+                            <button class="btn btn-secondary" onclick="closeTicket('${ticket.id}')">Close</button>
+                            <button class="btn btn-success" onclick="publishComment('${ticket.id}')">Publish</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                document.getElementById('tickets-container').innerHTML = '<div class="error-message">Failed to load support tickets</div>';
+            }
+        }
+
+        // Load customer comments
+        async function loadComments() {
+            try {
+                const comments = await makeAuthenticatedRequest(API_ENDPOINTS.COMMENTS);
+                const container = document.getElementById('comments-container');
+                
+                if (comments.length === 0) {
+                    container.innerHTML = '<div class="no-data">No customer comments</div>';
+                    return;
+                }
+                
+                container.innerHTML = comments.map(comment => `
+                    <div class="ticket">
+                        <div class="ticket-header">
+                            <div class="ticket-subject">${comment.title}</div>
+                            <div class="ticket-date">${formatDate(comment.createdAt)}</div>
+                        </div>
+                        <div class="ticket-meta">
+                            <div class="ticket-customer">${comment.customerName}</div>
+                            <div class="ticket-rating">Rating: ${comment.rating}/5</div>
+                        </div>
+                        <div class="ticket-message">
+                            ${comment.content}
+                        </div>
+                        <div class="ticket-actions">
+                            <button class="btn btn-primary" onclick="replyToComment('${comment.id}')">Reply</button>
+                            <button class="btn btn-success" onclick="publishComment('${comment.id}')">Publish</button>
+                            <button class="btn btn-danger" onclick="deleteComment('${comment.id}')">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                document.getElementById('comments-container').innerHTML = '<div class="error-message">Failed to load customer comments</div>';
+            }
+        }
+
+        // Load products
+        async function loadProducts() {
+            try {
+                const products = await makeAuthenticatedRequest(API_ENDPOINTS.PRODUCTS);
+                const tbody = document.getElementById('products-table-body');
+                
+                if (products.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No products found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = products.map(product => `
+                    <tr>
+                        <td>
+                            <div class="logo-placeholder" style="width: 40px; height: 40px;">
+                                ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<i class="fas fa-cube"></i>'}
+                            </div>
+                        </td>
+                        <td>${product.name}</td>
+                        <td>${product.category}</td>
+                        <td>${product.retailPrice} XAF</td>
+                        <td>${product.retailQuantity} (${product.bulkQuantity || 0} bulk)</td>
+                        <td><span class="order-status status-${product.status}">${product.status}</span></td>
+                        <td>
+                            <button class="btn btn-primary" onclick="editProduct('${product.id}')">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('products-table-body').innerHTML = '<tr><td colspan="7" style="text-align: center;">Failed to load products</td></tr>';
+            }
+        }
+
+        // Load admin settings
+        async function loadAdminSettings() {
+            try {
+                const profile = await makeAuthenticatedRequest(API_ENDPOINTS.PROFILE);
+                
+                // Update form fields
+                document.getElementById('adminName').value = profile.name || '';
+                document.getElementById('adminEmail').value = profile.email || '';
+                document.getElementById('adminPhone').value = profile.phone || '';
+                
+                // Update admin name in header
+                document.getElementById('admin-name').textContent = profile.name || 'Admin';
+                
+                // Update logo if available
+                if (profile.companyLogo) {
+                    const logoPlaceholder = document.getElementById('settingsLogoPlaceholder');
+                    logoPlaceholder.innerHTML = `<img src="${profile.companyLogo}" alt="Company Logo">`;
+                }
+            } catch (error) {
+                console.error('Error loading admin settings:', error);
+                showError('Failed to load admin settings');
+            }
+        }
+
+        // Add a new product
+        async function addProduct() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
             
-            const files = e.dataTransfer.files;
-            if (files.length) {
-                fileInput.files = files;
-                alert(`Selected ${files.length} file(s) for upload`);
-                // Here you would typically handle the file upload process
+            try {
+                const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.PRODUCTS}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error('Failed to add product');
+                
+                const result = await response.json();
+                showSuccess('Product added successfully');
+                form.reset();
+                loadProducts();
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showError('Failed to add product');
             }
-        });
-        
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length) {
-                alert(`Selected ${fileInput.files.length} file(s) for upload`);
-                // Here you would typically handle the file upload process
+        }
+
+        // Update admin profile
+        async function updateProfile() {
+            const name = document.getElementById('adminName').value;
+            const email = document.getElementById('adminEmail').value;
+            const phone = document.getElementById('adminPhone').value;
+            
+            try {
+                await makeAuthenticatedRequest(API_ENDPOINTS.PROFILE, {
+                    method: 'PUT',
+                    body: JSON.stringify({ name, email, phone })
+                });
+                
+                showSuccess('Profile updated successfully');
+                document.getElementById('admin-name').textContent = name;
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError('Failed to update profile');
             }
-        });
+        }
+
+        // Change admin password
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                showError('New passwords do not match');
+                return;
+            }
+            
+            try {
+                await makeAuthenticatedRequest(API_ENDPOINTS.CHANGE_PASSWORD, {
+                    method: 'POST',
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                
+                showSuccess('Password changed successfully');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showError('Failed to change password');
+            }
+        }
+
+        // Update company logo
+        async function updateLogo() {
+            const logoInput = document.getElementById('companyLogo');
+            if (!logoInput.files.length) {
+                showError('Please select a logo file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('logo', logoInput.files[0]);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.LOGO}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error('Failed to update logo');
+                
+                const result = await response.json();
+                showSuccess('Logo updated successfully');
+                
+                // Update logo placeholders
+                const logoUrl = result.logoUrl;
+                document.getElementById('logoPlaceholder').innerHTML = `<img src="${logoUrl}" alt="Company Logo">`;
+                document.getElementById('settingsLogoPlaceholder').innerHTML = `<img src="${logoUrl}" alt="Company Logo">`;
+            } catch (error) {
+                console.error('Error updating logo:', error);
+                showError('Failed to update logo');
+            }
+        }
+
+        // Helper functions
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function showSuccess(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-success';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 3000);
+        }
+
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-error';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 5000);
+        }
+
+        // Initialize the dashboard
+        async function initializeDashboard() {
+            // Get the token from localStorage (set during login)
+            authToken = localStorage.getItem('adminToken');
+            
+            if (!authToken) {
+                // Redirect to login if no token found
+                redirectToLogin();
+                return;
+            }
+            
+            try {
+                // Verify token is valid by making a test request
+                await loadDashboardData();
+            } catch (error) {
+                console.error('Authentication failed:', error);
+                // Token might be invalid/expired, redirect to login
+                redirectToLogin();
+            }
+        }
+
+        // Initialize when the page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
     </script>
 </body>
 </html>

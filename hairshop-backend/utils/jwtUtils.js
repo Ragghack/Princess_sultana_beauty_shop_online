@@ -12,7 +12,7 @@ if (!JWT_SECRET) {
 const generateToken = (userId, email) => {
     return jwt.sign(
         { 
-            userId: userId,
+            userId: userId,        // ✅ CORRECT: Use 'userId' consistently
             email: email 
         }, 
         JWT_SECRET, 
@@ -32,4 +32,4 @@ module.exports = {
     generateToken,
     verifyToken,
     JWT_SECRET
-};
+}
