@@ -45,5 +45,39 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Add to your products.js route file
+router.post('/admin/products', auth, upload.single('image'), async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
 
+    const { name, description, price, category, tag, status } = req.body;
+    
+    let imageURL = null;
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file.buffer);
+      imageURL = result.secure_url;
+    }
+
+    const product = await Product.create({
+      name,
+      description,
+      price: Number(price),
+      category,
+      tag,
+      imageURL,
+      status: status || 'active',
+      stock: req.body.stock || 0
+    });
+
+    res.json({ 
+      success: true, 
+      product 
+    });
+  } catch (err) {
+    console.error('Product creation error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 module.exports = router;

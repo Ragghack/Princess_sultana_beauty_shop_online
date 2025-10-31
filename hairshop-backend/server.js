@@ -13,23 +13,22 @@ app.use(cors({
         'http://127.0.0.1:5501', 
         'http://localhost:3000', 
         'http://localhost:5501',
-        'http://localhost:5000', // Add your backend port for testing
-        'http://127.0.0.1:5000'  // Add your backend port for testing
+        'http://localhost:5000',
+        'http://127.0.0.1:5000'
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
-//✅ ADD THIS DEBUG MIDDLEWARE TO TRACK REQUESTS
+
+// ✅ REQUEST LOGGING MIDDLEWARE
 app.use((req, res, next) => {
-    console.log('🔍 Incoming Request:', {
-        method: req.method,
-        url: req.url,
-        body: req.body,
-        headers: req.headers
-    });
+    console.log('🔍', new Date().toISOString(), req.method, req.url);
+    console.log('   Origin:', req.headers.origin);
+    console.log('   Body:', req.body);
     next();
 });
+
 app.use(express.json()); // ✅ This must come BEFORE routes
 
 // Serve uploaded files statically
@@ -114,7 +113,8 @@ app.post("/api/admin/register", async (req, res) => {
     });
   }
 });
-  // TEMPORARY ADMIN CREATION ENDPOINT
+
+// TEMPORARY ADMIN CREATION ENDPOINT
 app.post("/api/create-admin", async (req, res) => {
   try {
     const bcrypt = require('bcrypt');
@@ -149,30 +149,42 @@ app.post("/api/create-admin", async (req, res) => {
   }
 });
 
-// ✅ FIX: Import and use route files CORRECTLY
-// ✅ FIX: Import and use route files CORRECTLY
+// ============================
+// 🛣️ ROUTES CONFIGURATION - FIXED
+// ============================
+
+// ✅ Import routes (ONCE)
 const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/user"); // ✅ UNCOMMENT THIS
+const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/products");
 const commandRoutes = require("./routes/commands");
-const adminRoutes = require("./routes/admin");
+const adminRoutes = require("./routes/admin"); // ✅ Only one declaration
 const authMiddleware = require("./middleware/auth");
 
 // ✅ MOUNT ALL ROUTES PROPERLY
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes); // ✅ UNCOMMENT THIS
+app.use("/api/user", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/commands", commandRoutes);
 
-// ✅ Protect admin routes with authentication middleware
+// ✅ Use admin routes (choose one option below):
+
+// OPTION 1: Without authentication for testing
+//app.use("/api/admin", adminRoutes);
+
+// OPTION 2: With authentication (comment out above line and uncomment below)
 app.use("/api/admin", authMiddleware, adminRoutes);
+
+// ============================
+// 🧪 TEST ENDPOINTS
+// ============================
 
 // Test route to verify server is working
 app.get("/", (req, res) => {
   res.send("Backend running with MongoDB Atlas!");
 });
 
-// ✅ ADD THIS TEST ENDPOINT TO DEBUG
+// Test endpoint for debugging
 app.post("/api/test-register", (req, res) => {
     console.log("Test register endpoint hit:", req.body);
     res.json({ 
@@ -181,6 +193,106 @@ app.post("/api/test-register", (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// Admin test endpoint
+app.get("/api/admin/test", (req, res) => {
+  res.json({ message: "Admin routes are working!" });
+});
+
+// Debug endpoints
+app.get('/api/debug', (req, res) => {
+  res.json({ 
+    message: 'Server is working!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.post('/api/debug/register', (req, res) => {
+  console.log('Debug register body:', req.body);
+  res.json({ 
+    success: true,
+    message: 'Debug endpoint works!',
+    received: req.body
+  });
+});
+
+// User test endpoint
+app.get('/api/test-user', authMiddleware, async (req, res) => {
+    try {
+        const User = require('./models/User');
+        const user = await User.findById(req.user.userId).select('-password');
+        res.json({
+            message: 'User data test',
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            },
+            tokenInfo: req.user
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============================
+// 🛠️ TEMPORARY FIXES (Remove after routes are working)
+// ============================
+
+// Temporary admin products endpoint (remove after admin routes work)
+app.post("/api/admin/products-temp", async (req, res) => {
+  try {
+    console.log('🎯 Temporary product creation:', req.body);
+    
+    const Product = require('./models/Product');
+    const { name, description, retailPrice, category, retailQuantity, status } = req.body;
+    
+    // Create product with proper field mapping
+    const product = await Product.create({
+      name,
+      description,
+      price: parseFloat(retailPrice), // Map retailPrice to price
+      category,
+      retailPrice: parseFloat(retailPrice),
+      retailQuantity: parseInt(retailQuantity) || 0,
+      status: status || 'active',
+      tag: 'New Arrival',
+      imageURL: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'
+    });
+    
+    console.log('✅ Temporary product created:', product._id);
+    
+    res.json({ 
+      success: true, 
+      message: 'Product created successfully (temp)',
+      product 
+    });
+    
+  } catch (error) {
+    console.error('💥 Temporary product creation error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
+  }
+});
+
+// Debug product endpoint
+app.post("/api/admin/products-debug", (req, res) => {
+  console.log('🔍 Debug product creation:', req.body);
+  res.json({ 
+    success: true, 
+    message: 'Debug endpoint works!',
+    received: req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ============================
+// 🚨 ERROR HANDLING
+// ============================
 
 // 404 handler
 app.use((req, res) => {
@@ -193,7 +305,9 @@ app.use((req, res) => {
       "POST /api/auth/register",
       "POST /api/auth/login", 
       "GET /api/auth/me",
-      "POST /api/test-register"
+      "POST /api/test-register",
+      "GET /api/admin/test",
+      "POST /api/admin/products-temp"
     ]
   });
 });
@@ -223,6 +337,10 @@ app.use((error, req, res, next) => {
   });
 });
 
+// ============================
+// 🚀 SERVER START
+// ============================
+
 // Start server
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
@@ -230,9 +348,11 @@ const server = app.listen(PORT, () => {
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 MongoDB: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}`);
   console.log(`✅ Available endpoints:`);
+  console.log(`   GET  http://localhost:${PORT}/`);
   console.log(`   POST http://localhost:${PORT}/api/auth/register`);
   console.log(`   POST http://localhost:${PORT}/api/auth/login`);
-  console.log(`   POST http://localhost:${PORT}/api/test-register`);
+  console.log(`   POST http://localhost:${PORT}/api/admin/products-temp`);
+  console.log(`   GET  http://localhost:${PORT}/api/admin/test`);
 });
 
 server.on('error', (error) => {
@@ -243,45 +363,5 @@ server.on('error', (error) => {
   }
   process.exit(1);
 });
-// Add to server.js for testing
-app.get('/api/debug', (req, res) => {
-  res.json({ 
-    message: 'Server is working!',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
 
-app.post('/api/debug/register', (req, res) => {
-  console.log('Debug register body:', req.body);
-  res.json({ 
-    success: true,
-    message: 'Debug endpoint works!',
-    received: req.body
-  });
-});
-// ✅ REQUEST LOGGING MIDDLEWARE
-app.use((req, res, next) => {
-    console.log('🔍', new Date().toISOString(), req.method, req.url);
-    console.log('   Origin:', req.headers.origin);
-    console.log('   Body:', req.body);
-    next();
-});
-app.get('/api/test-user', authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.userId).select('-password');
-        res.json({
-            message: 'User data test',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            },
-            tokenInfo: req.user
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 module.exports = app;

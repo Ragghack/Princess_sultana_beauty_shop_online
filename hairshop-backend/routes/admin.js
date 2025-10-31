@@ -7,6 +7,7 @@ const Order = require("../models/Order");
 const Ticket = require("../models/Tickets");
 const path = require('path');
 const multer = require('multer');
+const authMiddleware = require("../middleware/auth");
 
 // Multer storage configuration for saving uploads to /uploads
 const storage = multer.diskStorage({
@@ -35,6 +36,9 @@ const upload = multer({
 // 🔑 ADMIN ROUTES
 // ============================
 
+// Apply authentication middleware to ALL admin routes
+router.use(authMiddleware);
+
 // ✅ Add a subscriber (create user with role "customer")
 router.post("/add-subscriber", async (req, res) => {
   try {
@@ -57,11 +61,6 @@ router.post("/add-subscriber", async (req, res) => {
 // ✅ Upload an image and optionally attach it to a product
 router.post('/upload-image', upload.single('image'), async (req, res) => {
   try {
-    // ensure the auth middleware already attached req.user
-    if (!req.user || req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Forbidden: admin access required' });
-    }
-
     const { productId } = req.body;
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
@@ -144,12 +143,13 @@ router.patch("/update-command/:id", async (req, res) => {
   }
 });
 
-// ----------------------------
+// ============================
+// 📊 DASHBOARD & STATISTICS
+// ============================
+
 // Admin: Dashboard statistics
-// ----------------------------
 router.get('/stats', async (req, res) => {
   try {
-    // prefer Order model for revenue/amounts; fallback to Command count
     const totalOrders = await Order.countDocuments();
     const totalUsers = await User.countDocuments();
     const totalProducts = await Product.countDocuments();
@@ -167,9 +167,7 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// ----------------------------
 // Admin: Recent orders
-// ----------------------------
 router.get('/orders/recent', async (req, res) => {
   try {
     const orders = await Order.find()
@@ -199,9 +197,7 @@ router.get('/orders/recent', async (req, res) => {
   }
 });
 
-// ----------------------------
 // Admin: Orders (with optional status filter)
-// ----------------------------
 router.get('/orders', async (req, res) => {
   try {
     const { status } = req.query;
@@ -231,9 +227,235 @@ router.get('/orders', async (req, res) => {
   }
 });
 
-// ----------------------------
+// ============================
+// 🛍️ PRODUCT MANAGEMENT
+// ============================
+
+// GET all products for admin
+router.get('/products', async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
+// POST create new product - FIXED VERSION with authentication
+// POST create new product with image upload
+router.post('/products', upload.single('productImage'), async (req, res) => {
+  try {
+    console.log('🎯 Creating product with image:', req.body);
+    console.log('📁 File received:', req.file);
+    console.log('👤 User making request:', req.user);
+    
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Administrator privileges required' 
+      });
+    }
+    
+    const { 
+      name, 
+      description, 
+      category, 
+      retailPrice, 
+      retailQuantity, 
+      status,
+      bulkQuantity,
+      bulkUnit,
+      price,
+      tag
+    } = req.body;
+
+    // Validation
+    if (!name || !description || !category) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'Name, description, and category are required' 
+      });
+    }
+
+    const productPrice = retailPrice || price;
+    if (!productPrice) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'Product price is required' 
+      });
+    }
+
+    // Handle image upload
+    let imageURL = null;
+    let imageFile = null;
+
+    if (req.file) {
+      // Option 1: Store file locally (uploads folder)
+      imageURL = `/uploads/${req.file.filename}`;
+      imageFile = {
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        path: req.file.path
+      };
+      
+      console.log('🖼️ Image stored locally:', imageURL);
+    } else {
+      // Option 2: Use Cloudinary if configured
+      // Uncomment below if you want to use Cloudinary
+      /*
+      if (process.env.CLOUDINARY_CLOUD_NAME) {
+        const result = await uploadToCloudinary(req.file.buffer);
+        imageURL = result.secure_url;
+        console.log('☁️ Image uploaded to Cloudinary:', imageURL);
+      }
+      */
+    }
+
+    // Create product data
+    const productData = {
+      name: name.trim(),
+      description: description.trim(),
+      category,
+      price: parseFloat(productPrice),
+      retailPrice: parseFloat(productPrice),
+      retailQuantity: parseInt(retailQuantity) || 0,
+      status: status || 'active',
+      tag: tag || 'New Arrival',
+      imageURL: imageURL, // Use uploaded image or null
+      imageFile: imageFile // Store file info
+    };
+
+    // Add optional fields
+    if (bulkQuantity) productData.bulkQuantity = parseInt(bulkQuantity);
+    if (bulkUnit) productData.bulkUnit = bulkUnit.trim();
+
+    const product = await Product.create(productData);
+    
+    console.log('✅ Product created successfully with image:', product.imageURL);
+    
+    res.status(201).json({ 
+      success: true, 
+      message: 'Product created successfully',
+      product: {
+        _id: product._id,
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        price: product.price,
+        retailPrice: product.retailPrice,
+        retailQuantity: product.retailQuantity,
+        status: product.status,
+        tag: product.tag,
+        imageURL: product.imageURL // This will be the uploaded image or null
+      }
+    });
+    
+  } catch (error) {
+    console.error('💥 Product creation error:', error);
+    
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        success: false,
+        error: errors.join(', ') 
+      });
+    }
+    
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'Product with this name already exists' 
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false,
+      error: 'Internal server error: ' + error.message 
+    });
+  }
+});
+
+// Helper function for Cloudinary upload (optional)
+async function uploadToCloudinary(buffer) {
+  const cloudinary = require('cloudinary').v2;
+  const streamifier = require('streamifier');
+  
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'sultana-haircare' },
+      (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
+}
+
+// DELETE product
+router.delete('/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({ 
+        success: false,
+        error: 'Product not found' 
+      });
+    }
+    res.json({ 
+      success: true, 
+      message: 'Product deleted successfully' 
+    });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to delete product' 
+    });
+  }
+});
+
+// UPDATE product
+router.put('/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: true }
+    );
+    if (!product) {
+      return res.status(404).json({ 
+        success: false,
+        error: 'Product not found' 
+      });
+    }
+    res.json({ 
+      success: true, 
+      message: 'Product updated successfully',
+      product 
+    });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to update product' 
+    });
+  }
+});
+
+// ============================
+// 🎫 CUSTOMER SUPPORT
+// ============================
+
 // Admin: Tickets
-// ----------------------------
 router.get('/tickets', async (req, res) => {
   try {
     const tickets = await Ticket.find().sort({ createdAt: -1 }).populate('user', 'name email');
@@ -253,9 +475,11 @@ router.get('/tickets', async (req, res) => {
   }
 });
 
-// ----------------------------
+// ============================
+// 🖼️ IMAGE MANAGEMENT
+// ============================
+
 // Admin: Images (collect from Product documents)
-// ----------------------------
 router.get('/images', async (req, res) => {
   try {
     const products = await Product.find().sort({ updatedAt: -1 });
@@ -293,5 +517,118 @@ router.get('/images', async (req, res) => {
   }
 });
 
-module.exports = router;
+// ============================
+// 👤 ADMIN PROFILE & SETTINGS
+// ============================
 
+// Get admin profile
+router.get('/profile', async (req, res) => {
+  try {
+    // Get admin user from database
+    const adminUser = await User.findById(req.user.userId);
+    if (!adminUser) {
+      return res.status(404).json({ error: 'Admin user not found' });
+    }
+
+    res.json({
+      name: adminUser.name,
+      email: adminUser.email,
+      phone: adminUser.phone || '+237 6XX XXX XXX',
+      companyLogo: null
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update admin profile
+router.put('/profile', async (req, res) => {
+  try {
+    const { name, email, phone } = req.body;
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.userId,
+      { name, email, phone },
+      { new: true }
+    );
+
+    res.json({ 
+      success: true, 
+      message: 'Profile updated successfully',
+      profile: { 
+        name: updatedUser.name, 
+        email: updatedUser.email, 
+        phone: updatedUser.phone 
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Change password
+router.post('/change-password', async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    // Get user with password
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify current password
+    const bcrypt = require('bcrypt');
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Current password is incorrect' });
+    }
+
+    // Hash new password and update
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ 
+      success: true, 
+      message: 'Password changed successfully' 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update company logo
+router.post('/logo', upload.single('logo'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No logo file uploaded' });
+    }
+
+    const logoUrl = `/uploads/${req.file.filename}`;
+    
+    res.json({ 
+      success: true, 
+      message: 'Logo updated successfully',
+      logoUrl 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================
+// 💬 COMMENTS & REVIEWS
+// ============================
+
+// Admin: Customer comments (placeholder)
+router.get('/comments', async (req, res) => {
+  try {
+    // Placeholder - in real app, fetch from your Comments/Reviews model
+    res.json([]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
