@@ -98,6 +98,9 @@
       position: relative;
       overflow: hidden;
       background: var(--off-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .media img {
       width: 100%;
@@ -108,6 +111,16 @@
     }
     .slide:hover .media img {
       transform: scale(1.06);
+    }
+    .image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--light-brown);
+      color: var(--dark-brown);
+      font-size: 3rem;
     }
     .glow {
       position: absolute;
@@ -385,114 +398,189 @@
   <script>
     // Cart functions
     function getCart() {
-      try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch { return []; }
+      try { 
+        return JSON.parse(localStorage.getItem('cart') || '[]'); 
+      } catch { 
+        return []; 
+      }
     }
-    function setCart(c) { localStorage.setItem('cart', JSON.stringify(c)); }
-function addToCart(item) {
-  const cart = getCart();
-  const existingItem = cart.find(p => p.id === item.id);
-     if (existingItem) {
-    existingItem.qty += item.qty;
-  } else {
-    cart.push({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      qty: item.qty,
-      image: item.image || '' // Add image for checkout
-    });
-  }
-  setCart(cart);
-  updateCartStorage(); // New function to sync with checkout
-}
+    
+    function setCart(c) { 
+      localStorage.setItem('cart', JSON.stringify(c)); 
+    }
 
-function updateCartStorage() {
-  const cart = getCart();
-  localStorage.setItem('cartItems', JSON.stringify(cart));
-  
-  // Calculate totals for checkout
-  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const shipping = 1000; // Fixed shipping for XAF
-  const total = subtotal + shipping;
-  
-  localStorage.setItem('cartSubtotal', subtotal);
-  localStorage.setItem('cartShipping', shipping);
-  localStorage.setItem('cartTotal', total);
-  localStorage.setItem('cartCurrency', 'XAF');
-}
+    function addToCart(item) {
+      const cart = getCart();
+      const existingItem = cart.find(p => p.id === item.id);
+      
+      if (existingItem) {
+        existingItem.qty += item.qty;
+      } else {
+        cart.push({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          image: item.image || ''
+        });
+      }
+      
+      setCart(cart);
+      updateCartStorage();
+    }
 
-    // Admin check (simple demo: check localStorage 'isAdmin')
-function isAdmin() {
-  const token = localStorage.getItem('adminToken');
-  if (!token) return false;
-  
-  // Simple check - in production, verify token with backend
-  try {
-    const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
-    return user.role === 'admin';
-  } catch {
-    return false;
-  }
-}
+    function updateCartStorage() {
+      const cart = getCart();
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+      
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const shipping = 1000;
+      const total = subtotal + shipping;
+      
+      localStorage.setItem('cartSubtotal', subtotal);
+      localStorage.setItem('cartShipping', shipping);
+      localStorage.setItem('cartTotal', total);
+      localStorage.setItem('cartCurrency', 'XAF');
+    }
+
+    // Admin check
+    function isAdmin() {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return false;
+      
+      try {
+        const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        return user.role === 'admin';
+      } catch {
+        return false;
+      }
+    }
 
     // Fetch products from backend
-  async function fetchProducts() {
-  try {
-    const res = await fetch('http://localhost:5000/api/products');
-    if (!res.ok) throw new Error('Failed to fetch products');
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return []; // Return empty array instead of failing
-  }
-}
+    async function fetchProducts() {
+      try {
+        const res = await fetch('http://localhost:5000/api/products');
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const products = await res.json();
+        
+        // Debug: Check what's actually returned
+        console.log('🛍️ Products from API:', products);
+        products.forEach((product, index) => {
+          console.log(`Product ${index}:`, {
+            name: product.name,
+            image: product.image,
+            imageURL: product.imageURL,
+            price: product.price,
+            hasImageField: !!product.image,
+            hasImageURLField: !!product.imageURL
+          });
+        });
+        
+        return products;
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        showToast('Failed to load products');
+        return [];
+      }
+    }
 
-    // Render products as slides
+    // Render products with proper image handling
     async function renderProducts() {
       const products = await fetchProducts();
       const track = document.getElementById('track');
+      
+      if (products.length === 0) {
+        track.innerHTML = `
+          <div class="slide">
+            <div class="content" style="grid-column: 1 / -1; text-align: center;">
+              <h2>No Products Available</h2>
+              <p>Check back later for our amazing hair care products!</p>
+            </div>
+          </div>
+        `;
+        renderDots();
+        return;
+      }
+      
       track.innerHTML = '';
+      
       products.forEach(product => {
+        // Handle multiple possible image fields
+        let imageUrl = product.imageURL || product.image;
+        
+        // Create image HTML with proper fallbacks
+        const imageHtml = imageUrl ? 
+          `<img src="${imageUrl}" 
+                alt="${product.name}" 
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                loading="lazy" />
+           <div class="image-placeholder" style="display: none;">
+             <i class="fas fa-cube"></i>
+           </div>` :
+          `<div class="image-placeholder">
+             <i class="fas fa-cube"></i>
+           </div>`;
+        
         const slide = document.createElement('article');
         slide.className = 'slide';
         slide.innerHTML = `
           <figure class="media">
-            <img src="${product.image || 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'}" alt="${product.name}" />
+            ${imageHtml}
             <span class="glow"></span>
           </figure>
           <div class="content">
-            <span class="pill"><i class="fa-solid fa-star"></i> ${product.tag || ''}</span>
+            <span class="pill"><i class="fa-solid fa-star"></i> ${product.tag || 'Premium'}</span>
             <h2>${product.name}</h2>
-            <p class="desc">${product.description || ''}</p>
-            <div class="price">$${product.price}</div>
+            <p class="desc">${product.description || 'No description available.'}</p>
+            <div class="price">${product.price} XAF</div>
             <div class="buy-row">
               <div class="qty">
                 <button type="button" data-dec>-</button>
                 <input type="number" min="1" value="1">
                 <button type="button" data-inc>+</button>
               </div>
-              <button class="cta" data-buy data-id="${product._id}" data-name="${product.name}" data-price="${product.price}">
+              <button class="cta" data-buy 
+                      data-id="${product._id}" 
+                      data-name="${product.name}" 
+                      data-price="${product.price}"
+                      data-image="${imageUrl || ''}">
                 <i class="fa-solid fa-bag-shopping"></i> Add to Cart
               </button>
-              ${isAdmin() ? `<button class="cta" data-remove data-id="${product._id}" style="background:#FF6B6B;margin-left:8px;">Remove</button>` : ''}
+              ${isAdmin() ? `
+                <button class="cta" data-remove data-id="${product._id}" style="background:#FF6B6B;">
+                  <i class="fas fa-trash"></i> Remove
+                </button>
+              ` : ''}
             </div>
-            ${isAdmin() ? `<button class="cta" data-add style="background:#2E8B57;margin-top:10px;">Add New Product</button>` : ''}
+            ${isAdmin() ? `
+              <button class="cta" data-add style="background:#2E8B57;">
+                <i class="fas fa-plus"></i> Add New Product
+              </button>
+            ` : ''}
           </div>
         `;
         track.appendChild(slide);
       });
+      
       setupSlideEvents();
       renderDots();
     }
 
-    // Setup slide events (buy, qty, admin)
+    // Setup slide events
     function setupSlideEvents() {
       document.querySelectorAll('.slide').forEach(slide => {
         const dec = slide.querySelector('[data-dec]');
         const inc = slide.querySelector('[data-inc]');
         const input = slide.querySelector('input[type="number"]');
-        dec.addEventListener('click', () => { input.value = Math.max(1, (+input.value || 1) - 1); });
-        inc.addEventListener('click', () => { input.value = (+input.value || 1) + 1; });
+        
+        dec.addEventListener('click', () => { 
+          input.value = Math.max(1, (+input.value || 1) - 1); 
+        });
+        
+        inc.addEventListener('click', () => { 
+          input.value = (+input.value || 1) + 1; 
+        });
+        
         const buy = slide.querySelector('[data-buy]');
         buy.addEventListener('click', () => {
           const qty = Math.max(1, parseInt(input.value || '1', 10));
@@ -500,59 +588,71 @@ function isAdmin() {
             id: buy.dataset.id,
             name: buy.dataset.name,
             price: parseFloat(buy.dataset.price),
-            qty
+            qty: qty,
+            image: buy.dataset.image || ''
           };
           addToCart(item);
           showToast(`${item.name} ×${item.qty} added to cart`);
         });
+        
         // Admin remove
         const remove = slide.querySelector('[data-remove]');
         if (remove) {
           remove.addEventListener('click', async () => {
-            if (confirm('Remove this product?')) {
-              await fetch(`http://localhost:5000/api/products/${remove.dataset.id}`, { method: 'DELETE' });
-              showToast('Product removed');
-              renderProducts();
+            if (confirm('Are you sure you want to remove this product?')) {
+              try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`http://localhost:5000/api/products/${remove.dataset.id}`, { 
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
+                });
+                
+                if (response.ok) {
+                  showToast('Product removed successfully');
+                  renderProducts();
+                } else {
+                  showToast('Failed to remove product');
+                }
+              } catch (error) {
+                console.error('Error removing product:', error);
+                showToast('Error removing product');
+              }
             }
           });
         }
+        
         // Admin add
         const add = slide.querySelector('[data-add]');
         if (add) {
-          add.addEventListener('click', async () => {
-            const name = prompt('Product name:');
-            const price = prompt('Product price:');
-            const description = prompt('Product description:');
-            if (name && price) {
-              await fetch('http://localhost:5000/api/products', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price, description })
-              });
-              showToast('Product added');
-              renderProducts();
-            }
+          add.addEventListener('click', () => {
+            // Redirect to admin dashboard for proper product creation
+            window.location.href = 'admin-dashboard.html#product-management';
           });
         }
       });
     }
 
-    // Dots and slider navigation
+    // Slider navigation
     const dotsWrap = document.getElementById('dots');
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
     let index = 0;
+    
     function renderDots() {
       const track = document.getElementById('track');
       const slides = Array.from(track.children);
       dotsWrap.innerHTML = '';
+      
       slides.forEach((_, i) => {
-        const d = document.createElement('button');
-        d.className = 'dot' + (i === index ? ' active' : '');
-        d.addEventListener('click', () => go(i));
-        dotsWrap.appendChild(d);
+        const dot = document.createElement('button');
+        dot.className = 'dot' + (i === index ? ' active' : '');
+        dot.addEventListener('click', () => go(i));
+        dotsWrap.appendChild(dot);
       });
     }
+    
     function go(i) {
       const track = document.getElementById('track');
       const slides = Array.from(track.children);
@@ -560,12 +660,29 @@ function isAdmin() {
       track.style.transform = `translateX(${-100 * index}%)`;
       renderDots();
     }
+    
     prev.addEventListener('click', () => go(index - 1));
     next.addEventListener('click', () => go(index + 1));
-    setInterval(() => go(index + 1), 7000);
+    
+    // Auto-slide only if there are multiple products
+    let slideInterval;
+    function startAutoSlide() {
+      const track = document.getElementById('track');
+      const slides = Array.from(track.children);
+      if (slides.length > 1) {
+        slideInterval = setInterval(() => go(index + 1), 7000);
+      }
+    }
+    
+    // Touch swipe support
     let startX = null;
     const trackEl = document.getElementById('track');
-    trackEl.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    
+    trackEl.addEventListener('touchstart', (e) => { 
+      startX = e.touches[0].clientX; 
+      clearInterval(slideInterval);
+    }, { passive: true });
+    
     trackEl.addEventListener('touchmove', (e) => {
       if (startX === null) return;
       const dx = e.touches[0].clientX - startX;
@@ -574,9 +691,13 @@ function isAdmin() {
         startX = null;
       }
     }, { passive: true });
-    trackEl.addEventListener('touchend', () => { startX = null; });
+    
+    trackEl.addEventListener('touchend', () => { 
+      startX = null;
+      startAutoSlide();
+    });
 
-    // Toast
+    // Toast notification
     const toast = document.getElementById('toast');
     function showToast(msg) {
       toast.textContent = msg;
@@ -584,8 +705,10 @@ function isAdmin() {
       setTimeout(() => toast.classList.remove('show'), 1800);
     }
 
-    // Initial render
-    renderProducts();
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts().then(startAutoSlide);
+    });
   </script>
 </body>
 </html>
