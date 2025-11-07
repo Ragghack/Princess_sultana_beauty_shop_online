@@ -477,7 +477,8 @@
                     <span id="total">0 XAF</span>
                 </div>
                 
-                <a href="checkout.html" class="checkout-btn" id="checkout-btn">Proceed to Checkout</a>
+                <!-- <a href="checkout.html" class="checkout-btn" id="checkout-btn">Proceed to Checkout</a> -->
+                <button class="checkout-btn" id="checkout-btn">Proceed via WhatsApp</button>
             </div>
         </div>
         
@@ -521,6 +522,31 @@
     </div>
 
     <script>
+
+        // Javascript for Proceed to WhatsApp Checkout
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartTotal = localStorage.getItem('cartTotal') || '0';
+            const cartCurrency = localStorage.getItem('cartCurrency') || 'XAF';
+            
+            if (cartItems.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            let message = 'Hello Sultana shop, I would like to place an order with the following items:%0A%0A';
+            
+            cartItems.forEach(item => {
+                message += `- ${item.name} (Quantity: ${item.qty})%0A`;
+            });
+            
+            message += `%0ATotal: ${cartTotal} ${cartCurrency}%0A%0AThank you!`;
+            
+            const whatsappUrl = `https://wa.me/237699538939?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             // Get cart data from localStorage instead of hardcoded sample data
             function getCartFromStorage() {
