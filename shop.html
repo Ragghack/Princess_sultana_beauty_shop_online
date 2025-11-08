@@ -506,7 +506,7 @@
       
       products.forEach(product => {
         // Handle multiple possible image fields
-        let imageUrl = product.imageURL || product.image;
+        let imageUrl = "hairshop-backend" + product.imageURL || product.image;
         
         // Create image HTML with proper fallbacks
         const imageHtml = imageUrl ? 
@@ -562,6 +562,9 @@
         track.appendChild(slide);
       });
       
+      // ➡️ ADD THIS LINE FOR DEBUGGING
+      console.log(`Product "${product.name}" is using image URL: ${imageUrl}`);
+
       setupSlideEvents();
       renderDots();
     }
