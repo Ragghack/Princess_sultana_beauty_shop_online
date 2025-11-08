@@ -23,13 +23,16 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    const allowed = /\.(jpg|jpeg|png|gif)$/i;
+    const allowed = /\.(jpg|jpeg|png|gif|webp)$/i;
     if (!allowed.test(path.extname(file.originalname))) {
-      return cb(new Error('Only image files are allowed'));
+      return cb(new Error('Only image files are allowed (jpg, jpeg, png, gif, webp)'));
     }
     cb(null, true);
   },
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB limit
+  limits: { 
+    files: 4, // Maximum 4 files
+    fileSize: 5 * 1024 * 1024 // 5 MB limit
+  }
 });
 
 // ============================
@@ -71,7 +74,11 @@ router.post('/upload-image', upload.single('image'), async (req, res) => {
       if (!product) return res.status(404).json({ message: 'Product not found' });
 
       product.images = product.images || [];
-      product.images.push(imagePath);
+      product.images.push({
+        url: imagePath,
+        altText: `Image for ${product.name}`,
+        isPrimary: false
+      });
       await product.save();
 
       return res.status(201).json({ message: 'Image uploaded and attached to product', image: imagePath, product });
@@ -235,6 +242,7 @@ router.get('/orders', async (req, res) => {
 router.get('/products', async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
+    console.log(`📦 Admin fetched ${products.length} products`);
     res.json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -242,12 +250,11 @@ router.get('/products', async (req, res) => {
   }
 });
 
-// POST create new product - FIXED VERSION with authentication
-// POST create new product with image upload
-router.post('/products', upload.single('productImage'), async (req, res) => {
+// POST create new product - FIXED VERSION with multiple image support
+router.post('/products', upload.array('images', 4), async (req, res) => {
   try {
-    console.log('🎯 Creating product with image:', req.body);
-    console.log('📁 File received:', req.file);
+    console.log('🎯 Creating product with images:', req.body);
+    console.log('📁 Files received:', req.files ? req.files.length : 0);
     console.log('👤 User making request:', req.user);
     
     // Check if user is admin
@@ -272,45 +279,39 @@ router.post('/products', upload.single('productImage'), async (req, res) => {
     } = req.body;
 
     // Validation
-    if (!name || !description || !category) {
+    if (!name || !description || !category || !retailPrice) {
       return res.status(400).json({ 
         success: false,
-        error: 'Name, description, and category are required' 
+        error: 'Name, description, category, and retail price are required' 
       });
     }
 
-    const productPrice = retailPrice || price;
-    if (!productPrice) {
-      return res.status(400).json({ 
-        success: false,
-        error: 'Product price is required' 
-      });
-    }
-
-    // Handle image upload
-    let imageURL = null;
-    let imageFile = null;
-
-    if (req.file) {
-      // Option 1: Store file locally (uploads folder)
-      imageURL = `/uploads/${req.file.filename}`;
-      imageFile = {
-        filename: req.file.filename,
-        originalName: req.file.originalname,
-        path: req.file.path
-      };
+    // Handle image uploads
+    const images = [];
+    
+    if (req.files && req.files.length > 0) {
+      console.log('🖼️ Processing uploaded images...');
       
-      console.log('🖼️ Image stored locally:', imageURL);
-    } else {
-      // Option 2: Use Cloudinary if configured
-      // Uncomment below if you want to use Cloudinary
-      /*
-      if (process.env.CLOUDINARY_CLOUD_NAME) {
-        const result = await uploadToCloudinary(req.file.buffer);
-        imageURL = result.secure_url;
-        console.log('☁️ Image uploaded to Cloudinary:', imageURL);
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const imagePath = `/uploads/${file.filename}`;
+        
+        images.push({
+          url: imagePath,
+          altText: `Image ${i + 1} of ${name}`,
+          isPrimary: i === 0
+        });
+        
+        console.log(`✅ Image ${i + 1} saved: ${imagePath}`);
       }
-      */
+    } else {
+      console.log('ℹ️ No images uploaded, using default placeholder');
+      // Add a default placeholder image if none uploaded
+      images.push({
+        url: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        altText: 'Default product image',
+        isPrimary: true
+      });
     }
 
     // Create product data
@@ -318,38 +319,28 @@ router.post('/products', upload.single('productImage'), async (req, res) => {
       name: name.trim(),
       description: description.trim(),
       category,
-      price: parseFloat(productPrice),
-      retailPrice: parseFloat(productPrice),
+      price: parseFloat(retailPrice || price),
+      retailPrice: parseFloat(retailPrice),
       retailQuantity: parseInt(retailQuantity) || 0,
       status: status || 'active',
       tag: tag || 'New Arrival',
-      imageURL: imageURL, // Use uploaded image or null
-      imageFile: imageFile // Store file info
+      images: images // Store all images in the images array
     };
 
     // Add optional fields
     if (bulkQuantity) productData.bulkQuantity = parseInt(bulkQuantity);
     if (bulkUnit) productData.bulkUnit = bulkUnit.trim();
 
+    console.log('💾 Saving product to database...', productData);
+    
     const product = await Product.create(productData);
     
-    console.log('✅ Product created successfully with image:', product.imageURL);
+    console.log('✅ Product created successfully:', product._id);
     
     res.status(201).json({ 
       success: true, 
-      message: 'Product created successfully',
-      product: {
-        _id: product._id,
-        name: product.name,
-        description: product.description,
-        category: product.category,
-        price: product.price,
-        retailPrice: product.retailPrice,
-        retailQuantity: product.retailQuantity,
-        status: product.status,
-        tag: product.tag,
-        imageURL: product.imageURL // This will be the uploaded image or null
-      }
+      message: `Product created successfully with ${images.length} images`,
+      product: product
     });
     
   } catch (error) {
@@ -377,29 +368,6 @@ router.post('/products', upload.single('productImage'), async (req, res) => {
   }
 });
 
-// Helper function for Cloudinary upload (optional)
-async function uploadToCloudinary(buffer) {
-  const cloudinary = require('cloudinary').v2;
-  const streamifier = require('streamifier');
-  
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
-
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: 'sultana-haircare' },
-      (err, result) => {
-        if (err) return reject(err);
-        resolve(result);
-      }
-    );
-    streamifier.createReadStream(buffer).pipe(stream);
-  });
-}
-
 // DELETE product
 router.delete('/products/:id', async (req, res) => {
   try {
@@ -424,19 +392,62 @@ router.delete('/products/:id', async (req, res) => {
 });
 
 // UPDATE product
-router.put('/products/:id', async (req, res) => {
+router.put('/products/:id', upload.array('images', 4), async (req, res) => {
   try {
+    const { 
+      name, 
+      description, 
+      category, 
+      retailPrice, 
+      retailQuantity, 
+      status,
+      bulkQuantity,
+      bulkUnit,
+      tag 
+    } = req.body;
+
+    const updateData = {
+      name,
+      description,
+      category,
+      retailPrice: parseFloat(retailPrice),
+      retailQuantity: parseInt(retailQuantity) || 0,
+      status,
+      tag
+    };
+
+    // Handle image updates if new images are uploaded
+    if (req.files && req.files.length > 0) {
+      const newImages = [];
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const imagePath = `/uploads/${file.filename}`;
+        newImages.push({
+          url: imagePath,
+          altText: `Image ${i + 1} of ${name}`,
+          isPrimary: i === 0
+        });
+      }
+      updateData.images = newImages;
+    }
+
+    // Add optional fields
+    if (bulkQuantity) updateData.bulkQuantity = parseInt(bulkQuantity);
+    if (bulkUnit) updateData.bulkUnit = bulkUnit;
+
     const product = await Product.findByIdAndUpdate(
       req.params.id, 
-      req.body, 
+      updateData, 
       { new: true, runValidators: true }
     );
+    
     if (!product) {
       return res.status(404).json({ 
         success: false,
         error: 'Product not found' 
       });
     }
+    
     res.json({ 
       success: true, 
       message: 'Product updated successfully',
@@ -446,7 +457,7 @@ router.put('/products/:id', async (req, res) => {
     console.error('Error updating product:', error);
     res.status(500).json({ 
       success: false,
-      error: 'Failed to update product' 
+      error: 'Failed to update product: ' + error.message 
     });
   }
 });
@@ -486,27 +497,17 @@ router.get('/images', async (req, res) => {
     const images = [];
 
     products.forEach(prod => {
-      // local images stored in product.images (paths like /uploads/..)
+      // local images stored in product.images array
       if (Array.isArray(prod.images)) {
-        prod.images.forEach((imgPath, idx) => {
+        prod.images.forEach((img, idx) => {
           images.push({
             id: `${prod._id}-${idx}`,
-            url: imgPath,
-            filename: path.basename(imgPath),
+            url: img.url,
+            altText: img.altText,
+            filename: img.url.split('/').pop(),
             productName: prod.name,
             uploadedAt: prod.updatedAt || prod.createdAt
           });
-        });
-      }
-
-      // also include primary cloud image (imageURL) if present
-      if (prod.imageURL) {
-        images.push({
-          id: `${prod._id}-primary`,
-          url: prod.imageURL,
-          filename: prod.imageURL.split('/').pop(),
-          productName: prod.name,
-          uploadedAt: prod.updatedAt || prod.createdAt
         });
       }
     });
@@ -629,6 +630,54 @@ router.get('/comments', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ============================
+// 🧪 TEST ENDPOINTS
+// ============================
+
+// Test endpoint for debugging file uploads
+router.post('/products-test', upload.array('images', 4), (req, res) => {
+  try {
+    console.log('🧪 TEST ENDPOINT HIT');
+    console.log('Files:', req.files ? req.files.length : 0);
+    console.log('Body fields:', Object.keys(req.body));
+    
+    if (req.files) {
+      req.files.forEach((file, index) => {
+        console.log(`File ${index}:`, {
+          fieldname: file.fieldname,
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+          size: file.size
+        });
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Test endpoint works!',
+      fileCount: req.files ? req.files.length : 0,
+      fields: Object.keys(req.body),
+      files: req.files ? req.files.map(f => ({
+        fieldname: f.fieldname,
+        originalname: f.originalname,
+        size: f.size
+      })) : []
+    });
+  } catch (error) {
+    console.error('Test endpoint error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Test authentication
+router.get('/test-auth', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Authentication working!',
+    user: req.user
+  });
 });
 
 module.exports = router;

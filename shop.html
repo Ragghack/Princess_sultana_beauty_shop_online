@@ -366,6 +366,102 @@
     <div class="dots" id="dots"></div>
   </main>
   <div class="toast" id="toast"></div>
+  <!-- Add this before the footer in shop.html -->
+<!-- Product Gallery Modal -->
+<div id="productModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+  <div class="modal-content" style="background: white; border-radius: 15px; max-width: 90%; max-height: 90%; overflow: auto; padding: 20px; position: relative;">
+    <span class="close" style="position: absolute; top: 15px; right: 15px; font-size: 28px; cursor: pointer; color: var(--dark-brown);">&times;</span>
+    
+    <div class="modal-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+      <!-- Image Gallery -->
+      <div class="gallery-section">
+        <div class="main-image" style="margin-bottom: 15px;">
+          <img id="modalMainImage" src="" alt="" style="width: 100%; border-radius: 10px; max-height: 400px; object-fit: cover;">
+        </div>
+        <div class="thumbnail-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+          <!-- Thumbnails will be inserted here -->
+        </div>
+      </div>
+      
+      <!-- Product Info -->
+      <div class="product-info" style="padding: 20px;">
+        <h2 id="modalProductName" style="color: var(--dark-brown); margin-bottom: 10px;"></h2>
+        <p id="modalProductDescription" style="line-height: 1.6; margin-bottom: 15px;"></p>
+        <div class="price" id="modalProductPrice" style="font-size: 1.5rem; font-weight: bold; color: var(--golden-brown); margin-bottom: 20px;"></div>
+        
+        <div class="buy-section">
+          <div class="qty" style="display: inline-flex; align-items: center; gap: 10px; margin-right: 15px;">
+            <button type="button" data-modal-dec style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--light-brown); background: var(--cream); cursor: pointer;">-</button>
+            <input type="number" id="modalQty" min="1" value="1" style="width: 60px; text-align: center; border: 1px solid var(--light-brown); border-radius: 8px; padding: 5px;">
+            <button type="button" data-modal-inc style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--light-brown); background: var(--cream); cursor: pointer;">+</button>
+          </div>
+          <button class="cta" id="modalAddToCart" style="background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;">
+            <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add this to your shop.html file in the product display section -->
+<!-- Replace the existing product display with this enhanced version -->
+
+<div class="content">
+    <span class="pill"><i class="fa-solid fa-star"></i> ${product.tag || 'Premium'}</span>
+    <h2>${product.name}</h2>
+    <p class="desc">${product.description || 'No description available.'}</p>
+    
+    <!-- Retail Pricing -->
+    <div class="price">${product.retailPrice || product.price} XAF</div>
+    
+    <!-- Bulk Information Display -->
+    ${product.wholesalePrice || product.bulkQuantity ? `
+        <div class="bulk-pricing" style="background: rgba(46, 139, 87, 0.1); padding: 12px; border-radius: 8px; margin: 10px 0; border-left: 3px solid var(--green);">
+            <h4 style="margin: 0 0 8px 0; color: var(--deep-green); font-size: 0.9rem;">
+                <i class="fas fa-boxes"></i> Bulk Purchase Available
+            </h4>
+            ${product.wholesalePrice ? `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="font-weight: 600;">Wholesale Price:</span>
+                    <span style="color: var(--green); font-weight: bold;">${product.wholesalePrice} XAF</span>
+                </div>
+            ` : ''}
+            ${product.bulkQuantity ? `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="font-weight: 600;">Bulk Quantity:</span>
+                    <span>${product.bulkQuantity} ${product.bulkUnit || 'units'}</span>
+                </div>
+            ` : ''}
+            ${product.bulkPrice ? `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="font-weight: 600;">Bulk Price:</span>
+                    <span style="color: var(--green); font-weight: bold;">${product.bulkPrice} XAF</span>
+                </div>
+            ` : ''}
+            ${product.bulkMinQuantity ? `
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="font-weight: 600;">Min. Order:</span>
+                    <span>${product.bulkMinQuantity} units</span>
+                </div>
+            ` : ''}
+        </div>
+    ` : ''}
+    
+    <div class="buy-row">
+        <div class="qty">
+            <button type="button" data-dec>-</button>
+            <input type="number" min="1" value="1">
+            <button type="button" data-inc>+</button>
+        </div>
+        <button class="cta" data-buy 
+                data-id="${product._id}" 
+                data-name="${product.name}" 
+                data-price="${product.retailPrice || product.price}"
+                data-image="${primaryImage || ''}">
+            <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+        </button>
+    </div>
+</div>
   <footer>
     <div class="footer-content">
       <div class="col">
@@ -509,17 +605,17 @@
         let imageUrl = product.imageURL || product.image;
         
         // Create image HTML with proper fallbacks
-        const imageHtml = imageUrl ? 
-          `<img src="${imageUrl}" 
-                alt="${product.name}" 
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                loading="lazy" />
-           <div class="image-placeholder" style="display: none;">
-             <i class="fas fa-cube"></i>
-           </div>` :
-          `<div class="image-placeholder">
-             <i class="fas fa-cube"></i>
-           </div>`;
+const imageHtml = imageUrl ? 
+  `<img src="${imageUrl.startsWith('http') ? imageUrl : 'http://localhost:5000' + imageUrl}" 
+        alt="${product.name}" 
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        loading="lazy" />
+   <div class="image-placeholder" style="display: none;">
+     <i class="fas fa-cube"></i>
+   </div>` :
+  `<div class="image-placeholder">
+     <i class="fas fa-cube"></i>
+   </div>`;
         
         const slide = document.createElement('article');
         slide.className = 'slide';
@@ -709,6 +805,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderProducts().then(startAutoSlide);
     });
+    // Add this function to both HTML files
+function handleImageError(img) {
+  console.error('🖼️ Image failed to load:', img.src);
+  img.style.display = 'none';
+  const placeholder = img.nextElementSibling;
+  if (placeholder && placeholder.classList.contains('image-placeholder')) {
+    placeholder.style.display = 'flex';
+  }
+}
   </script>
 </body>
 </html>

@@ -363,5 +363,22 @@ server.on('error', (error) => {
   }
   process.exit(1);
 });
+// Error handling middleware for Multer
+// Add this error handling middleware after your routes
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+      return res.status(400).json({
+        error: `Unexpected field: ${error.field}. Please use 'images' as field name for file uploads.`
+      });
+    }
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        error: 'File too large. Maximum size is 5MB.'
+      });
+    }
+  }
+  next(error);
+});
 
 module.exports = app;
