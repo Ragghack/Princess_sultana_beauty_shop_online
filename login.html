@@ -800,6 +800,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const data = await response.json();
         localStorage.setItem('token', data.token);
         console.log('Token stored:', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        console.log('User data stored:', data.user);
         alert('Login successful! Welcome back, ' + data.user.name + '.');
         window.location.href = 'user dashboard.html';
         
