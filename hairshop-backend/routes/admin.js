@@ -8,7 +8,7 @@ const Ticket = require("../models/Tickets");
 const path = require('path');
 const multer = require('multer');
 const authMiddleware = require("../middleware/auth");
-
+const { upload, handleUploadErrors, getImageUrl } = require('../middleware/media');
 // Multer storage configuration for saving uploads to /uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -251,12 +251,20 @@ router.get('/products', async (req, res) => {
 });
 
 // POST create new product - FIXED VERSION with multiple image support
-router.post('/products', upload.array('images', 4), async (req, res) => {
+router.post('/products', upload.array('images', 4), handleUploadErrors, async (req, res) => {
   try {
     console.log('🎯 Creating product with images:', req.body);
     console.log('📁 Files received:', req.files ? req.files.length : 0);
     console.log('👤 User making request:', req.user);
     
+      try {
+        // Use getImageUrl utility
+        const images = req.files.map((file, index) => ({
+            url: getImageUrl(file.filename),
+            altText: `Image ${index + 1} of ${req.body.name}`,
+            isPrimary: index === 0
+        }));
+        
     // Check if user is admin
     if (req.user.role !== 'admin') {
       return res.status(403).json({ 
@@ -567,6 +575,7 @@ router.put('/profile', async (req, res) => {
   }
 });
 
+
 // Change password
 router.post('/change-password', async (req, res) => {
   try {
@@ -679,5 +688,9 @@ router.get('/test-auth', (req, res) => {
     user: req.user
   });
 });
-
+// In the POST /products route, add logging:
+console.log('🖼️ Image processing:');
+console.log('- Files received:', req.files ? req.files.length : 0);
+console.log('- Image paths to be saved:', images.map(img => img.url));
+console.log('- Final product imageURL:', images.length > 0 ? images[0].url : 'No image');
 module.exports = router;

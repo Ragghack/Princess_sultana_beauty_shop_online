@@ -403,65 +403,7 @@
     </div>
   </div>
 </div>
-<!-- Add this to your shop.html file in the product display section -->
-<!-- Replace the existing product display with this enhanced version -->
 
-<div class="content">
-    <span class="pill"><i class="fa-solid fa-star"></i> ${product.tag || 'Premium'}</span>
-    <h2>${product.name}</h2>
-    <p class="desc">${product.description || 'No description available.'}</p>
-    
-    <!-- Retail Pricing -->
-    <div class="price">${product.retailPrice || product.price} XAF</div>
-    
-    <!-- Bulk Information Display -->
-    ${product.wholesalePrice || product.bulkQuantity ? `
-        <div class="bulk-pricing" style="background: rgba(46, 139, 87, 0.1); padding: 12px; border-radius: 8px; margin: 10px 0; border-left: 3px solid var(--green);">
-            <h4 style="margin: 0 0 8px 0; color: var(--deep-green); font-size: 0.9rem;">
-                <i class="fas fa-boxes"></i> Bulk Purchase Available
-            </h4>
-            ${product.wholesalePrice ? `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <span style="font-weight: 600;">Wholesale Price:</span>
-                    <span style="color: var(--green); font-weight: bold;">${product.wholesalePrice} XAF</span>
-                </div>
-            ` : ''}
-            ${product.bulkQuantity ? `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <span style="font-weight: 600;">Bulk Quantity:</span>
-                    <span>${product.bulkQuantity} ${product.bulkUnit || 'units'}</span>
-                </div>
-            ` : ''}
-            ${product.bulkPrice ? `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <span style="font-weight: 600;">Bulk Price:</span>
-                    <span style="color: var(--green); font-weight: bold;">${product.bulkPrice} XAF</span>
-                </div>
-            ` : ''}
-            ${product.bulkMinQuantity ? `
-                <div style="display: flex; justify-content: space-between;">
-                    <span style="font-weight: 600;">Min. Order:</span>
-                    <span>${product.bulkMinQuantity} units</span>
-                </div>
-            ` : ''}
-        </div>
-    ` : ''}
-    
-    <div class="buy-row">
-        <div class="qty">
-            <button type="button" data-dec>-</button>
-            <input type="number" min="1" value="1">
-            <button type="button" data-inc>+</button>
-        </div>
-        <button class="cta" data-buy 
-                data-id="${product._id}" 
-                data-name="${product.name}" 
-                data-price="${product.retailPrice || product.price}"
-                data-image="${primaryImage || ''}">
-            <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-        </button>
-    </div>
-</div>
   <footer>
     <div class="footer-content">
       <div class="col">
@@ -553,32 +495,71 @@
     }
 
     // Fetch products from backend
-    async function fetchProducts() {
+async function fetchProducts() {
+  try {
+    console.log('🛍️ Fetching products...');
+    
+    // Try multiple endpoints
+    const endpoints = [
+      'http://localhost:5000/api/products',
+      'http://localhost:5000/api/products-debug'
+    ];
+    
+    let products = [];
+    let lastError = null;
+    
+    for (const endpoint of endpoints) {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
-        if (!res.ok) throw new Error('Failed to fetch products');
-        const products = await res.json();
+        console.log(`🔍 Trying endpoint: ${endpoint}`);
+        const res = await fetch(endpoint);
         
-        // Debug: Check what's actually returned
-        console.log('🛍️ Products from API:', products);
-        products.forEach((product, index) => {
-          console.log(`Product ${index}:`, {
-            name: product.name,
-            image: product.image,
-            imageURL: product.imageURL,
-            price: product.price,
-            hasImageField: !!product.image,
-            hasImageURLField: !!product.imageURL
-          });
-        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
         
-        return products;
+        products = await res.json();
+        console.log(`✅ Success from ${endpoint}, products:`, products.length);
+        
+        if (products && products.length > 0) break;
       } catch (error) {
-        console.error('Error fetching products:', error);
-        showToast('Failed to load products');
-        return [];
+        console.error(`❌ Failed from ${endpoint}:`, error.message);
+        lastError = error;
+        continue;
       }
     }
+    
+    if (products.length === 0 && lastError) {
+      throw lastError;
+    }
+    
+    // Transform products to handle image fields
+    return products.map(product => {
+      // Handle multiple image fields
+      let imageUrl = product.imageURL;
+      
+      // If no imageURL, use first image from images array
+      if (!imageUrl && product.images && product.images.length > 0) {
+        imageUrl = product.images[0].url;
+      }
+      
+      // If still no image, use a placeholder
+      if (!imageUrl) {
+        imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+      }
+      
+      return {
+        ...product,
+        imageURL: imageUrl,
+        image: imageUrl // Add both fields for compatibility
+      };
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching products:', error);
+    showToast('Failed to load products: ' + error.message);
+    return [];
+  }
+}
 
     // Render products with proper image handling
     async function renderProducts() {
@@ -602,20 +583,28 @@
       
       products.forEach(product => {
         // Handle multiple possible image fields
-        let imageUrl = product.imageURL || product.image;
-        
-        // Create image HTML with proper fallbacks
-const imageHtml = imageUrl ? 
-  `<img src="${imageUrl.startsWith('http') ? imageUrl : 'http://localhost:5000' + imageUrl}" 
-        alt="${product.name}" 
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-        loading="lazy" />
-   <div class="image-placeholder" style="display: none;">
-     <i class="fas fa-cube"></i>
-   </div>` :
-  `<div class="image-placeholder">
-     <i class="fas fa-cube"></i>
-   </div>`;
+let imageUrl = product.imageURL || product.image;
+if (!imageUrl && product.images && product.images.length > 0) {
+    imageUrl = product.images[0].url;
+}
+// Final fallback to placeholder
+                   if (!imageUrl) {
+                        imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+                          }
+                          if (imageUrl.startsWith('/uploads/')) {
+    imageUrl = `http://localhost:5000${imageUrl}`;
+}
+
+                     const imageHtml = `
+                          <img src="${imageUrl}" 
+                          alt="${product.name}" 
+                        onerror="handleImageError(this)"
+                       loading="lazy" 
+                        style="width: 100%; height: 100%; object-fit: cover;" />
+                  <div class="image-placeholder" style="display: none;">
+                    <i class="fas fa-cube"></i>
+                 </div>
+                 `;
         
         const slide = document.createElement('article');
         slide.className = 'slide';
@@ -814,6 +803,31 @@ function handleImageError(img) {
     placeholder.style.display = 'flex';
   }
 }
+// Add this function to test the API
+async function testProductsAPI() {
+  try {
+    console.log('🧪 Testing products API...');
+    
+    const response = await fetch('http://localhost:5000/api/products');
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+    
+    const text = await response.text();
+    console.log('Response text:', text);
+    
+    try {
+      const products = JSON.parse(text);
+      console.log('Parsed products:', products);
+    } catch (parseError) {
+      console.error('Failed to parse JSON:', parseError);
+    }
+  } catch (error) {
+    console.error('Test failed:', error);
+  }
+}
+
+// Call this in your console to test
+// testProductsAPI();
   </script>
 </body>
 </html>

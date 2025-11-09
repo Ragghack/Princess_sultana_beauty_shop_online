@@ -148,7 +148,29 @@ app.post("/api/create-admin", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+// Add this to server.js before the 404 handler
+app.get("/api/products-debug", async (req, res) => {
+  try {
+    const Product = require('./models/Product');
+    const products = await Product.find().sort({ createdAt: -1 });
+    
+    console.log('🔍 Products found:', products.length);
+    products.forEach((p, i) => {
+      console.log(`Product ${i}:`, {
+        id: p._id,
+        name: p.name,
+        hasImages: p.images && p.images.length > 0,
+        imageURL: p.imageURL,
+        price: p.price
+      });
+    });
+    
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 // ============================
 // 🛣️ ROUTES CONFIGURATION - FIXED
 // ============================
@@ -353,6 +375,7 @@ const server = app.listen(PORT, () => {
   console.log(`   POST http://localhost:${PORT}/api/auth/login`);
   console.log(`   POST http://localhost:${PORT}/api/admin/products-temp`);
   console.log(`   GET  http://localhost:${PORT}/api/admin/test`);
+  console.log('📁 Static files serving from:', path.join(__dirname, 'uploads'));
 });
 
 server.on('error', (error) => {
