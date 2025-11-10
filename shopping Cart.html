@@ -528,15 +528,26 @@
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const cartTotal = localStorage.getItem('cartTotal') || '0';
             const cartCurrency = localStorage.getItem('cartCurrency') || 'XAF';
-            
+            const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+
             if (cartItems.length === 0) {
                 alert('Your cart is empty!');
                 return;
             }
             
             let message = 'Hello Sultana shop, %0A';
-            message += 'I would like to place an order with the following items.%0A%0A Order Details:%0A';
             
+            message += 'Customer Details:%0A';
+            if (user) {
+                message += `Name: ${user.name}%0A`;
+                message += `Email: ${user.email}%0A%0A`;
+            } else {
+                message += 'Name: [Your Name]%0A';
+                message += 'Email: [Your Email]%0A%0A';
+            }
+
+            message += 'I would like to place an order with the following items.%0A';
+            message += 'Order Details:%0A';
             cartItems.forEach(item => {
                 message += `- ${item.name} (x${item.qty})%0A`;
             });
@@ -544,7 +555,7 @@
             // message += `%0ASubtotal: ${subtotal} ${cartCurrency}%0AShipping: ${shipping} ${cartCurrency}%0A%0A`;
             message += `%0ATotal (Shipping inclusive): ${cartTotal} ${cartCurrency}%0A%0APreferred delivery location: [ ] %0A%0AThank you!`;
             
-            const whatsappUrl = `https://wa.me/237699538939?text=${message}`;
+            const whatsappUrl = `https://wa.me/237679225169?text=${message}`;
             window.open(whatsappUrl, '_blank');
         });
 
