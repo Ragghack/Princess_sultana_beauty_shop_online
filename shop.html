@@ -583,6 +583,7 @@ async function fetchProducts() {
       
       products.forEach(product => {
         // Handle multiple possible image fields
+<<<<<<< HEAD
 let imageUrl = product.imageURL || product.image;
 if (!imageUrl && product.images && product.images.length > 0) {
     imageUrl = product.images[0].url;
@@ -605,6 +606,22 @@ if (!imageUrl && product.images && product.images.length > 0) {
                     <i class="fas fa-cube"></i>
                  </div>
                  `;
+=======
+        let imageUrl = "hairshop-backend" + product.imageURL || product.image;
+        
+        // Create image HTML with proper fallbacks
+        const imageHtml = imageUrl ? 
+          `<img src="${imageUrl}" 
+                alt="${product.name}" 
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                loading="lazy" />
+           <div class="image-placeholder" style="display: none;">
+             <i class="fas fa-cube"></i>
+           </div>` :
+          `<div class="image-placeholder">
+             <i class="fas fa-cube"></i>
+           </div>`;
+>>>>>>> fcf3d27d2cb4fb56d78acffdc9aadf504908b42d
         
         const slide = document.createElement('article');
         slide.className = 'slide';
@@ -647,6 +664,9 @@ if (!imageUrl && product.images && product.images.length > 0) {
         track.appendChild(slide);
       });
       
+      // ➡️ ADD THIS LINE FOR DEBUGGING
+      console.log(`Product "${product.name}" is using image URL: ${imageUrl}`);
+
       setupSlideEvents();
       renderDots();
     }
