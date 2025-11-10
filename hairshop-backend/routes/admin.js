@@ -8,8 +8,8 @@ const Ticket = require("../models/Tickets");
 const path = require('path');
 const multer = require('multer');
 const authMiddleware = require("../middleware/auth");
-const { upload, handleUploadErrors, getImageUrl } = require('../middleware/media');
-// Multer storage configuration for saving uploads to /uploads
+
+// Use your local multer configuration instead
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, '..', 'uploads'));
@@ -34,6 +34,24 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024 // 5 MB limit
   }
 });
+
+// You'll need to create these functions locally or adjust your code
+const handleUploadErrors = (error, req, res, next) => {
+  // Your error handling logic
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'File too large' });
+    }
+    if (error.code === 'LIMIT_FILE_COUNT') {
+      return res.status(400).json({ error: 'Too many files' });
+    }
+  }
+  res.status(400).json({ error: error.message });
+};
+
+const getImageUrl = (filename) => {
+  return `/uploads/${filename}`;
+};
 
 // ============================
 // 🔑 ADMIN ROUTES
@@ -250,21 +268,13 @@ router.get('/products', async (req, res) => {
   }
 });
 
-// POST create new product - FIXED VERSION with multiple image support
+// ✅ FIXED: POST create new product - SINGLE VERSION
 router.post('/products', upload.array('images', 4), handleUploadErrors, async (req, res) => {
   try {
     console.log('🎯 Creating product with images:', req.body);
     console.log('📁 Files received:', req.files ? req.files.length : 0);
     console.log('👤 User making request:', req.user);
     
-      try {
-        // Use getImageUrl utility
-        const images = req.files.map((file, index) => ({
-            url: getImageUrl(file.filename),
-            altText: `Image ${index + 1} of ${req.body.name}`,
-            isPrimary: index === 0
-        }));
-        
     // Check if user is admin
     if (req.user.role !== 'admin') {
       return res.status(403).json({ 
@@ -294,32 +304,27 @@ router.post('/products', upload.array('images', 4), handleUploadErrors, async (r
       });
     }
 
-    // Handle image uploads
-    const images = [];
+    // ✅ SINGLE images declaration using getImageUrl
+    let images = [];
     
     if (req.files && req.files.length > 0) {
       console.log('🖼️ Processing uploaded images...');
       
-      for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
-        const imagePath = `/uploads/${file.filename}`;
-        
-        images.push({
-          url: imagePath,
-          altText: `Image ${i + 1} of ${name}`,
-          isPrimary: i === 0
-        });
-        
-        console.log(`✅ Image ${i + 1} saved: ${imagePath}`);
-      }
+      images = req.files.map((file, index) => ({
+        url: getImageUrl(file.filename),
+        altText: `Image ${index + 1} of ${name}`,
+        isPrimary: index === 0
+      }));
+      
+      console.log(`✅ ${images.length} images processed`);
     } else {
       console.log('ℹ️ No images uploaded, using default placeholder');
       // Add a default placeholder image if none uploaded
-      images.push({
+      images = [{
         url: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
         altText: 'Default product image',
         isPrimary: true
-      });
+      }];
     }
 
     // Create product data
@@ -426,16 +431,11 @@ router.put('/products/:id', upload.array('images', 4), async (req, res) => {
 
     // Handle image updates if new images are uploaded
     if (req.files && req.files.length > 0) {
-      const newImages = [];
-      for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
-        const imagePath = `/uploads/${file.filename}`;
-        newImages.push({
-          url: imagePath,
-          altText: `Image ${i + 1} of ${name}`,
-          isPrimary: i === 0
-        });
-      }
+      const newImages = req.files.map((file, index) => ({
+        url: getImageUrl(file.filename),
+        altText: `Image ${index + 1} of ${name}`,
+        isPrimary: index === 0
+      }));
       updateData.images = newImages;
     }
 
@@ -575,7 +575,6 @@ router.put('/profile', async (req, res) => {
   }
 });
 
-
 // Change password
 router.post('/change-password', async (req, res) => {
   try {
@@ -688,9 +687,5 @@ router.get('/test-auth', (req, res) => {
     user: req.user
   });
 });
-// In the POST /products route, add logging:
-console.log('🖼️ Image processing:');
-console.log('- Files received:', req.files ? req.files.length : 0);
-console.log('- Image paths to be saved:', images.map(img => img.url));
-console.log('- Final product imageURL:', images.length > 0 ? images[0].url : 'No image');
+
 module.exports = router;

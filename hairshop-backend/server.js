@@ -113,6 +113,42 @@ app.post("/api/admin/register", async (req, res) => {
     });
   }
 });
+// Add to your existing server.js after other route imports
+const commandRoutes = require("./routes/commands");
+
+// Mount command routes
+app.use("/api/commands", commandRoutes);
+
+
+
+function generateWhatsAppUrl(items, totalAmount, shippingAddress, notes) {
+  let message = 'Hello Sultana shop, %0A%0A';
+  
+  message += 'I would like to place an order:%0A%0A';
+  
+  // Add items
+  items.forEach(item => {
+    const purchaseType = item.purchaseType === 'bulk' ? ` (Bulk - ${item.bulkUnit})` : '';
+    message += `- ${item.name}${purchaseType} (x${item.qty}) - ${(item.price * item.qty).toLocaleString()} XAF%0A`;
+  });
+  
+  message += `%0ATotal: ${parseFloat(totalAmount).toLocaleString()} XAF%0A%0A`;
+  
+  // Add shipping info if available
+  if (shippingAddress && shippingAddress.name) {
+    message += `Shipping to: ${shippingAddress.name}%0A`;
+    if (shippingAddress.phone) message += `Phone: ${shippingAddress.phone}%0A`;
+    if (shippingAddress.address) message += `Address: ${shippingAddress.address}%0A`;
+  }
+  
+  if (notes) {
+    message += `Notes: ${notes}%0A`;
+  }
+  
+  message += '%0AThank you!';
+  
+  return `https://wa.me/237679225169?text=${message}`;
+}
 
 // TEMPORARY ADMIN CREATION ENDPOINT
 app.post("/api/create-admin", async (req, res) => {
@@ -179,9 +215,10 @@ app.get("/api/products-debug", async (req, res) => {
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/products");
-const commandRoutes = require("./routes/commands");
+//const commandRoutes = require("./routes/commands");
 const adminRoutes = require("./routes/admin"); // ✅ Only one declaration
 const authMiddleware = require("./middleware/auth");
+const auth = require("./middleware/auth");
 
 // ✅ MOUNT ALL ROUTES PROPERLY
 app.use("/api/auth", authRoutes);

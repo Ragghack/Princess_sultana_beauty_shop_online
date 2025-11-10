@@ -1,9 +1,64 @@
 const mongoose = require("mongoose");
 
 const commandSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  products: [{ productId: String, quantity: Number }],
-  status: { type: String, enum: ["pending", "processing", "completed"], default: "pending" }
-}, { timestamps: true });
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
+  orderNumber: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  products: [{ 
+    productId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Product" 
+    },
+    name: String,
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+    purchaseType: { 
+      type: String, 
+      enum: ["retail", "bulk"], 
+      default: "retail" 
+    },
+    bulkUnit: String
+  }],
+  totalAmount: { 
+    type: Number, 
+    required: true 
+  },
+  status: { 
+    type: String, 
+    enum: ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"], 
+    default: "pending" 
+  },
+  paymentMethod: {
+    type: String,
+    default: "whatsapp"
+  },
+  shippingAddress: {
+    name: String,
+    phone: String,
+    address: String,
+    city: String,
+    country: String
+  },
+  trackingNumber: String,
+  notes: String,
+  cancelledAt: Date
+}, { 
+  timestamps: true 
+});
+
+// Generate order number before saving
+commandSchema.pre('save', function(next) {
+  if (!this.orderNumber) {
+    this.orderNumber = 'CMD' + Date.now() + Math.floor(Math.random() * 1000);
+  }
+  next();
+});
 
 module.exports = mongoose.model("Command", commandSchema);

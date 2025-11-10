@@ -586,6 +586,84 @@
         .content-panel.active {
             display: block;
         }
+        /* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--dark-brown);
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: var(--golden-brown);
+}
+
+.info-section {
+  margin-bottom: 25px;
+}
+
+.info-section h3 {
+  color: var(--dark-brown);
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--light-gold);
+  padding-bottom: 8px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+}
     </style>
 </head>
 <body>
@@ -921,16 +999,16 @@
         
         // API Endpoints
         const API_ENDPOINTS = {
-            LOGIN: '/auth/login',
-            REGISTER: '/admin/register',
-            STATS: '/admin/stats',
-            ORDERS: '/admin/orders',
-            PRODUCTS: '/admin/products',
-            PROFILE: '/admin/profile',
-            TICKETS: '/admin/tickets',
-            COMMENTS: '/admin/comments',
-            CHANGE_PASSWORD: '/admin/change-password',
-            LOGO: '/admin/logo'
+   LOGIN: '/auth/login',
+    REGISTER: '/admin/register',
+    STATS: '/admin/stats',
+    ORDERS: '/commands',  // Changed to match your routes
+    PRODUCTS: '/products',
+    PROFILE: '/admin/profile',
+    TICKETS: '/admin/tickets',
+    COMMENTS: '/admin/comments',
+    CHANGE_PASSWORD: '/admin/change-password',
+    LOGO: '/admin/logo'
         };
 
         // Generic function for authenticated API requests
@@ -1038,6 +1116,7 @@
             localStorage.removeItem('adminToken');
             redirectToLogin();
         });
+        
 
         // Load data for a specific panel
         async function loadPanelData(panelId) {
@@ -1081,99 +1160,148 @@
         }
 
         // Load recent orders for dashboard
-        async function loadRecentOrders() {
-            try {
-                const orders = await makeAuthenticatedRequest(`${API_ENDPOINTS.ORDERS}/recent`);
-                const container = document.getElementById('recent-orders-container');
-                
-                if (orders.length === 0) {
-                    container.innerHTML = '<div class="no-data">No recent orders</div>';
-                    return;
-                }
-                
-                container.innerHTML = orders.map(order => `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Order #${order.id}</div>
-                            <div class="order-date">${formatDate(order.createdAt)}</div>
-                        </div>
-                        <div class="order-details">
-                            <div>
-                                <strong>Customer:</strong> ${order.customerName}<br>
-                                <strong>Products:</strong> ${order.products}
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> ${order.amount} XAF<br>
-                                <strong>Payment:</strong> ${order.paymentStatus}
-                            </div>
-                            <div>
-                                <span class="order-status status-${order.status}">${order.status}</span>
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary" onclick="viewOrderDetails('${order.id}')">View Details</button>
-                            <button class="btn btn-secondary" onclick="updateOrderStatus('${order.id}')">Update Status</button>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading recent orders:', error);
-                document.getElementById('recent-orders-container').innerHTML = '<div class="error-message">Failed to load recent orders</div>';
-            }
-        }
+// Load recent orders for dashboard
+async function loadRecentOrders() {
+  try {
+    const response = await makeAuthenticatedRequest('/commands');
+    const orders = response.orders || response.commands || response.data || [];
+    const container = document.getElementById('recent-orders-container');
+    
+    // Get only recent orders (last 5)
+    const recentOrders = orders.slice(0, 5);
+    
+    if (recentOrders.length === 0) {
+      container.innerHTML = '<div class="no-data">No recent orders</div>';
+      return;
+    }
+    
+    container.innerHTML = recentOrders.map(order => {
+      const customerName = order.userId?.name || order.user?.name || 'Customer';
+      const amount = order.amount || order.totalAmount || 0;
+      const itemCount = order.items?.length || order.products?.length || 0;
+      
+      return `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-id">Order #${order.orderNumber || order._id}</div>
+            <div class="order-date">${formatDate(order.createdAt)}</div>
+          </div>
+          <div class="order-details">
+            <div>
+              <strong>Customer:</strong> ${customerName}<br>
+              <strong>Items:</strong> ${itemCount} products
+            </div>
+            <div>
+              <strong>Amount:</strong> ${amount.toLocaleString()} XAF<br>
+              <strong>Payment:</strong> ${order.paymentMethod || 'WhatsApp'}
+            </div>
+            <div>
+              <span class="order-status status-${order.status}">${order.status}</span>
+            </div>
+          </div>
+          <div class="order-actions">
+            <button class="btn btn-primary" onclick="viewOrderDetails('${order._id}')">View Details</button>
+            <button class="btn btn-secondary" onclick="updateOrderStatus('${order._id}', '${order.status}')">Update Status</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading recent orders:', error);
+    document.getElementById('recent-orders-container').innerHTML = 
+      '<div class="error-message">Failed to load recent orders</div>';
+  }
+}
 
-        // Load all orders with optional status filter
-        async function loadOrders(status = 'all') {
-            try {
-                const url = status === 'all' 
-                    ? API_ENDPOINTS.ORDERS
-                    : `${API_ENDPOINTS.ORDERS}?status=${status}`;
-                
-                const orders = await makeAuthenticatedRequest(url);
-                const container = document.getElementById('orders-container');
-                
-                if (orders.length === 0) {
-                    container.innerHTML = '<div class="no-data">No orders found</div>';
-                    return;
-                }
-                
-                container.innerHTML = orders.map(order => `
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div class="order-id">Order #${order.id}</div>
-                            <div class="order-date">${formatDate(order.createdAt)}</div>
-                        </div>
-                        <div class="order-details">
-                            <div>
-                                <strong>Customer:</strong> ${order.customerName}<br>
-                                <strong>Email:</strong> ${order.customerEmail}<br>
-                                <strong>Phone:</strong> ${order.customerPhone}<br>
-                                <strong>Address:</strong> ${order.shippingAddress}
-                            </div>
-                            <div>
-                                <strong>Amount:</strong> ${order.amount} XAF<br>
-                                <strong>Payment:</strong> ${order.paymentStatus}<br>
-                                <strong>Method:</strong> ${order.paymentMethod}
-                            </div>
-                            <div>
-                                <span class="order-status status-${order.status}">${order.status}</span><br>
-                                ${order.trackingNumber ? `<strong>Tracking #:</strong> ${order.trackingNumber}` : `<strong>Last Updated:</strong> ${formatDate(order.updatedAt)}`}
-                            </div>
-                        </div>
-                        <div class="order-actions">
-                            <button class="btn btn-primary" onclick="viewOrderDetails('${order.id}')">View Details</button>
-                            <button class="btn btn-success" onclick="updateOrderStatus('${order.id}', 'processing')">Mark as Processing</button>
-                            <button class="btn btn-primary" onclick="updateOrderStatus('${order.id}', 'shipped')">Mark as Shipped</button>
-                            <button class="btn btn-success" onclick="updateOrderStatus('${order.id}', 'delivered')">Mark as Delivered</button>
-                            <button class="btn btn-danger" onclick="updateOrderStatus('${order.id}', 'cancelled')">Cancel Order</button>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading orders:', error);
-                document.getElementById('orders-container').innerHTML = '<div class="error-message">Failed to load orders</div>';
-            }
-        }
+        // Load all orders with optional status filter// Enhanced loadOrders function in admin dashboard
+async function loadOrders(status = 'all') {
+  try {
+    // Use the commands endpoint instead of orders
+    const url = status === 'all' 
+      ? '/commands'  // Changed from API_ENDPOINTS.ORDERS
+      : `/commands?status=${status}`;
+    
+    const response = await makeAuthenticatedRequest(url);
+    
+    // Handle different response structures
+    const orders = response.orders || response.commands || response.data || [];
+    const container = document.getElementById('orders-container');
+    
+    if (!orders || orders.length === 0) {
+      container.innerHTML = '<div class="no-data">No orders found</div>';
+      return;
+    }
+    
+    container.innerHTML = orders.map(order => {
+      // Safely access properties with fallbacks
+      const orderNumber = order.orderNumber || order._id || 'N/A';
+      const customerName = order.userId?.name || order.user?.name || 'N/A';
+      const customerEmail = order.userId?.email || order.user?.email || 'N/A';
+      const amount = order.amount || order.totalAmount || 0;
+      const itemCount = order.items?.length || order.products?.length || 0;
+      const paymentMethod = order.paymentMethod || 'WhatsApp';
+      const address = order.shippingAddress?.address || 'N/A';
+      
+      return `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-id">Order #${orderNumber}</div>
+            <div class="order-date">${formatDate(order.createdAt)}</div>
+          </div>
+          <div class="order-details">
+            <div>
+              <strong>Customer:</strong> ${customerName}<br>
+              <strong>Email:</strong> ${customerEmail}<br>
+              <strong>Items:</strong> ${itemCount} items<br>
+              <strong>Payment:</strong> ${paymentMethod}
+            </div>
+            <div>
+              <strong>Amount:</strong> ${amount.toLocaleString()} XAF<br>
+              <strong>Status:</strong> ${order.status}<br>
+              <strong>Address:</strong> ${address}
+            </div>
+            <div>
+              <span class="order-status status-${order.status}">${order.status}</span><br>
+              <strong>Last Updated:</strong> ${formatDate(order.updatedAt || order.createdAt)}
+            </div>
+          </div>
+          <div class="order-actions">
+            <button class="btn btn-primary" onclick="viewOrderDetails('${order._id}')">View Details</button>
+            <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'confirmed')">Confirm</button>
+            <button class="btn btn-primary" onclick="updateOrderStatus('${order._id}', 'processing')">Processing</button>
+            <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'shipped')">Shipped</button>
+            <button class="btn btn-danger" onclick="updateOrderStatus('${order._id}', 'cancelled')">Cancel</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading orders:', error);
+    document.getElementById('orders-container').innerHTML = 
+      '<div class="error-message">Failed to load orders: ' + error.message + '</div>';
+  }
+}
+
+// Update order status function for admin
+// Update order status function for admin
+async function updateOrderStatus(orderId, status) {
+  try {
+    const response = await makeAuthenticatedRequest(`/commands/${orderId}/status`, {
+      method: 'PATCH',  // Changed from PUT to PATCH
+      body: JSON.stringify({ status })
+    });
+    
+    if (response.success) {
+      showSuccess('Order status updated successfully');
+      loadOrders('all'); // Refresh orders
+    } else {
+      throw new Error(response.message || 'Failed to update order status');
+    }
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    showError('Failed to update order status: ' + error.message);
+  }
+}
 
         // Load support tickets
         async function loadTickets() {
@@ -1571,5 +1699,84 @@
         // Initialize when the page loads
         document.addEventListener('DOMContentLoaded', initializeDashboard);
     </script>
+    <!-- Order Details Modal -->
+<div id="orderDetailsModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+  <div class="modal-content" style="background: white; border-radius: 15px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative;">
+    <span class="close" style="position: absolute; top: 15px; right: 15px; font-size: 28px; cursor: pointer; color: var(--dark-brown);">&times;</span>
+    
+    <div class="modal-header" style="margin-bottom: 25px; border-bottom: 2px solid var(--light-gold); padding-bottom: 15px;">
+      <h2 id="modalOrderTitle" style="color: var(--dark-brown); margin: 0;">Order Details</h2>
+      <div id="modalOrderStatus" class="order-status" style="margin-top: 10px;"></div>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Order Information -->
+      <div class="info-section" style="margin-bottom: 25px;">
+        <h3 style="color: var(--dark-brown); margin-bottom: 15px;">Order Information</h3>
+        <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div>
+            <strong>Order Number:</strong> <span id="modalOrderNumber">-</span>
+          </div>
+          <div>
+            <strong>Order Date:</strong> <span id="modalOrderDate">-</span>
+          </div>
+          <div>
+            <strong>Total Amount:</strong> <span id="modalOrderAmount">-</span>
+          </div>
+          <div>
+            <strong>Payment Method:</strong> <span id="modalPaymentMethod">-</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Customer Information -->
+      <div class="info-section" style="margin-bottom: 25px;">
+        <h3 style="color: var(--dark-brown); margin-bottom: 15px;">Customer Information</h3>
+        <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div>
+            <strong>Name:</strong> <span id="modalCustomerName">-</span>
+          </div>
+          <div>
+            <strong>Email:</strong> <span id="modalCustomerEmail">-</span>
+          </div>
+          <div>
+            <strong>Phone:</strong> <span id="modalCustomerPhone">-</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Shipping Address -->
+      <div class="info-section" style="margin-bottom: 25px;">
+        <h3 style="color: var(--dark-brown); margin-bottom: 15px;">Shipping Address</h3>
+        <div id="modalShippingAddress" style="background: var(--off-white); padding: 15px; border-radius: 8px;">
+          Loading address...
+        </div>
+      </div>
+      
+      <!-- Order Items -->
+      <div class="info-section" style="margin-bottom: 25px;">
+        <h3 style="color: var(--dark-brown); margin-bottom: 15px;">Order Items</h3>
+        <div id="modalOrderItems" style="max-height: 300px; overflow-y: auto;">
+          Loading items...
+        </div>
+      </div>
+      
+      <!-- Order Timeline -->
+      <div class="info-section">
+        <h3 style="color: var(--dark-brown); margin-bottom: 15px;">Order Timeline</h3>
+        <div id="modalOrderTimeline" style="background: var(--off-white); padding: 15px; border-radius: 8px;">
+          Loading timeline...
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer" style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--light-gray); text-align: right;">
+      <button class="btn btn-secondary" onclick="closeOrderModal()" style="margin-right: 10px;">Close</button>
+      <button class="btn btn-primary" onclick="printOrderDetails()">
+        <i class="fas fa-print"></i> Print
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

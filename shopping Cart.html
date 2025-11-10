@@ -494,28 +494,14 @@
             </div>
             
             <div class="orders-list">
+                
+                
                 <div class="order-card">
-                    <div class="order-info">
-                        <h3>Order #HC-98432</h3>
-                        <p>Date: Nov 10, 2023 | Total: 36,485 XAF</p>
-                    </div>
-                    <div class="order-status status-processing">Processing</div>
+                   
                 </div>
                 
                 <div class="order-card">
-                    <div class="order-info">
-                        <h3>Order #HC-97541</h3>
-                        <p>Date: Nov 5, 2023 | Total: 22,990 XAF</p>
-                    </div>
-                    <div class="order-status status-shipped">Shipped</div>
-                </div>
-                
-                <div class="order-card">
-                    <div class="order-info">
-                        <h3>Order #HC-96328</h3>
-                        <p>Date: Oct 28, 2023 | Total: 16,495 XAF</p>
-                    </div>
-                    <div class="order-status status-delivered">Delivered</div>
+                   
                 </div>
             </div>
         </div>
@@ -524,40 +510,91 @@
     <script>
 
         // Javascript for Proceed to WhatsApp Checkout
-        document.getElementById('checkout-btn').addEventListener('click', function() {
-            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            const cartTotal = localStorage.getItem('cartTotal') || '0';
-            const cartCurrency = localStorage.getItem('cartCurrency') || 'XAF';
-            const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+// Enhanced WhatsApp Order Function
+// In your shopping cart JavaScript
+document.getElementById('checkout-btn').addEventListener('click', async function() {
+  const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+  const cartTotal = localStorage.getItem('cartTotal') || '0';
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-            if (cartItems.length === 0) {
-                alert('Your cart is empty!');
-                return;
-            }
-            
-            let message = 'Hello Sultana shop, %0A';
-            
-            message += 'Customer Details:%0A';
-            if (user) {
-                message += `Name: ${user.name}%0A`;
-                message += `Email: ${user.email}%0A%0A`;
-            } else {
-                message += 'Name: [Your Name]%0A';
-                message += 'Email: [Your Email]%0A%0A';
-            }
+  if (cartItems.length === 0) {
+    alert('Your cart is empty!');
+    return;
+  }
 
-            message += 'I would like to place an order with the following items.%0A';
-            message += 'Order Details:%0A';
-            cartItems.forEach(item => {
-                message += `- ${item.name} (x${item.qty})%0A`;
-            });
-            
-            // message += `%0ASubtotal: ${subtotal} ${cartCurrency}%0AShipping: ${shipping} ${cartCurrency}%0A%0A`;
-            message += `%0ATotal (Shipping inclusive): ${cartTotal} ${cartCurrency}%0A%0APreferred delivery location: [ ] %0A%0AThank you!`;
-            
-            const whatsappUrl = `https://wa.me/237679225169?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-        });
+  try {
+    const response = await fetch('http://localhost:5000/api/commands/whatsapp', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        items: cartItems,
+        amount: cartTotal,
+        shippingAddress: {
+          name: user.name || '',
+          email: user.email || '',
+          phone: user.phone || ''
+        }
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      // Clear cart
+      localStorage.removeItem('cartItems');
+      localStorage.removeItem('cartTotal');
+      
+      // Redirect to WhatsApp
+      window.open(result.whatsappUrl, '_blank');
+      alert('Order placed successfully! Check your orders in your dashboard.');
+    } else {
+      alert('Error: ' + result.error);
+    }
+  } catch (error) {
+    console.error('Order error:', error);
+    alert('Failed to place order. Please try again.');
+  }
+});
+function showToast(message) {
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--green);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease-out;
+  `;
+  toast.textContent = message;
+  
+  // Add animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(toast);
+  
+  // Remove after 3 seconds
+  setTimeout(() => {
+    if (document.body.contains(toast)) {
+      document.body.removeChild(toast);
+    }
+  }, 3000);
+}
 
 
         document.addEventListener('DOMContentLoaded', function() {

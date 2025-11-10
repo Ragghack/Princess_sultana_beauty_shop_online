@@ -333,6 +333,91 @@
       font-size: 0.9rem;
       color: #ccc;
     }
+    
+    /* Bulk Product Styling */
+    .bulk-info {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(183, 110, 34, 0.05);
+      border-radius: 10px;
+      border-left: 3px solid var(--golden-brown);
+    }
+    .bulk-info h3 {
+      color: var(--dark-brown);
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bulk-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .bulk-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .bulk-label {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    .bulk-value {
+      font-weight: 600;
+      color: var(--dark-brown);
+    }
+    .bulk-price {
+      color: var(--golden-brown);
+      font-weight: 700;
+    }
+    .bulk-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-available {
+      background: rgba(46, 139, 87, 0.1);
+      color: var(--deep-green);
+    }
+    .status-low-stock {
+      background: rgba(255, 193, 7, 0.1);
+      color: #856404;
+    }
+    .status-out-of-stock {
+      background: rgba(220, 53, 69, 0.1);
+      color: var(--red);
+    }
+    
+    /* Purchase Type Selection */
+    .purchase-type {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .purchase-option {
+      padding: 8px 16px;
+      border: 1px solid var(--light-brown);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .purchase-option.active {
+      background: var(--golden-brown);
+      color: white;
+      border-color: var(--golden-brown);
+    }
+    
     @media (max-width: 900px) {
       .slide {
         grid-template-columns: 1fr;
@@ -340,6 +425,9 @@
       .media { height: 320px; }
       .content { padding: 26px 22px; }
       h2 { font-size: 1.6rem; }
+      .bulk-details {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -366,43 +454,6 @@
     <div class="dots" id="dots"></div>
   </main>
   <div class="toast" id="toast"></div>
-  <!-- Add this before the footer in shop.html -->
-<!-- Product Gallery Modal -->
-<div id="productModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
-  <div class="modal-content" style="background: white; border-radius: 15px; max-width: 90%; max-height: 90%; overflow: auto; padding: 20px; position: relative;">
-    <span class="close" style="position: absolute; top: 15px; right: 15px; font-size: 28px; cursor: pointer; color: var(--dark-brown);">&times;</span>
-    
-    <div class="modal-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
-      <!-- Image Gallery -->
-      <div class="gallery-section">
-        <div class="main-image" style="margin-bottom: 15px;">
-          <img id="modalMainImage" src="" alt="" style="width: 100%; border-radius: 10px; max-height: 400px; object-fit: cover;">
-        </div>
-        <div class="thumbnail-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-          <!-- Thumbnails will be inserted here -->
-        </div>
-      </div>
-      
-      <!-- Product Info -->
-      <div class="product-info" style="padding: 20px;">
-        <h2 id="modalProductName" style="color: var(--dark-brown); margin-bottom: 10px;"></h2>
-        <p id="modalProductDescription" style="line-height: 1.6; margin-bottom: 15px;"></p>
-        <div class="price" id="modalProductPrice" style="font-size: 1.5rem; font-weight: bold; color: var(--golden-brown); margin-bottom: 20px;"></div>
-        
-        <div class="buy-section">
-          <div class="qty" style="display: inline-flex; align-items: center; gap: 10px; margin-right: 15px;">
-            <button type="button" data-modal-dec style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--light-brown); background: var(--cream); cursor: pointer;">-</button>
-            <input type="number" id="modalQty" min="1" value="1" style="width: 60px; text-align: center; border: 1px solid var(--light-brown); border-radius: 8px; padding: 5px;">
-            <button type="button" data-modal-inc style="width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--light-brown); background: var(--cream); cursor: pointer;">+</button>
-          </div>
-          <button class="cta" id="modalAddToCart" style="background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;">
-            <i class="fa-solid fa-bag-shopping"></i> Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
   <footer>
     <div class="footer-content">
@@ -433,6 +484,7 @@
       <p>&copy; 2023 Princesse Sultana Hair Care | All Rights Reserved</p>
     </div>
   </footer>
+  
   <script>
     // Cart functions
     function getCart() {
@@ -449,7 +501,7 @@
 
     function addToCart(item) {
       const cart = getCart();
-      const existingItem = cart.find(p => p.id === item.id);
+      const existingItem = cart.find(p => p.id === item.id && p.purchaseType === item.purchaseType);
       
       if (existingItem) {
         existingItem.qty += item.qty;
@@ -457,9 +509,11 @@
         cart.push({
           id: item.id,
           name: item.name,
-          price: item.price,
+          price: parseFloat(item.price),
           qty: item.qty,
-          image: item.image || ''
+          image: item.image || '',
+          purchaseType: item.purchaseType || 'retail',
+          bulkUnit: item.bulkUnit || ''
         });
       }
       
@@ -495,71 +549,71 @@
     }
 
     // Fetch products from backend
-async function fetchProducts() {
-  try {
-    console.log('🛍️ Fetching products...');
-    
-    // Try multiple endpoints
-    const endpoints = [
-      'http://localhost:5000/api/products',
-      'http://localhost:5000/api/products-debug'
-    ];
-    
-    let products = [];
-    let lastError = null;
-    
-    for (const endpoint of endpoints) {
+    async function fetchProducts() {
       try {
-        console.log(`🔍 Trying endpoint: ${endpoint}`);
-        const res = await fetch(endpoint);
+        console.log('🛍️ Fetching products...');
         
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
+        // Try multiple endpoints
+        const endpoints = [
+          'http://localhost:5000/api/products',
+          'http://localhost:5000/api/products-debug'
+        ];
+        
+        let products = [];
+        let lastError = null;
+        
+        for (const endpoint of endpoints) {
+          try {
+            console.log(`🔍 Trying endpoint: ${endpoint}`);
+            const res = await fetch(endpoint);
+            
+            if (!res.ok) {
+              throw new Error(`HTTP ${res.status}`);
+            }
+            
+            products = await res.json();
+            console.log(`✅ Success from ${endpoint}, products:`, products.length);
+            
+            if (products && products.length > 0) break;
+          } catch (error) {
+            console.error(`❌ Failed from ${endpoint}:`, error.message);
+            lastError = error;
+            continue;
+          }
         }
         
-        products = await res.json();
-        console.log(`✅ Success from ${endpoint}, products:`, products.length);
+        if (products.length === 0 && lastError) {
+          throw lastError;
+        }
         
-        if (products && products.length > 0) break;
+        // Transform products to handle image fields
+        return products.map(product => {
+          // Handle multiple image fields
+          let imageUrl = product.imageURL;
+          
+          // If no imageURL, use first image from images array
+          if (!imageUrl && product.images && product.images.length > 0) {
+            imageUrl = product.images[0].url;
+          }
+          
+          // If still no image, use a placeholder
+          if (!imageUrl) {
+            imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+          }
+          
+          return {
+            ...product,
+            imageURL: imageUrl,
+            image: imageUrl // Add both fields for compatibility
+          };
+        });
+        
       } catch (error) {
-        console.error(`❌ Failed from ${endpoint}:`, error.message);
-        lastError = error;
-        continue;
+        console.error('❌ Error fetching products:', error);
+        showToast('Failed to load products: ' + error.message);
+        return [];
       }
     }
-    
-    if (products.length === 0 && lastError) {
-      throw lastError;
-    }
-    
-    // Transform products to handle image fields
-    return products.map(product => {
-      // Handle multiple image fields
-      let imageUrl = product.imageURL;
-      
-      // If no imageURL, use first image from images array
-      if (!imageUrl && product.images && product.images.length > 0) {
-        imageUrl = product.images[0].url;
-      }
-      
-      // If still no image, use a placeholder
-      if (!imageUrl) {
-        imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
-      }
-      
-      return {
-        ...product,
-        imageURL: imageUrl,
-        image: imageUrl // Add both fields for compatibility
-      };
-    });
-    
-  } catch (error) {
-    console.error('❌ Error fetching products:', error);
-    showToast('Failed to load products: ' + error.message);
-    return [];
-  }
-}
 
     // Render products with proper image handling
     async function renderProducts() {
@@ -583,46 +637,61 @@ async function fetchProducts() {
       
       products.forEach(product => {
         // Handle multiple possible image fields
-<<<<<<< HEAD
-let imageUrl = product.imageURL || product.image;
-if (!imageUrl && product.images && product.images.length > 0) {
-    imageUrl = product.images[0].url;
-}
-// Final fallback to placeholder
-                   if (!imageUrl) {
-                        imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
-                          }
-                          if (imageUrl.startsWith('/uploads/')) {
-    imageUrl = `http://localhost:5000${imageUrl}`;
-}
+        let imageUrl = product.imageURL || product.image;
+        if (!imageUrl && product.images && product.images.length > 0) {
+          imageUrl = product.images[0].url;
+        }
+        // Final fallback to placeholder
+        if (!imageUrl) {
+          imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
+        }
+        if (imageUrl.startsWith('/uploads/')) {
+          imageUrl = `http://localhost:5000${imageUrl}`;
+        }
 
-                     const imageHtml = `
-                          <img src="${imageUrl}" 
-                          alt="${product.name}" 
-                        onerror="handleImageError(this)"
-                       loading="lazy" 
-                        style="width: 100%; height: 100%; object-fit: cover;" />
-                  <div class="image-placeholder" style="display: none;">
-                    <i class="fas fa-cube"></i>
-                 </div>
-                 `;
-=======
-        let imageUrl = "hairshop-backend" + product.imageURL || product.image;
-        
-        // Create image HTML with proper fallbacks
-        const imageHtml = imageUrl ? 
-          `<img src="${imageUrl}" 
-                alt="${product.name}" 
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                loading="lazy" />
-           <div class="image-placeholder" style="display: none;">
-             <i class="fas fa-cube"></i>
-           </div>` :
-          `<div class="image-placeholder">
-             <i class="fas fa-cube"></i>
-           </div>`;
->>>>>>> fcf3d27d2cb4fb56d78acffdc9aadf504908b42d
-        
+        const imageHtml = `
+          <img src="${imageUrl}" 
+            alt="${product.name}" 
+            onerror="handleImageError(this)"
+            loading="lazy" 
+            style="width: 100%; height: 100%; object-fit: cover;" />
+          <div class="image-placeholder" style="display: none;">
+            <i class="fas fa-cube"></i>
+          </div>
+        `;
+
+        // Determine bulk status
+        let bulkStatus = 'status-available';
+        let bulkStatusText = 'Available';
+        if (product.bulkQuantity <= 0) {
+          bulkStatus = 'status-out-of-stock';
+          bulkStatusText = 'Out of Stock';
+        } else if (product.bulkQuantity < 5) {
+          bulkStatus = 'status-low-stock';
+          bulkStatusText = 'Low Stock';
+        }
+
+        // Build bulk info HTML if available
+        const bulkInfoHtml = product.bulkQuantity > 0 ? `
+          <div class="bulk-info">
+            <h3><i class="fas fa-boxes"></i> Bulk Purchase Available</h3>
+            <div class="bulk-details">
+              <div class="bulk-item">
+                <span class="bulk-label">Bulk Price</span>
+                <span class="bulk-value bulk-price">${product.wholesalePrice || product.bulkPrice || 'N/A'} XAF</span>
+              </div>
+              <div class="bulk-item">
+                <span class="bulk-label">Quantity</span>
+                <span class="bulk-value">${product.bulkQuantity || 0} ${product.bulkUnit || 'units'}</span>
+              </div>
+              <div class="bulk-item">
+                <span class="bulk-label">Status</span>
+                <span class="bulk-status ${bulkStatus}">${bulkStatusText}</span>
+              </div>
+            </div>
+          </div>
+        ` : '';
+
         const slide = document.createElement('article');
         slide.className = 'slide';
         slide.innerHTML = `
@@ -634,7 +703,29 @@ if (!imageUrl && product.images && product.images.length > 0) {
             <span class="pill"><i class="fa-solid fa-star"></i> ${product.tag || 'Premium'}</span>
             <h2>${product.name}</h2>
             <p class="desc">${product.description || 'No description available.'}</p>
-            <div class="price">${product.price} XAF</div>
+            
+            <!-- Purchase Type Selection -->
+            <div class="purchase-type">
+              <div class="purchase-option active" data-type="retail">
+                <i class="fas fa-shopping-bag"></i> Retail
+              </div>
+              ${product.bulkQuantity > 0 ? `
+                <div class="purchase-option" data-type="bulk">
+                  <i class="fas fa-boxes"></i> Bulk
+                </div>
+              ` : ''}
+            </div>
+            
+            <!-- Retail Price (default) -->
+            <div class="price retail-price">${product.retailPrice || product.price} XAF</div>
+            
+            <!-- Bulk Price (hidden by default) -->
+            ${product.bulkQuantity > 0 ? `
+              <div class="price bulk-price" style="display: none;">${product.wholesalePrice || product.bulkPrice} XAF</div>
+            ` : ''}
+            
+            ${bulkInfoHtml}
+            
             <div class="buy-row">
               <div class="qty">
                 <button type="button" data-dec>-</button>
@@ -644,8 +735,10 @@ if (!imageUrl && product.images && product.images.length > 0) {
               <button class="cta" data-buy 
                       data-id="${product._id}" 
                       data-name="${product.name}" 
-                      data-price="${product.price}"
-                      data-image="${imageUrl || ''}">
+                      data-retail-price="${product.retailPrice || product.price}"
+                      data-bulk-price="${product.wholesalePrice || product.bulkPrice || ''}"
+                      data-image="${imageUrl || ''}"
+                      data-bulk-unit="${product.bulkUnit || ''}">
                 <i class="fa-solid fa-bag-shopping"></i> Add to Cart
               </button>
               ${isAdmin() ? `
@@ -663,9 +756,6 @@ if (!imageUrl && product.images && product.images.length > 0) {
         `;
         track.appendChild(slide);
       });
-      
-      // ➡️ ADD THIS LINE FOR DEBUGGING
-      console.log(`Product "${product.name}" is using image URL: ${imageUrl}`);
 
       setupSlideEvents();
       renderDots();
@@ -677,6 +767,29 @@ if (!imageUrl && product.images && product.images.length > 0) {
         const dec = slide.querySelector('[data-dec]');
         const inc = slide.querySelector('[data-inc]');
         const input = slide.querySelector('input[type="number"]');
+        const purchaseOptions = slide.querySelectorAll('.purchase-option');
+        const retailPrice = slide.querySelector('.retail-price');
+        const bulkPrice = slide.querySelector('.bulk-price');
+        const buyBtn = slide.querySelector('[data-buy]');
+        
+        // Purchase type selection
+        purchaseOptions.forEach(option => {
+          option.addEventListener('click', () => {
+            purchaseOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            
+            const purchaseType = option.getAttribute('data-type');
+            
+            // Show/hide appropriate price
+            if (purchaseType === 'retail') {
+              retailPrice.style.display = 'block';
+              if (bulkPrice) bulkPrice.style.display = 'none';
+            } else {
+              retailPrice.style.display = 'none';
+              if (bulkPrice) bulkPrice.style.display = 'block';
+            }
+          });
+        });
         
         dec.addEventListener('click', () => { 
           input.value = Math.max(1, (+input.value || 1) - 1); 
@@ -686,18 +799,25 @@ if (!imageUrl && product.images && product.images.length > 0) {
           input.value = (+input.value || 1) + 1; 
         });
         
-        const buy = slide.querySelector('[data-buy]');
-        buy.addEventListener('click', () => {
+        buyBtn.addEventListener('click', () => {
           const qty = Math.max(1, parseInt(input.value || '1', 10));
+          const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
+          const price = activePurchaseType === 'retail' 
+            ? parseFloat(buyBtn.dataset.retailPrice)
+            : parseFloat(buyBtn.dataset.bulkPrice);
+          
           const item = {
-            id: buy.dataset.id,
-            name: buy.dataset.name,
-            price: parseFloat(buy.dataset.price),
+            id: buyBtn.dataset.id,
+            name: buyBtn.dataset.name,
+            price: price,
             qty: qty,
-            image: buy.dataset.image || ''
+            image: buyBtn.dataset.image || '',
+            purchaseType: activePurchaseType,
+            bulkUnit: activePurchaseType === 'bulk' ? buyBtn.dataset.bulkUnit : ''
           };
+          
           addToCart(item);
-          showToast(`${item.name} ×${item.qty} added to cart`);
+          showToast(`${item.name} ×${item.qty} (${activePurchaseType}) added to cart`);
         });
         
         // Admin remove
@@ -814,40 +934,42 @@ if (!imageUrl && product.images && product.images.length > 0) {
     document.addEventListener('DOMContentLoaded', () => {
       renderProducts().then(startAutoSlide);
     });
+    
     // Add this function to both HTML files
-function handleImageError(img) {
-  console.error('🖼️ Image failed to load:', img.src);
-  img.style.display = 'none';
-  const placeholder = img.nextElementSibling;
-  if (placeholder && placeholder.classList.contains('image-placeholder')) {
-    placeholder.style.display = 'flex';
-  }
-}
-// Add this function to test the API
-async function testProductsAPI() {
-  try {
-    console.log('🧪 Testing products API...');
-    
-    const response = await fetch('http://localhost:5000/api/products');
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
-    
-    const text = await response.text();
-    console.log('Response text:', text);
-    
-    try {
-      const products = JSON.parse(text);
-      console.log('Parsed products:', products);
-    } catch (parseError) {
-      console.error('Failed to parse JSON:', parseError);
+    function handleImageError(img) {
+      console.error('🖼️ Image failed to load:', img.src);
+      img.style.display = 'none';
+      const placeholder = img.nextElementSibling;
+      if (placeholder && placeholder.classList.contains('image-placeholder')) {
+        placeholder.style.display = 'flex';
+      }
     }
-  } catch (error) {
-    console.error('Test failed:', error);
-  }
-}
+    
+    // Add this function to test the API
+    async function testProductsAPI() {
+      try {
+        console.log('🧪 Testing products API...');
+        
+        const response = await fetch('http://localhost:5000/api/products');
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        const text = await response.text();
+        console.log('Response text:', text);
+        
+        try {
+          const products = JSON.parse(text);
+          console.log('Parsed products:', products);
+        } catch (parseError) {
+          console.error('Failed to parse JSON:', parseError);
+        }
+      } catch (error) {
+        console.error('Test failed:', error);
+      }
+    }
 
-// Call this in your console to test
-// testProductsAPI();
+    // Call this in your console to test
+    // testProductsAPI();
   </script>
 </body>
 </html>
