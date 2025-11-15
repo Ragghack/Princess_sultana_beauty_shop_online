@@ -342,7 +342,9 @@ router.post('/products', upload.array('images', 4), handleUploadErrors, async (r
 
     // Add optional fields
     if (bulkQuantity) productData.bulkQuantity = parseInt(bulkQuantity);
-    if (bulkUnit) productData.bulkUnit = bulkUnit.trim();
+    if (bulkUnit) {
+  productData.bulkUnit = typeof bulkUnit === 'string' ? bulkUnit.trim() : String(bulkUnit).trim();
+}
 
     console.log('💾 Saving product to database...', productData);
     

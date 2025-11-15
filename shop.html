@@ -937,8 +937,7 @@ nav ul {
       <p>&copy; 2023 Princesse Sultana Hair Care | All Rights Reserved</p>
     </div>
   </footer>
-  
-  <script>
+<script>
     // Enhanced Cart Functions with Bulk Support
     function getCart() {
         try { 
@@ -1157,6 +1156,21 @@ nav ul {
         }
     }
 
+    // Debug function to check product structure
+    function debugProduct(product) {
+        console.log('🔍 Product Debug:', {
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            retailPrice: product.retailPrice,
+            wholesalePrice: product.wholesalePrice,
+            bulkPrice: product.bulkPrice,
+            bulkQuantity: product.bulkQuantity,
+            bulkUnit: product.bulkUnit,
+            images: product.images
+        });
+    }
+
     // Render products with proper image handling and bulk support
     async function renderProducts() {
         const products = await fetchProducts();
@@ -1178,6 +1192,9 @@ nav ul {
         track.innerHTML = '';
         
         products.forEach(product => {
+            // Debug product data
+            debugProduct(product);
+            
             // Handle multiple possible image fields
             let imageUrl = product.imageURL || product.image;
             if (!imageUrl && product.images && product.images.length > 0) {
@@ -1213,6 +1230,12 @@ nav ul {
                 bulkStatusText = 'Low Stock';
             }
 
+            // Get prices from admin settings - FIXED VERSION
+            const retailPriceValue = product.retailPrice || product.price || 0;
+            
+            // Use wholesalePrice if available, otherwise use bulkPrice, otherwise calculate 20% off
+            const bulkPriceValue = product.wholesalePrice || product.bulkPrice || (retailPriceValue * 0.8).toFixed(0);
+
             // Build bulk info HTML if available
             const bulkInfoHtml = product.bulkQuantity > 0 ? `
                 <div class="bulk-info">
@@ -1220,7 +1243,7 @@ nav ul {
                     <div class="bulk-details">
                         <div class="bulk-item">
                             <span class="bulk-label">Bulk Price</span>
-                            <span class="bulk-value bulk-price">${product.wholesalePrice || product.bulkPrice} XAF</span>
+                            <span class="bulk-value bulk-price">${bulkPriceValue} XAF</span>
                         </div>
                         <div class="bulk-item">
                             <span class="bulk-label">Unit Size</span>
@@ -1234,6 +1257,14 @@ nav ul {
                             <span class="bulk-label">Status</span>
                             <span class="bulk-status ${bulkStatus}">${bulkStatusText}</span>
                         </div>
+                        ${product.wholesalePrice ? `
+                        <div class="bulk-item">
+                            <span class="bulk-label">Savings</span>
+                            <span class="bulk-value" style="color: var(--deep-green);">
+                                ${calculateSavingsPercentage(retailPriceValue, bulkPriceValue)}% OFF
+                            </span>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             ` : '';
@@ -1263,11 +1294,11 @@ nav ul {
                     </div>
                     
                     <!-- Retail Price (default) -->
-                    <div class="price retail-price">${product.retailPrice || product.price} XAF</div>
+                    <div class="price retail-price">${retailPriceValue} XAF</div>
                     
                     <!-- Bulk Price (hidden by default) -->
                     ${product.bulkQuantity > 0 ? `
-                        <div class="price bulk-price" style="display: none;">${product.wholesalePrice || product.bulkPrice} XAF</div>
+                        <div class="price bulk-price" style="display: none;">${bulkPriceValue} XAF</div>
                     ` : ''}
                     
                     ${bulkInfoHtml}
@@ -1281,8 +1312,8 @@ nav ul {
                         <button class="cta" data-buy 
                                 data-id="${product._id}" 
                                 data-name="${product.name}" 
-                                data-retail-price="${product.retailPrice || product.price}"
-                                data-bulk-price="${product.wholesalePrice || product.bulkPrice || ''}"
+                                data-retail-price="${retailPriceValue}"
+                                data-bulk-price="${bulkPriceValue}"
                                 data-image="${imageUrl || ''}"
                                 data-bulk-unit="${product.bulkUnit || ''}">
                             <i class="fa-solid fa-bag-shopping"></i> Add to Cart
@@ -1290,8 +1321,8 @@ nav ul {
                         <button class="cta cta-buy-now" data-buy-now 
                                 data-id="${product._id}" 
                                 data-name="${product.name}" 
-                                data-retail-price="${product.retailPrice || product.price}"
-                                data-bulk-price="${product.wholesalePrice || product.bulkPrice || ''}"
+                                data-retail-price="${retailPriceValue}"
+                                data-bulk-price="${bulkPriceValue}"
                                 data-image="${imageUrl || ''}"
                                 data-bulk-unit="${product.bulkUnit || ''}">
                             <i class="fas fa-bolt"></i> Buy Now
@@ -1315,6 +1346,13 @@ nav ul {
         setupSlideEvents();
         renderDots();
         updateCartCount();
+    }
+
+    // Calculate savings percentage for bulk purchases
+    function calculateSavingsPercentage(retailPrice, bulkPrice) {
+        if (!retailPrice || !bulkPrice || retailPrice <= bulkPrice) return 0;
+        const savings = ((retailPrice - bulkPrice) / retailPrice) * 100;
+        return Math.round(savings);
     }
 
     // Enhanced Setup slide events with bulk purchase support
@@ -1445,7 +1483,7 @@ nav ul {
                     if (confirm('Are you sure you want to remove this product?')) {
                         try {
                             const token = localStorage.getItem('adminToken');
-                            const response = await fetch(`http://localhost:5000/api/products/${remove.dataset.id}`, { 
+                            const response = await fetch(`http://localhost:5000/api/admin/products/${remove.dataset.id}`, { 
                                 method: 'DELETE',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -1584,7 +1622,8 @@ nav ul {
     // Initialize the shop
     document.addEventListener('DOMContentLoaded', () => {
         renderProducts().then(startAutoSlide);
+        updateCartCount();
     });
-  </script>
+</script>
 </body>
 </html>
