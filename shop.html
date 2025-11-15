@@ -760,27 +760,106 @@
         width: 300px;
       }
     }
+    /* Company Logo Styles */
+.company-logo {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 101;
+}
+
+.logo-image {
+  height: 50px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  border: 2px solid var(--light-gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+/* Adjust navigation for logo */
+nav ul {
+  margin-right: 140px; /* Space for the logo */
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .company-logo {
+    position: static;
+    transform: none;
+    margin-left: auto;
+    margin-right: 15px;
+  }
+  
+  .logo-image {
+    height: 40px;
+  }
+  
+  nav ul {
+    margin-right: 0;
+  }
+  
+  header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .company-logo {
+    order: 2;
+    margin-left: auto;
+  }
+  
+  nav {
+    order: 3;
+    width: 100%;
+  }
+  
+  nav ul {
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .logo-image {
+    height: 35px;
+  }
+}
   </style>
 </head>
 <body>
   <div class="bg-fallback" aria-hidden="true"></div>
   
   <!-- Enhanced Navigation Bar -->
-  <header>
-    <div class="brand"><i class="fas fa-spa"></i> Princesse Sultana</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="shop.html" class="active">Shop</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li class="cart-icon" id="cartIcon">
-          <i class="fas fa-shopping-cart"></i>
-          <span class="cart-count" id="cartCount">0</span>
-        </li>
-      </ul>
-    </nav>
-  </header>
+<header>
+  <div class="brand"><i class="fas fa-spa"></i> Princesse Sultana</div>
+  
+  <!-- Company Logo on the Right Side -->
+  <div class="company-logo">
+    <img src="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png" alt="Princesse Sultana Logo" class="logo-image">
+  </div>
+  
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+       <li><a href="user dashboard.html">profile</a></li>
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li class="cart-icon" id="cartIcon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cartCount">0</span>
+      </li>
+    </ul>
+  </nav>
+</header>
   
   <!-- Sliding Cart Preview -->
   <div class="cart-overlay" id="cartOverlay"></div>

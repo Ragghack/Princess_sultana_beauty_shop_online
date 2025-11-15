@@ -30,9 +30,23 @@
             color: var(--black);
             line-height: 1.6;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(214, 175, 55, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 80% 70%, rgba(183, 110, 34, 0.1) 0%, transparent 20%);
+            position: relative;
+        }
+
+        /* Logo Background */
+        .logo-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png');
+            background-size: 800px;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* Groovy patterns and shapes */
@@ -99,11 +113,36 @@
             color: var(--light-gold);
         }
 
+        /* Company Logo in Header */
+        .company-logo {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 101;
+        }
+
+        .logo-image {
+            height: 50px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            border: 2px solid var(--light-gold);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-image:hover {
+            transform: scale(1.05);
+        }
+
         /* Navigation Styles */
         .nav-links {
             display: flex;
             list-style: none;
             transition: transform 0.3s ease;
+            margin-right: 140px; /* Space for the logo */
         }
 
         .nav-links li {
@@ -158,6 +197,28 @@
         }
 
         /* Responsive styles */
+        @media (max-width: 900px) {
+            .company-logo {
+                position: static;
+                transform: none;
+                margin-left: auto;
+                margin-right: 15px;
+            }
+            
+            .logo-image {
+                height: 40px;
+            }
+            
+            .nav-links {
+                margin-right: 0;
+            }
+            
+            header {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+
         @media (max-width: 768px) {
             .burger-menu {
                 display: flex;
@@ -196,6 +257,33 @@
                 color: white;
                 cursor: pointer;
                 z-index: 102;
+            }
+            
+            .brand {
+                font-size: 22px;
+            }
+            
+            .brand i {
+                font-size: 24px;
+            }
+            
+            .company-logo {
+                order: 2;
+                margin-left: auto;
+            }
+            
+            nav {
+                order: 3;
+                width: 100%;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .logo-image {
+                height: 35px;
             }
             
             /* Burger animation */
@@ -772,6 +860,9 @@
     </style>
 </head>
 <body>
+    <!-- Logo Background -->
+    <div class="logo-background"></div>
+
     <!-- Groovy background elements -->
     <div class="groovy-shape circle"></div>
     <div class="groovy-shape wave"></div>
@@ -791,6 +882,11 @@
             <span>Princesse Sultana Hair care</span>
         </div>
         
+        <!-- Company Logo in Header -->
+        <div class="company-logo">
+            <img src="WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png" alt="Princesse Sultana Logo" class="logo-image">
+        </div>
+        
         <!-- Burger Menu -->
         <div class="burger-menu" id="burgerMenu">
             <span></span>
@@ -800,14 +896,14 @@
         
         <nav>
             <ul class="nav-links" id="navLinks" aria-label="Main navigation">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
                 <li><a href="benefits.html">Benefits</a></li>
-                <li><a href="products.html">Products</a></li>
                 <li><a href="how-to-use.html">How to Use</a></li>
                 <li><a href="testimonials.html">Testimonials</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
-            <div class="close-menu" id="closeMenu">x</div>
-            </ul>
+            <div class="close-menu" id="closeMenu">×</div>
         </nav>
         <div class="auth-buttons">
             <button id="loginBtn" aria-label="Sign In">Sign In</button>
@@ -830,7 +926,7 @@
                     <li><i class="fas fa-check"></i> Visible results in weeks</li>
                 </ul>
                 
-                <button onclick="window.location.href='login.html';"class="cta-button" id="shopNowBtn">
+                <button class="cta-button" id="shopNowBtn">
                     <span>Shop Now</span>
                     <i class="fas fa-arrow-right" aria-label="Shop Now Arrow"></i>
                 </button>
@@ -961,6 +1057,8 @@
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
                     <li><a href="benefits.html">Benefits</a></li>
                     <li><a href="how-to-use.html">How to Use</a></li>
                     <li><a href="testimonials.html">Testimonials</a></li>
@@ -1024,10 +1122,15 @@
                 burgerMenu.classList.remove('active');
             });
             
-            // Other functionality
+            // Button functionality
             const shopNowBtn = document.getElementById('shopNowBtn');
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
+            
+            // Shop Now button functionality
+            shopNowBtn.addEventListener('click', function() {
+                window.location.href = 'shop.html';
+            });
             
             // Register button functionality
             registerBtn.addEventListener('click', function() {
