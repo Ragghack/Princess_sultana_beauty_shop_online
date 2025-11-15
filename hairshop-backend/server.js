@@ -113,6 +113,25 @@ app.post("/api/admin/register", async (req, res) => {
     });
   }
 });
+// Add this temporary route to your server.js to fix existing data
+app.get('/api/fix-cancelled-orders', async (req, res) => {
+  try {
+    const Order = require('./models/Order');
+    const result = await Order.updateMany(
+      { status: 'cancelled', affectsRevenue: { $ne: false } },
+      { $set: { affectsRevenue: false } }
+    );
+    
+    res.json({ 
+      success: true, 
+      message: `Fixed ${result.modifiedCount} cancelled orders`,
+      modifiedCount: result.modifiedCount
+    });
+  } catch (error) {
+    console.error('Migration error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 // Add to your existing server.js after other route imports
 const commandRoutes = require("./routes/commands");
 
@@ -252,7 +271,44 @@ app.post("/api/test-register", (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
-
+// Add this to your backend routes
+app.delete('/api/commands/:id', auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Import the Command model
+        const Command = require('./models/Order'); // or whatever your model name is
+        
+        // Check if user is admin
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ 
+                success: false, 
+                message: 'Access denied. Admin privileges required.' 
+            });
+        }
+        
+        // Delete the command from database
+        const result = await Command.findByIdAndDelete(id);
+        
+        if (!result) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Command not found' 
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            message: 'Command deleted successfully' 
+        });
+    } catch (error) {
+        console.error('Error deleting command:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to delete command: ' + error.message 
+        });
+    }
+});
 // Admin test endpoint
 app.get("/api/admin/test", (req, res) => {
   res.json({ message: "Admin routes are working!" });

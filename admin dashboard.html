@@ -664,6 +664,30 @@
     width: 95%;
   }
 }
+.status-processing {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.status-shipped {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+.status-delivered {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.status-cancelled {
+    background: #F8D7DA;
+    color: #721C24;
+}
+
+.status-pending {
+    background: #E2E3E5;
+    color: #383D41;
+}
     </style>
 </head>
 <body>
@@ -672,9 +696,9 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-placeholder" id="logoPlaceholder">
-                    <i class="fas fa-spa"></i>
+                    <i class="fas fa-spa" img src = "sultana picture/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.jpg"></i>
                 </div>
-                <h2><i class="fas fa-spa"></i> Admin Dashboard</h2>
+                <h2><i class="fas fa-spa"></i>ESPACE manager</h2>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="#" class="active" data-panel="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
@@ -1265,13 +1289,13 @@ async function loadOrders(status = 'all') {
               <strong>Last Updated:</strong> ${formatDate(order.updatedAt || order.createdAt)}
             </div>
           </div>
-          <div class="order-actions">
-            <button class="btn btn-primary" onclick="viewOrderDetails('${order._id}')">View Details</button>
-            <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'confirmed')">Confirm</button>
-            <button class="btn btn-primary" onclick="updateOrderStatus('${order._id}', 'processing')">Processing</button>
-            <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'shipped')">Shipped</button>
-            <button class="btn btn-danger" onclick="updateOrderStatus('${order._id}', 'cancelled')">Cancel</button>
-          </div>
+<div class="order-actions">
+    <button class="btn btn-primary" onclick="viewOrderDetails('${order._id}')">View Details</button>
+    <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'processing')">Processing</button>
+    <button class="btn btn-primary" onclick="updateOrderStatus('${order._id}', 'shipped')">Shipped</button>
+    <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'delivered')">Delivered</button>
+    <button class="btn btn-danger" onclick="updateOrderStatus('${order._id}', 'cancelled')">Cancel</button>
+</div>
         </div>
       `;
     }).join('');
@@ -1285,22 +1309,34 @@ async function loadOrders(status = 'all') {
 // Update order status function for admin
 // Update order status function for admin
 async function updateOrderStatus(orderId, status) {
-  try {
-    const response = await makeAuthenticatedRequest(`/commands/${orderId}/status`, {
-      method: 'PATCH',  // Changed from PUT to PATCH
-      body: JSON.stringify({ status })
-    });
-    
-    if (response.success) {
-      showSuccess('Order status updated successfully');
-      loadOrders('all'); // Refresh orders
-    } else {
-      throw new Error(response.message || 'Failed to update order status');
+    if (!confirm(`Are you sure you want to change this order status to "${status}"?`)) {
+        return;
     }
-  } catch (error) {
-    console.error('Error updating order status:', error);
-    showError('Failed to update order status: ' + error.message);
-  }
+
+    try {
+        const response = await makeAuthenticatedRequest(`/commands/${orderId}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status })
+        });
+        
+        if (response.success) {
+            showSuccess(`Order status updated to ${status} successfully`);
+            
+            // Refresh the current view
+            const activePanel = document.querySelector('.content-panel.active').id;
+            if (activePanel === 'dashboard') {
+                await loadRecentOrders();
+            } else if (activePanel === 'order-tracking') {
+                const currentFilter = document.querySelector('.filter-btn.active').getAttribute('data-status');
+                await loadOrders(currentFilter);
+            }
+        } else {
+            throw new Error(response.message || 'Failed to update order status');
+        }
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        showError('Failed to update order status: ' + error.message);
+    }
 }
 
         // Load support tickets
@@ -1510,9 +1546,20 @@ async function updateOrderStatus(orderId, status) {
             const retailPrice = document.getElementById('retailPrice').value;
             const retailQuantity = document.getElementById('retailQuantity').value;
             const productStatus = document.getElementById('productStatus').value;
-            const bulkQuantity = document.getElementById('bulkQuantity').value;
-            const bulkUnit = document.getElementById('bulkUnit').value.trim();
+           // const bulkQuantity = document.getElementById('bulkQuantity').value;
+            //const bulkUnit = document.getElementById('bulkUnit').value.trim();
             const productImage = document.getElementById('productImage').files[0];
+
+             // Get form values - ADD THESE LINES
+    const wholesalePrice = document.getElementById('wholesalePrice').value;
+    const bulkQuantity = document.getElementById('bulkQuantity').value;
+    const bulkUnit = document.getElementById('bulkUnit').value.trim();
+    
+    // Append bulk pricing data to formData
+    if (wholesalePrice) formData.append('wholesalePrice', wholesalePrice);
+    if (bulkQuantity) formData.append('bulkQuantity', bulkQuantity);
+    if (bulkUnit) formData.append('bulkUnit', bulkUnit);
+    if (wholesalePrice) formData.append('wholesalePrice', wholesalePrice);
 
             // Basic validation
             if (!productName || !productDescription || !productCategory || !retailPrice) {
@@ -1698,6 +1745,558 @@ async function updateOrderStatus(orderId, status) {
 
         // Initialize when the page loads
         document.addEventListener('DOMContentLoaded', initializeDashboard);
+        // View order details in modal
+async function viewOrderDetails(orderId) {
+    try {
+        const order = await makeAuthenticatedRequest(`/commands/${orderId}`);
+        
+        // Populate modal with order data
+        document.getElementById('modalOrderTitle').textContent = `Order #${order.orderNumber || order._id}`;
+        document.getElementById('modalOrderNumber').textContent = order.orderNumber || order._id;
+        document.getElementById('modalOrderDate').textContent = formatDate(order.createdAt);
+        document.getElementById('modalOrderAmount').textContent = `${(order.amount || order.totalAmount || 0).toLocaleString()} XAF`;
+        document.getElementById('modalPaymentMethod').textContent = order.paymentMethod || 'WhatsApp';
+        
+        // Customer info
+        document.getElementById('modalCustomerName').textContent = order.userId?.name || order.user?.name || 'N/A';
+        document.getElementById('modalCustomerEmail').textContent = order.userId?.email || order.user?.email || 'N/A';
+        document.getElementById('modalCustomerPhone').textContent = order.userId?.phone || order.user?.phone || 'N/A';
+        
+        // Shipping address
+        const address = order.shippingAddress;
+        document.getElementById('modalShippingAddress').innerHTML = address ? `
+            <strong>${address.fullName || ''}</strong><br>
+            ${address.address || ''}<br>
+            ${address.city || ''}, ${address.state || ''} ${address.postalCode || ''}<br>
+            ${address.country || ''}<br>
+            Phone: ${address.phone || 'N/A'}
+        ` : 'No shipping address provided';
+        
+        // Order items
+        const items = order.items || order.products || [];
+        document.getElementById('modalOrderItems').innerHTML = items.length > 0 ? `
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--light-gray);">
+                        <th style="padding: 10px; text-align: left;">Product</th>
+                        <th style="padding: 10px; text-align: center;">Quantity</th>
+                        <th style="padding: 10px; text-align: right;">Price</th>
+                        <th style="padding: 10px; text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${items.map(item => `
+                        <tr style="border-bottom: 1px solid var(--light-gray);">
+                            <td style="padding: 10px;">${item.name || item.productId?.name || 'Product'}</td>
+                            <td style="padding: 10px; text-align: center;">${item.quantity || 1}</td>
+                            <td style="padding: 10px; text-align: right;">${(item.price || 0).toLocaleString()} XAF</td>
+                            <td style="padding: 10px; text-align: right;">${((item.price || 0) * (item.quantity || 1)).toLocaleString()} XAF</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        ` : 'No items found';
+        
+        // Order status
+        const statusElement = document.getElementById('modalOrderStatus');
+        statusElement.textContent = order.status;
+        statusElement.className = `order-status status-${order.status}`;
+        
+        // Order timeline
+        document.getElementById('modalOrderTimeline').innerHTML = `
+            <div>• Created: ${formatDate(order.createdAt)}</div>
+            ${order.updatedAt && order.updatedAt !== order.createdAt ? 
+                `<div>• Last Updated: ${formatDate(order.updatedAt)}</div>` : ''}
+            <div>• Current Status: <strong>${order.status}</strong></div>
+        `;
+        
+        // Show modal
+        document.getElementById('orderDetailsModal').style.display = 'flex';
+        
+    } catch (error) {
+        console.error('Error loading order details:', error);
+        showError('Failed to load order details: ' + error.message);
+    }
+}
+// Close order modal
+function closeOrderModal() {
+    document.getElementById('orderDetailsModal').style.display = 'none';
+}
+
+// Print order details
+function printOrderDetails() {
+    window.print();
+}
+
+// Close modal when clicking the X button
+document.querySelector('#orderDetailsModal .close').addEventListener('click', closeOrderModal);
+
+// Close modal when clicking outside
+document.getElementById('orderDetailsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeOrderModal();
+    }
+});
+// Function to reset dashboard statistics when commands are canceled
+async function resetDashboardForCanceledCommands() {
+    try {
+        console.log('🔄 Resetting dashboard for canceled commands...');
+        
+        // Show loading state
+        document.getElementById('total-orders').innerHTML = '<div class="loading-spinner"></div>';
+        document.getElementById('total-revenue').innerHTML = '<div class="loading-spinner"></div>';
+        
+        // Get current statistics
+        const stats = await makeAuthenticatedRequest(API_ENDPOINTS.STATS);
+        
+        // Calculate canceled orders count and revenue impact
+        const canceledOrdersResponse = await makeAuthenticatedRequest('/commands?status=cancelled');
+        const canceledOrders = canceledOrdersResponse.orders || canceledOrdersResponse.commands || [];
+        
+        const canceledCount = canceledOrders.length;
+        const canceledRevenue = canceledOrders.reduce((total, order) => {
+            return total + (order.amount || order.totalAmount || 0);
+        }, 0);
+        
+        // Update dashboard with corrected values (excluding canceled orders)
+        const adjustedOrders = (stats.totalOrders || 0) - canceledCount;
+        const adjustedRevenue = (stats.totalRevenue || 0) - canceledRevenue;
+        
+        // Update the dashboard display
+        document.getElementById('total-orders').textContent = adjustedOrders;
+        document.getElementById('total-revenue').textContent = `${adjustedRevenue.toLocaleString()} XAF`;
+        
+        // Show notification about the adjustment
+        showSuccess(`Dashboard updated: Excluded ${canceledCount} canceled orders (${canceledRevenue.toLocaleString()} XAF)`);
+        
+        // Refresh the recent orders display to remove canceled ones
+        await loadRecentOrders();
+        
+        // Update the canceled orders tracking section (if it exists)
+        updateCanceledOrdersTracking(canceledOrders);
+        
+    } catch (error) {
+        console.error('❌ Error resetting dashboard:', error);
+        showError('Failed to reset dashboard: ' + error.message);
+        
+        // Fallback: reload the entire dashboard
+        await loadDashboardData();
+    }
+}
+
+// Enhanced function to update canceled orders tracking with delete buttons
+function updateCanceledOrdersTracking(canceledOrders) {
+    // Create or update a dedicated section for tracking canceled orders
+    let trackingSection = document.getElementById('canceled-orders-tracking');
+    
+    if (!trackingSection) {
+        trackingSection = document.createElement('div');
+        trackingSection.id = 'canceled-orders-tracking';
+        trackingSection.className = 'content-section';
+        trackingSection.innerHTML = `
+            <div class="section-header">
+                <h2 class="section-title">Canceled Orders Tracking</h2>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAllCanceledOrders()" id="deleteAllBtn">
+                        <i class="fas fa-trash"></i> Delete All Canceled
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleCanceledOrders()">Hide</button>
+                </div>
+            </div>
+            <div id="canceled-orders-list"></div>
+        `;
+        
+        // Insert after the recent orders section
+        const dashboardPanel = document.getElementById('dashboard');
+        const recentOrdersSection = dashboardPanel.querySelector('.content-section');
+        dashboardPanel.insertBefore(trackingSection, recentOrdersSection.nextSibling);
+    }
+    
+    // Update the canceled orders list
+    const canceledList = document.getElementById('canceled-orders-list');
+    
+    if (canceledOrders.length === 0) {
+        canceledList.innerHTML = '<div class="no-data">No canceled orders</div>';
+        document.getElementById('deleteAllBtn').style.display = 'none';
+        return;
+    }
+    
+    // Show delete all button if there are canceled orders
+    document.getElementById('deleteAllBtn').style.display = 'inline-block';
+    
+    canceledList.innerHTML = canceledOrders.map(order => {
+        const customerName = order.userId?.name || order.user?.name || 'Customer';
+        const amount = order.amount || order.totalAmount || 0;
+        const itemCount = order.items?.length || order.products?.length || 0;
+        
+        return `
+            <div class="order-card" style="border-left: 4px solid var(--red);">
+                <div class="order-header">
+                    <div class="order-id">Canceled Order #${order.orderNumber || order._id}</div>
+                    <div class="order-date">${formatDate(order.createdAt)}</div>
+                </div>
+                <div class="order-details">
+                    <div>
+                        <strong>Customer:</strong> ${customerName}<br>
+                        <strong>Items:</strong> ${itemCount} products
+                    </div>
+                    <div>
+                        <strong>Amount:</strong> ${amount.toLocaleString()} XAF<br>
+                        <strong>Canceled:</strong> ${formatDate(order.updatedAt || order.createdAt)}
+                    </div>
+                    <div>
+                        <span class="order-status status-cancelled">CANCELED</span>
+                    </div>
+                </div>
+                <div class="order-actions">
+                    <button class="btn btn-primary" onclick="viewOrderDetails('${order._id}')">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="btn btn-success" onclick="restoreOrder('${order._id}')">
+                        <i class="fas fa-undo"></i> Restore
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteCanceledOrder('${order._id}', event)">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Function to delete a single canceled order
+// Fixed deleteCanceledOrder function
+async function deleteCanceledOrder(orderId, event) {
+    if (!confirm('Are you sure you want to permanently delete this canceled order? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        // Show loading state - safely handle event parameter
+        let deleteBtn;
+        if (event && event.target) {
+            deleteBtn = event.target.closest('button');
+        } else {
+            // Fallback: find button by order ID
+            deleteBtn = document.querySelector(`button[onclick*="${orderId}"]`);
+        }
+
+        if (deleteBtn) {
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '<div class="loading-spinner"></div>';
+            deleteBtn.disabled = true;
+        }
+
+        // Try the DELETE endpoint first
+        let response;
+        try {
+            response = await makeAuthenticatedRequest(`/commands/${orderId}`, {
+                method: 'DELETE'
+            });
+        } catch (deleteError) {
+            // If DELETE fails, try updating status to 'deleted' instead
+            console.log('DELETE endpoint not available, trying status update...');
+            response = await makeAuthenticatedRequest(`/commands/${orderId}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status: 'deleted' })
+            });
+        }
+        
+        if (response.success) {
+            showSuccess('Canceled order deleted successfully!');
+            
+            // Reset dashboard to reflect the change
+            await resetDashboardForCanceledCommands();
+        } else {
+            throw new Error(response.message || 'Failed to delete order');
+        }
+    } catch (error) {
+        console.error('Error deleting canceled order:', error);
+        showError('Failed to delete canceled order: ' + error.message);
+        
+        // Reset button state if possible
+        if (deleteBtn) {
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+            deleteBtn.disabled = false;
+        }
+    }
+}
+
+// Function to delete all canceled orders
+async function deleteAllCanceledOrders() {
+    try {
+        // Get all canceled orders first
+        const canceledOrdersResponse = await makeAuthenticatedRequest('/commands?status=cancelled');
+        const canceledOrders = canceledOrdersResponse.orders || canceledOrdersResponse.commands || [];
+        
+        if (canceledOrders.length === 0) {
+            showError('No canceled orders to delete');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to permanently delete ALL ${canceledOrders.length} canceled orders? This action cannot be undone.`)) {
+            return;
+        }
+
+        // Show loading state
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        const originalText = deleteAllBtn.innerHTML;
+        deleteAllBtn.innerHTML = '<div class="loading-spinner"></div> Deleting...';
+        deleteAllBtn.disabled = true;
+
+        let successCount = 0;
+        let errorCount = 0;
+
+        // Delete orders one by one
+        for (const order of canceledOrders) {
+            try {
+                await makeAuthenticatedRequest(`/commands/${order._id}`, {
+                    method: 'DELETE'
+                });
+                successCount++;
+            } catch (error) {
+                console.error(`Failed to delete order ${order._id}:`, error);
+                errorCount++;
+            }
+        }
+
+        // Reset button state
+        deleteAllBtn.innerHTML = originalText;
+        deleteAllBtn.disabled = false;
+
+        if (errorCount === 0) {
+            showSuccess(`Successfully deleted all ${successCount} canceled orders!`);
+        } else {
+            showSuccess(`Deleted ${successCount} orders. ${errorCount} orders failed to delete.`);
+        }
+
+        // Reset dashboard to reflect the changes
+        await resetDashboardForCanceledCommands();
+
+    } catch (error) {
+        console.error('Error deleting all canceled orders:', error);
+        showError('Failed to delete canceled orders: ' + error.message);
+        
+        // Reset button state
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        deleteAllBtn.innerHTML = '<i class="fas fa-trash"></i> Delete All Canceled';
+        deleteAllBtn.disabled = false;
+    }
+}
+
+// Enhanced reset function to handle deleted orders
+async function resetDashboardForCanceledCommands() {
+    try {
+        console.log('🔄 Resetting dashboard for canceled commands...');
+        
+        // Show loading state
+        document.getElementById('total-orders').innerHTML = '<div class="loading-spinner"></div>';
+        document.getElementById('total-revenue').innerHTML = '<div class="loading-spinner"></div>';
+        
+        // Get current statistics
+        const stats = await makeAuthenticatedRequest(API_ENDPOINTS.STATS);
+        
+        // Calculate canceled orders count and revenue impact
+        const canceledOrdersResponse = await makeAuthenticatedRequest('/commands?status=cancelled');
+        const canceledOrders = canceledOrdersResponse.orders || canceledOrdersResponse.commands || [];
+        
+        const canceledCount = canceledOrders.length;
+        const canceledRevenue = canceledOrders.reduce((total, order) => {
+            return total + (order.amount || order.totalAmount || 0);
+        }, 0);
+        
+        // Update dashboard with corrected values (excluding canceled orders)
+        const adjustedOrders = (stats.totalOrders || 0) - canceledCount;
+        const adjustedRevenue = (stats.totalRevenue || 0) - canceledRevenue;
+        
+        // Update the dashboard display
+        document.getElementById('total-orders').textContent = adjustedOrders;
+        document.getElementById('total-revenue').textContent = `${adjustedRevenue.toLocaleString()} XAF`;
+        
+        // Show notification about the adjustment
+        if (canceledCount > 0) {
+            showSuccess(`Dashboard updated: ${canceledCount} canceled orders excluded (${canceledRevenue.toLocaleString()} XAF)`);
+        }
+        
+        // Refresh the recent orders display to remove canceled ones
+        await loadRecentOrders();
+        
+        // Update the canceled orders tracking section
+        updateCanceledOrdersTracking(canceledOrders);
+        
+    } catch (error) {
+        console.error('❌ Error resetting dashboard:', error);
+        showError('Failed to reset dashboard: ' + error.message);
+        
+        // Fallback: reload the entire dashboard
+        await loadDashboardData();
+    }
+}
+
+// Add CSS for the delete buttons (add this to your existing CSS)
+const deleteButtonStyles = `
+    .btn-danger {
+        background: var(--red);
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #bd2130;
+    }
+    
+    .btn-danger:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+    
+    .canceled-orders-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    @media (max-width: 768px) {
+        .canceled-orders-actions {
+            flex-direction: column;
+        }
+        
+        .canceled-orders-actions .btn {
+            width: 100%;
+        }
+    }
+`;
+
+// Inject the CSS styles
+const styleSheet = document.createElement('style');
+styleSheet.textContent = deleteButtonStyles;
+document.head.appendChild(styleSheet);
+// Function to toggle visibility of canceled orders tracking
+function toggleCanceledOrders() {
+    const trackingSection = document.getElementById('canceled-orders-tracking');
+    const toggleButton = trackingSection.querySelector('button');
+    
+    if (trackingSection.style.display === 'none') {
+        trackingSection.style.display = 'block';
+        toggleButton.textContent = 'Hide';
+    } else {
+        trackingSection.style.display = 'none';
+        toggleButton.textContent = 'Show Canceled';
+    }
+}
+
+// Function to restore a canceled order
+async function restoreOrder(orderId) {
+    if (!confirm('Are you sure you want to restore this canceled order?')) {
+        return;
+    }
+
+    try {
+        const response = await makeAuthenticatedRequest(`/commands/${orderId}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status: 'processing' })
+        });
+        
+        if (response.success) {
+            showSuccess('Order restored successfully!');
+            
+            // Reset dashboard to reflect the change
+            await resetDashboardForCanceledCommands();
+        } else {
+            throw new Error(response.message || 'Failed to restore order');
+        }
+    } catch (error) {
+        console.error('Error restoring order:', error);
+        showError('Failed to restore order: ' + error.message);
+    }
+}
+
+// Enhanced updateOrderStatus function to automatically reset dashboard when orders are canceled
+async function updateOrderStatus(orderId, status) {
+    if (!confirm(`Are you sure you want to change this order status to "${status}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await makeAuthenticatedRequest(`/commands/${orderId}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status })
+        });
+        
+        if (response.success) {
+            showSuccess(`Order status updated to ${status} successfully`);
+            
+            // If order was canceled, reset dashboard statistics
+            if (status === 'cancelled') {
+                await resetDashboardForCanceledCommands();
+            } else {
+                // Refresh the current view for other status changes
+                const activePanel = document.querySelector('.content-panel.active').id;
+                if (activePanel === 'dashboard') {
+                    await loadRecentOrders();
+                } else if (activePanel === 'order-tracking') {
+                    const currentFilter = document.querySelector('.filter-btn.active').getAttribute('data-status');
+                    await loadOrders(currentFilter);
+                }
+            }
+        } else {
+            throw new Error(response.message || 'Failed to update order status');
+        }
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        showError('Failed to update order status: ' + error.message);
+    }
+}
+
+// Add a button to the dashboard header for manual reset
+function addDashboardResetButton() {
+    const header = document.querySelector('.header');
+    const resetButton = document.createElement('button');
+    resetButton.className = 'btn btn-secondary';
+    resetButton.innerHTML = '<i class="fas fa-sync-alt"></i> Reset Stats';
+    resetButton.onclick = resetDashboardForCanceledCommands;
+    resetButton.style.marginLeft = '10px';
+    
+    header.querySelector('.user-info').parentNode.insertBefore(resetButton, header.querySelector('.user-info'));
+}
+
+// Initialize the dashboard reset functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add the reset button to the dashboard
+    addDashboardResetButton();
+    
+    // Set up periodic dashboard refresh (every 5 minutes)
+    setInterval(() => {
+        const activePanel = document.querySelector('.content-panel.active').id;
+        if (activePanel === 'dashboard') {
+            resetDashboardForCanceledCommands();
+        }
+    }, 300000); // 5 minutes
+});
+
+// profile upate
+// Update admin profile function
+async function updateProfile() {
+    try {
+        const name = document.getElementById('adminName').value;
+        const email = document.getElementById('adminEmail').value;
+        const phone = document.getElementById('adminPhone').value;
+        
+        const response = await makeAuthenticatedRequest(API_ENDPOINTS.PROFILE, {
+            method: 'PUT',
+            body: JSON.stringify({ name, email, phone })
+        });
+        
+        if (response.success) {
+            showSuccess('Profile updated successfully!');
+            document.getElementById('admin-name').textContent = name;
+        } else {
+            throw new Error(response.message || 'Failed to update profile');
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        showError('Failed to update profile: ' + error.message);
+    }
+}
     </script>
     <!-- Order Details Modal -->
 <div id="orderDetailsModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">

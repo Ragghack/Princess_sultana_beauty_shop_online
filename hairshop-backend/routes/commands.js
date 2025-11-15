@@ -52,12 +52,13 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// ✅ WhatsApp Order Endpoint
+// ✅ WhatsApp Order Endpoint (FIXED)
 router.post("/whatsapp", auth, async (req, res) => {
   try {
     const { items, amount, shippingAddress, notes } = req.body;
     const userId = req.user.userId;
 
+    // ✅ FIXED: Added proper validation inside the route
     if (!items || items.length === 0) {
       return res.status(400).json({ 
         success: false,
@@ -65,9 +66,24 @@ router.post("/whatsapp", auth, async (req, res) => {
       });
     }
 
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Valid amount is required" 
+      });
+    }
+
+    if (!shippingAddress || !shippingAddress.name || !shippingAddress.phone) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Shipping address with name and phone is required" 
+      });
+    }
+
     // Create order in database
     const newOrder = new Order({
       user: userId,
+      // ✅ FIXED: Removed the undefined 'user' reference
       items: items.map(item => ({
         product: item.id,
         qty: item.qty,

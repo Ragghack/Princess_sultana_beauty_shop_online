@@ -48,6 +48,10 @@ const commandSchema = new mongoose.Schema({
   },
   trackingNumber: String,
   notes: String,
+  affectsRevenue: {
+    type: Boolean,
+    default: true
+  },
   cancelledAt: Date
 }, { 
   timestamps: true 
@@ -60,5 +64,20 @@ commandSchema.pre('save', function(next) {
   }
   next();
 });
+commandSchema.methods.updateStatus = async function(newStatus) {
+  const previousStatus = this.status;
+  this.status = newStatus;
+  
+  if (newStatus === 'cancelled') {
+    this.affectsRevenue = false;
+    this.cancelledAt = new Date();
+  } else if (previousStatus === 'cancelled' && newStatus !== 'cancelled') {
+    this.affectsRevenue = true;
+    this.cancelledAt = undefined;
+  }
+  
+  await this.save();
+  return this;
+};
 
 module.exports = mongoose.model("Command", commandSchema);
