@@ -85,35 +85,38 @@
             transform: rotate(45deg);
         }
 
-        /* Header Styles */
+        /* Enhanced Navigation Bar */
         header {
-            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
-            color: white;
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
-            border-bottom: 3px solid var(--light-gold);
-        }
-
-        .logo {
+            padding: 12px 5%;
             display: flex;
             align-items: center;
-            font-size: 24px;
-            font-weight: bold;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.4);
+            border-bottom: 3px solid var(--light-gold);
         }
-
-        .logo i {
-            margin-right: 10px;
-            font-size: 28px;
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: .5px;
             color: var(--light-gold);
+            font-size: 26px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .brand i {
+            font-size: 28px;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
         }
 
-        /* Company Logo in Header */
+        /* Company Logo Styles */
         .company-logo {
             position: absolute;
             right: 20px;
@@ -138,43 +141,96 @@
         }
 
         /* Navigation Styles */
-        .nav-links {
-            display: flex;
+        nav ul {
             list-style: none;
-            transition: transform 0.3s ease;
+            display: flex;
+            gap: 25px;
+            align-items: center;
             margin-right: 140px; /* Space for the logo */
         }
 
-        .nav-links li {
-            margin: 0 15px;
-        }
-
-        .nav-links li a {
+        nav a {
             color: white;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
             position: relative;
-            padding: 8px 0;
         }
 
-        .nav-links li a:hover {
+        nav a:hover {
             color: var(--light-gold);
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .nav-links li a::after {
+        nav a.active {
+            color: var(--light-gold);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        nav a::after {
             content: '';
             position: absolute;
+            bottom: -5px;
+            left: 50%;
             width: 0;
             height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--light-gold);
-            transition: width 0.3s ease;
+            background: var(--light-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
         }
 
-        .nav-links li a:hover::after {
-            width: 100%;
+        nav a:hover::after, nav a.active::after {
+            width: 80%;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: 0;
+            background: var(--groovy-pink);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Auth Buttons */
+        .auth-buttons button {
+            background: var(--light-gold);
+            color: var(--dark-brown);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .auth-buttons button:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Burger menu styles */
@@ -209,7 +265,7 @@
                 height: 40px;
             }
             
-            .nav-links {
+            nav ul {
                 margin-right: 0;
             }
             
@@ -220,6 +276,34 @@
         }
 
         @media (max-width: 768px) {
+            .brand {
+                font-size: 22px;
+            }
+            
+            .brand i {
+                font-size: 24px;
+            }
+            
+            .company-logo {
+                order: 2;
+                margin-left: auto;
+            }
+            
+            nav {
+                order: 3;
+                width: 100%;
+            }
+            
+            nav ul {
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .logo-image {
+                height: 35px;
+            }
+            
+            /* Mobile navigation styles */
             .burger-menu {
                 display: flex;
             }
@@ -259,33 +343,6 @@
                 z-index: 102;
             }
             
-            .brand {
-                font-size: 22px;
-            }
-            
-            .brand i {
-                font-size: 24px;
-            }
-            
-            .company-logo {
-                order: 2;
-                margin-left: auto;
-            }
-            
-            nav {
-                order: 3;
-                width: 100%;
-            }
-            
-            .nav-links {
-                justify-content: center;
-                margin-top: 10px;
-            }
-            
-            .logo-image {
-                height: 35px;
-            }
-            
             /* Burger animation */
             .burger-menu.active span:nth-child(1) {
                 transform: rotate(45deg) translate(5px, 5px);
@@ -298,25 +355,6 @@
             .burger-menu.active span:nth-child(3) {
                 transform: rotate(-45deg) translate(7px, -6px);
             }
-        }
-
-        .auth-buttons button {
-            background: var(--light-gold);
-            color: var(--dark-brown);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .auth-buttons button:hover {
-            background: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Hero Section */
@@ -875,11 +913,11 @@
     <!-- Overlay for menu -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Header -->
+    <!-- Enhanced Header -->
     <header>
-        <div class="logo">
+        <div class="brand">
             <i class="fas fa-spa" aria-label="Logo"></i>
-            <span>Princesse Sultana Hair care</span>
+            <span>Princesse Sultana Beauty</span>
         </div>
         
         <!-- Company Logo in Header -->
@@ -896,12 +934,17 @@
         
         <nav>
             <ul class="nav-links" id="navLinks" aria-label="Main navigation">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="user dashboard.html">Profile</a></li>
                 <li><a href="shop.html">Shop</a></li>
                 <li><a href="benefits.html">Benefits</a></li>
                 <li><a href="how-to-use.html">How to Use</a></li>
                 <li><a href="testimonials.html">Testimonials</a></li>
                 <li><a href="about.html">About</a></li>
+                <li class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
             </ul>
             <div class="close-menu" id="closeMenu">×</div>
         </nav>
@@ -1080,12 +1123,30 @@
     </footer>
 
     <script>
+        // Cart Functions
+        function getCart() {
+            try { 
+                return JSON.parse(localStorage.getItem('cart') || '[]'); 
+            } catch { 
+                return []; 
+            }
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
         // Burger menu functionality
         document.addEventListener('DOMContentLoaded', function() {
             const burgerMenu = document.getElementById('burgerMenu');
             const navLinks = document.getElementById('navLinks');
             const closeMenu = document.getElementById('closeMenu');
             const overlay = document.getElementById('overlay');
+            
+            // Initialize cart count
+            updateCartCount();
             
             // Toggle menu
             burgerMenu.addEventListener('click', function() {
@@ -1126,6 +1187,7 @@
             const shopNowBtn = document.getElementById('shopNowBtn');
             const registerBtn = document.getElementById('registerBtn');
             const loginBtn = document.getElementById('loginBtn');
+            const cartIcon = document.getElementById('cartIcon');
             
             // Shop Now button functionality
             shopNowBtn.addEventListener('click', function() {
@@ -1140,6 +1202,11 @@
             // Login button functionality
             loginBtn.addEventListener('click', function() {
                 window.location.href = 'login.html';
+            });
+            
+            // Cart icon functionality
+            cartIcon.addEventListener('click', function() {
+                window.location.href = 'shopping Cart.html';
             });
             
             // Add animation to elements on scroll

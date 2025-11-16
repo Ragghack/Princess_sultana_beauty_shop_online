@@ -383,7 +383,7 @@
         <header>
             <div class="logo">
                 <i class="fas fa-spa"></i>
-                <span>Huile de Chèbe</span>
+                <span>Pricesse Sultana Beauty</span>
             </div>
             <nav>
                 <a href="shop.html" class="continue-shopping">
@@ -463,8 +463,8 @@
                 </div>
                 
                 <div class="summary-line">
-                    <span>Shipping:</span>
-                    <span id="shipping">1,000 XAF</span>
+                    <span>Dilivery-fee:</span>
+                    <span id="shipping">1,500 XAF</span>
                 </div>
                 
                 <div class="summary-line">
@@ -532,13 +532,13 @@ document.getElementById('checkout-btn').addEventListener('click', async function
     const shippingAddress = {
         name: user.name || '',
         phone: user.phone || prompt('Please enter your phone number:') || '',
-        address: user.address || prompt('Please enter your shipping address:') || '',
+        address: user.address || prompt('Please enter your email-address/town-address :') || '',
         email: user.email || ''
     };
 
     // Validate required fields
     if (!shippingAddress.name || !shippingAddress.phone) {
-        alert('Name and phone number are required for shipping.');
+        alert('Name and phone number are required for delivery.');
         return;
     }
 
@@ -743,7 +743,7 @@ function updateCartStorage() {
     localStorage.setItem('cartItems', JSON.stringify(cart));
     
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    const shipping = 1000;
+    const shipping = 1500;
     const total = subtotal + shipping;
     
     localStorage.setItem('cartSubtotal', subtotal);
@@ -890,7 +890,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return total + (priceInXAF * item.qty);
         }, 0);
         
-        const shipping = 1000; // Fixed shipping cost in XAF
+        const shipping = 1500; // Fixed shipping cost in XAF
         const tax = 0; // No tax
         const total = subtotal + shipping + tax;
         
