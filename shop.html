@@ -1469,8 +1469,9 @@ nav ul {
                 
                 // Clear cart and add only this item
                 setCart([item]);
-                updateCartStorage();
-                updateCartCount();
+                // updateCartStorage();
+                // updateCartCount();
+                showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
                 
                 // Redirect to checkout
                 window.location.href = 'shopping Cart.html';
