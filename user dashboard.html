@@ -1002,37 +1002,44 @@ async function loadDashboardData(token) {
         }
 
         // Update recent orders in dashboard
-        function updateRecentOrders() {
-            const recentOrdersList = document.getElementById('recent-orders-list');
-            const recentOrders = userOrders.slice(0, 3); // Show last 3 orders
+ // Update recent orders in dashboard
+function updateRecentOrders() {
+  const recentOrdersList = document.getElementById('recent-orders-list');
+  const recentOrders = userOrders.slice(0, 3); // Show last 3 orders
 
-            if (recentOrders.length === 0) {
-                recentOrdersList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-shopping-bag"></i>
-                        <h3>No Orders Yet</h3>
-                        <p>You haven't placed any orders yet.</p>
-                        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
-                            <i class="fas fa-shopping-bag"></i> Start Shopping
-                        </a>
-                    </div>
-                `;
-                return;
-            }
+  if (!recentOrders || recentOrders.length === 0) {
+    recentOrdersList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>No Orders Yet</h3>
+        <p>You haven't placed any orders yet.</p>
+        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
+          <i class="fas fa-shopping-bag"></i> Start Shopping
+        </a>
+      </div>
+    `;
+    return;
+  }
 
-            recentOrdersList.innerHTML = recentOrders.map(order => `
-                <div class="order-item">
-                    <div class="order-info">
-                        <h3>Order #${order.orderNumber}</h3>
-                        <p>Placed on ${new Date(order.createdAt).toLocaleDateString()} • Total: ${order.amount ? order.amount.toLocaleString() : '0'} XAF</p>
-                    </div>
-                    <span class="order-status status-${order.status}">
-                        ${formatOrderStatus(order.status)}
-                    </span>
-                </div>
-            `).join('');
-        }
-
+  recentOrdersList.innerHTML = recentOrders.map(order => {
+    const orderNumber = order.orderNumber || order.id || 'N/A';
+    const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+    const totalAmount = order.totalAmount || order.amount || 0;
+    const status = order.status || 'unknown';
+    
+    return `
+      <div class="order-item">
+        <div class="order-info">
+          <h3>Order #${orderNumber}</h3>
+          <p>Placed on ${orderDate} • Total: ${totalAmount.toLocaleString()} XAF</p>
+        </div>
+        <span class="order-status status-${status}">
+          ${formatOrderStatus(status)}
+        </span>
+      </div>
+    `;
+  }).join('');
+}
         // Show specific section
         function showSection(sectionName) {
             // Hide all sections
@@ -1055,10 +1062,11 @@ async function loadDashboardData(token) {
         }
 
         // Load orders section
+// Load orders section
 function loadOrdersSection() {
   const ordersContent = document.getElementById('orders-content');
 
-  if (userOrders.length === 0) {
+  if (!userOrders || userOrders.length === 0) {
     ordersContent.innerHTML = `
       <div class="empty-state">
         <i class="fas fa-clipboard-list"></i>
@@ -1085,41 +1093,50 @@ function loadOrdersSection() {
         </tr>
       </thead>
       <tbody>
-        ${userOrders.map(order => `
+        ${userOrders.map(order => {
+          const orderNumber = order.orderNumber || order.id || 'N/A';
+          const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+          const items = order.items || [];
+          const totalAmount = order.totalAmount || order.amount || 0;
+          const status = order.status || 'unknown';
+          
+          return `
           <tr>
-            <td>${order.orderNumber}</td>
-            <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+            <td>${orderNumber}</td>
+            <td>${orderDate}</td>
             <td>
-              ${order.items.slice(0, 2).map(item => 
-                `${item.name} (${item.quantity})`
+              ${items.slice(0, 2).map(item => 
+                `${item.name || 'Item'} (${item.quantity || 1})`
               ).join(', ')}
-              ${order.items.length > 2 ? `... +${order.items.length - 2} more` : ''}
+              ${items.length > 2 ? `... +${items.length - 2} more` : ''}
             </td>
-            <td>${order.totalAmount ? order.totalAmount.toLocaleString() : '0'} XAF</td>
-            <td><span class="order-status status-${order.status}">${formatOrderStatus(order.status)}</span></td>
+            <td>${totalAmount.toLocaleString()} XAF</td>
+            <td><span class="order-status status-${status}">${formatOrderStatus(status)}</span></td>
             <td>
               <div class="order-actions">
-                <button class="order-action-btn btn-view" onclick="viewOrderDetails('${order._id}')">
+                <button class="order-action-btn btn-view" onclick="viewOrderDetails('${order._id || order.id}')">
                   <i class="fas fa-eye"></i> Details
                 </button>
-                ${order.status === 'processing' || order.status === 'shipped' ? `
-                  <button class="order-action-btn btn-track" onclick="trackOrder('${order._id}')">
+                ${status === 'processing' || status === 'shipped' ? `
+                  <button class="order-action-btn btn-track" onclick="trackOrder('${order._id || order.id}')">
                     <i class="fas fa-map-marker-alt"></i> Track
                   </button>
                 ` : ''}
-                ${order.status === 'pending' ? `
-                  <button class="order-action-btn btn-cancel" onclick="cancelOrder('${order._id}')">
+                ${status === 'pending' ? `
+                  <button class="order-action-btn btn-cancel" onclick="cancelOrder('${order._id || order.id}')">
                     <i class="fas fa-times"></i> Cancel
                   </button>
                 ` : ''}
               </div>
             </td>
           </tr>
-        `).join('')}
+          `;
+        }).join('')}
       </tbody>
     </table>
   `;
 }
+// Enhanced view order details function
 // Enhanced view order details function
 async function viewOrderDetails(orderId) {
   const token = localStorage.getItem('token');
@@ -1135,75 +1152,100 @@ async function viewOrderDetails(orderId) {
 
     if (response.ok) {
       const orderData = await response.json();
-      const order = orderData.order;
+      const order = orderData.order || orderData; // Handle both response formats
       
-      const itemsHtml = order.items.map(item => `
+      // Safe data access with fallbacks
+      const orderNumber = order.orderNumber || order.id || 'N/A';
+      const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Unknown date';
+      const orderStatus = order.status || 'unknown';
+      const totalAmount = order.totalAmount || order.amount || 0;
+      const paymentMethod = order.paymentMethod || 'Not specified';
+      const items = order.items || [];
+      const shippingAddress = order.shippingAddress || order.address || {};
+      
+      // Build items HTML safely
+      const itemsHtml = items.length > 0 ? items.map(item => `
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
           <div>
-            <strong>${item.name}</strong>
-            ${item.purchaseType === 'bulk' ? `<br><small>Bulk: ${item.bulkUnit}</small>` : ''}
+            <strong>${item.name || 'Unnamed Item'}</strong>
+            ${item.purchaseType === 'bulk' ? `<br><small>Bulk: ${item.bulkUnit || 'N/A'}</small>` : ''}
           </div>
           <div style="text-align: right;">
-            ${item.quantity} × ${item.price.toLocaleString()} XAF<br>
-            <strong>${(item.quantity * item.price).toLocaleString()} XAF</strong>
+            ${(item.quantity || 1)} × ${(item.price || 0).toLocaleString()} XAF<br>
+            <strong>${((item.quantity || 1) * (item.price || 0)).toLocaleString()} XAF</strong>
           </div>
         </div>
-      `).join('');
+      `).join('') : '<p>No items found</p>';
+      
+      // Build shipping address HTML safely
+      const shippingHtml = shippingAddress && Object.keys(shippingAddress).length > 0 ? `
+        <div style="margin-top: 20px;">
+          <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Shipping Address</h4>
+          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+            ${shippingAddress.name ? `<strong>${shippingAddress.name}</strong><br>` : ''}
+            ${shippingAddress.phone ? `Phone: ${shippingAddress.phone}<br>` : ''}
+            ${shippingAddress.address ? `Address: ${shippingAddress.address}<br>` : ''}
+            ${shippingAddress.city ? `City: ${shippingAddress.city}<br>` : ''}
+            ${shippingAddress.country ? `Country: ${shippingAddress.country}` : ''}
+          </div>
+        </div>
+      ` : '';
       
       const modalHtml = `
         <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
           <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h3 style="color: var(--dark-brown);">Order #${order.orderNumber}</h3>
-              <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+              <h3 style="color: var(--dark-brown);">Order #${orderNumber}</h3>
+              <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark-brown);">&times;</button>
             </div>
             
             <div style="margin-bottom: 20px;">
-              <strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleString()}<br>
-              <strong>Status:</strong> <span class="order-status status-${order.status}">${formatOrderStatus(order.status)}</span><br>
-              <strong>Payment Method:</strong> ${order.paymentMethod}
+              <strong>Order Date:</strong> ${orderDate}<br>
+              <strong>Status:</strong> <span class="order-status status-${orderStatus}">${formatOrderStatus(orderStatus)}</span><br>
+              <strong>Payment Method:</strong> ${paymentMethod}
             </div>
             
             <div style="margin-bottom: 20px;">
-              <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Items</h4>
+              <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Items (${items.length})</h4>
               ${itemsHtml}
             </div>
             
             <div style="border-top: 2px solid var(--light-gold); padding-top: 15px;">
               <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
                 <span>Total:</span>
-                <span>${order.totalAmount.toLocaleString()} XAF</span>
+                <span>${totalAmount.toLocaleString()} XAF</span>
               </div>
             </div>
             
-            ${order.shippingAddress ? `
-              <div style="margin-top: 20px;">
-                <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Shipping Address</h4>
-                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
-                  ${order.shippingAddress.name ? `<strong>${order.shippingAddress.name}</strong><br>` : ''}
-                  ${order.shippingAddress.phone ? `Phone: ${order.shippingAddress.phone}<br>` : ''}
-                  ${order.shippingAddress.address ? `Address: ${order.shippingAddress.address}<br>` : ''}
-                  ${order.shippingAddress.city ? `City: ${order.shippingAddress.city}<br>` : ''}
-                  ${order.shippingAddress.country ? `Country: ${order.shippingAddress.country}` : ''}
-                </div>
-              </div>
-            ` : ''}
+            ${shippingHtml}
           </div>
         </div>
       `;
        // Create and show modal
+        // Create and show modal
       const modal = document.createElement('div');
       modal.innerHTML = modalHtml;
       document.body.appendChild(modal);
       
       // Add close modal function to global scope
       window.closeModal = function() {
-        document.body.removeChild(modal);
+        if (modal.parentElement) {
+          document.body.removeChild(modal);
+        }
       };
+      
+      // Close modal when clicking outside
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          window.closeModal();
+        }
+      });
+    } else {
+      throw new Error(`Failed to fetch order: ${response.status}`);
     }
   } catch (error) {
     console.error('Error fetching order details:', error);
-    alert('Failed to load order details');
+    showErrorMessage('Failed to load order details. Please try again.');
   }
 }
 
