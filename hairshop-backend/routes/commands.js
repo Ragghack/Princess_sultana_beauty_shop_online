@@ -299,5 +299,36 @@ router.patch("/:id/status", auth, async (req, res) => {
     });
   }
 });
-
+// Track order by number and customer info
+// In commands.js - Add this route
+router.post("/track", async (req, res) => {
+  try {
+    const { customerContact } = req.body;
+    
+    // Search for orders by customer contact info
+    const orders = await Command.find({
+      $or: [
+        { 'userId.email': customerContact },
+        { 'userId.phone': customerContact },
+        { 'shippingAddress.phone': customerContact },
+        { 'shippingAddress.email': customerContact }
+      ]
+    })
+    .populate('userId', 'name email phone')
+    .populate('products.productId', 'name price')
+    .sort({ createdAt: -1 });
+    
+    res.json({ 
+      success: true, 
+      orders,
+      count: orders.length
+    });
+  } catch (error) {
+    console.error("Order tracking error:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
 module.exports = router;
