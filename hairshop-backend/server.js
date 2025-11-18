@@ -138,7 +138,10 @@ const commandRoutes = require("./routes/commands");
 // Mount command routes
 app.use("/api/commands", commandRoutes);
 
-
+const userMessagesRoutes = require('./routes/userMessages');
+app.use('/api/user', userMessagesRoutes);
+const adminMessagesRoutes = require('./routes/adminMessages');
+app.use('/api/admin', adminMessagesRoutes);
 
 function generateWhatsAppUrl(items, totalAmount, shippingAddress, notes) {
   let message = 'Hello Sultana shop, %0A%0A';

@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+              <link rel="icon" type="image/png" href="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png">
+    <!-- Optional for Apple/Android homescreens -->
+    <link rel="apple-touch-icon" href="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png">
+
+    <!-- 🔍 Google Structured Data (shows logo in search results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://www.sultanahaircare.com",
+      "logo": "https://www.olyshair.com/sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png"
+    }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account | Huile de Chèbe</title>
@@ -551,6 +564,190 @@
             transform: translateY(-3px);
         }
         
+        /* Messages/Customer Support Styles */
+        .messages-section {
+            max-width: 800px;
+        }
+        
+        .message-form {
+            background: var(--off-white);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .message-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .message-type-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--light-gold);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .message-type-btn.active {
+            background: var(--light-gold);
+            color: white;
+        }
+        
+        .message-type-btn:hover:not(.active) {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .priority-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .priority-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .priority-btn.active {
+            background: var(--light-gold);
+            color: white;
+            border-color: var(--light-gold);
+        }
+        
+        .priority-high.active {
+            background: var(--red);
+            border-color: var(--red);
+        }
+        
+        .priority-medium.active {
+            background: var(--golden-brown);
+            border-color: var(--golden-brown);
+        }
+        
+        .priority-low.active {
+            background: var(--green);
+            border-color: var(--green);
+        }
+        
+        .messages-list {
+            margin-top: 30px;
+        }
+        
+        .message-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .message-card:hover {
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .message-subject {
+            font-weight: 600;
+            color: var(--dark-brown);
+            font-size: 1.1rem;
+        }
+        
+        .message-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .message-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .message-type {
+            background: var(--light-gold);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .message-priority {
+            font-weight: 600;
+        }
+        
+        .priority-high {
+            color: var(--red);
+        }
+        
+        .priority-medium {
+            color: var(--golden-brown);
+        }
+        
+        .priority-low {
+            color: var(--green);
+        }
+        
+        .message-content {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .message-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-answered {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .status-resolved {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+        
+        .admin-reply {
+            background: var(--off-white);
+            border-left: 4px solid var(--light-gold);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .admin-reply-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
         /* Loading and Message Styles */
         .loading-spinner {
             display: inline-block;
@@ -658,6 +855,11 @@
                         </a>
                     </li>
                     <li class="menu-item">
+                        <a href="#" class="menu-link" data-section="messages">
+                            <i class="fas fa-comments"></i> Customer Support
+                        </a>
+                    </li>
+                    <li class="menu-item">
                         <a href="#" class="menu-link" data-section="payments">
                             <i class="fas fa-credit-card"></i> Payment Methods
                         </a>
@@ -739,11 +941,11 @@
                             <div class="action-text">Track Orders</div>
                         </a>
                         
-                        <a href="#" class="action-btn">
+                        <a href="#" class="action-btn" data-section="messages">
                             <div class="action-icon">
-                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-comments"></i>
                             </div>
-                            <div class="action-text">Wishlist</div>
+                            <div class="action-text">Contact Support</div>
                         </a>
                         
                         <a href="#" class="action-btn" data-section="profile">
@@ -803,6 +1005,81 @@
                     </form>
                 </div>
                 
+                <!-- Messages/Customer Support Section -->
+                <div id="messages-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Customer Support</h2>
+                        <p>Contact our support team for assistance</p>
+                    </div>
+                    
+                    <div class="messages-section">
+                        <div class="message-form">
+                            <h3 style="color: var(--dark-brown); margin-bottom: 20px;">Send a Message</h3>
+                            
+                            <div class="message-type-selector">
+                                <button type="button" class="message-type-btn active" data-type="general">
+                                    <i class="fas fa-question-circle"></i> General Inquiry
+                                </button>
+                                <button type="button" class="message-type-btn" data-type="order">
+                                    <i class="fas fa-shopping-bag"></i> Order Issue
+                                </button>
+                                <button type="button" class="message-type-btn" data-type="product">
+                                    <i class="fas fa-cube"></i> Product Question
+                                </button>
+                                <button type="button" class="message-type-btn" data-type="complaint">
+                                    <i class="fas fa-exclamation-triangle"></i> Complaint
+                                </button>
+                            </div>
+                            
+                            <div class="priority-selector">
+                                <button type="button" class="priority-btn priority-low active" data-priority="low">
+                                    Low Priority
+                                </button>
+                                <button type="button" class="priority-btn priority-medium" data-priority="medium">
+                                    Medium Priority
+                                </button>
+                                <button type="button" class="priority-btn priority-high" data-priority="high">
+                                    High Priority
+                                </button>
+                            </div>
+                            
+                            <form id="message-form">
+                                <div class="form-group">
+                                    <label class="form-label" for="message-subject">Subject</label>
+                                    <input type="text" id="message-subject" class="form-control" placeholder="Brief description of your issue" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="message-content">Message</label>
+                                    <textarea id="message-content" class="form-control" rows="6" placeholder="Please provide detailed information about your inquiry..." required></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="message-order">Related Order (Optional)</label>
+                                    <select id="message-order" class="form-control">
+                                        <option value="">Select an order (if applicable)</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send Message
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="messages-list">
+                            <h3 style="color: var(--dark-brown); margin-bottom: 20px;">Your Messages</h3>
+                            <div id="messages-container">
+                                <div class="empty-state">
+                                    <i class="fas fa-comments"></i>
+                                    <h3>No Messages Yet</h3>
+                                    <p>You haven't sent any messages to our support team yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Payment Methods Section -->
                 <div id="payments-section" class="hidden">
                     <div class="content-header">
@@ -827,6 +1104,7 @@
         let currentUser = null;
         let userOrders = [];
         let userPayments = [];
+        let userMessages = [];
 
         // Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -906,6 +1184,28 @@
                 updateProfile();
             });
 
+            // Message form submission
+            document.getElementById('message-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+
+            // Message type selector
+            document.querySelectorAll('.message-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.message-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Priority selector
+            document.querySelectorAll('.priority-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
             // Add payment method button
             document.querySelector('.add-payment-btn').addEventListener('click', function() {
                 addPaymentMethod();
@@ -946,46 +1246,210 @@
         }
 
         // Load dashboard data
-async function loadDashboardData(token) {
-  try {
-    // Load orders for dashboard
-    const ordersResponse = await fetch('http://localhost:5000/api/user/orders', {
-      method: 'GET',
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
+        async function loadDashboardData(token) {
+            try {
+                // Load orders for dashboard
+                const ordersResponse = await fetch('http://localhost:5000/api/user/orders', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-    if (ordersResponse.ok) {
-      const ordersData = await ordersResponse.json();
-      userOrders = ordersData.orders || [];
-      updateDashboardStats();
-      updateRecentOrders();
-    } else {
-      throw new Error('Failed to fetch orders');
-    }
+                if (ordersResponse.ok) {
+                    const ordersData = await ordersResponse.json();
+                    userOrders = ordersData.orders || [];
+                    updateDashboardStats();
+                    updateRecentOrders();
+                    populateOrderDropdown();
+                } else {
+                    throw new Error('Failed to fetch orders');
+                }
 
-    // Load payment methods
-    const paymentsResponse = await fetch('http://localhost:5000/api/user/payments', {
-      method: 'GET',
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
+                // Load payment methods
+                const paymentsResponse = await fetch('http://localhost:5000/api/user/payments', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-    if (paymentsResponse.ok) {
-      const paymentsData = await paymentsResponse.json();
-      userPayments = paymentsData.payments || [];
-      updatePaymentMethods();
-    }
+                if (paymentsResponse.ok) {
+                    const paymentsData = await paymentsResponse.json();
+                    userPayments = paymentsData.payments || [];
+                    updatePaymentMethods();
+                }
 
-  } catch (error) {
-    console.error('Error loading dashboard data:', error);
-    throw error;
-  }
-}
+                // Load messages
+                await loadUserMessages(token);
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                throw error;
+            }
+        }
+
+        // Load user messages
+        async function loadUserMessages(token) {
+            try {
+                const response = await fetch('http://localhost:5000/api/user/messages', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    userMessages = data.messages || [];
+                    updateMessagesDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                // Don't throw error for messages - it's not critical
+            }
+        }
+
+        // Populate order dropdown for message form
+        function populateOrderDropdown() {
+            const orderSelect = document.getElementById('message-order');
+            
+            if (userOrders.length === 0) {
+                orderSelect.innerHTML = '<option value="">No orders found</option>';
+                return;
+            }
+
+            let options = '<option value="">Select an order (if applicable)</option>';
+            
+            userOrders.forEach(order => {
+                const orderNumber = order.orderNumber || order.id || 'N/A';
+                const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+                options += `<option value="${order._id || order.id}">Order #${orderNumber} - ${orderDate}</option>`;
+            });
+            
+            orderSelect.innerHTML = options;
+        }
+
+        // Send message to admin
+        async function sendMessage() {
+            const token = localStorage.getItem('token');
+            
+            const messageType = document.querySelector('.message-type-btn.active').getAttribute('data-type');
+            const priority = document.querySelector('.priority-btn.active').getAttribute('data-priority');
+            const subject = document.getElementById('message-subject').value.trim();
+            const content = document.getElementById('message-content').value.trim();
+            const orderId = document.getElementById('message-order').value;
+
+            if (!subject || !content) {
+                showErrorMessage('Please fill in both subject and message fields');
+                return;
+            }
+
+            const messageData = {
+                type: messageType,
+                priority: priority,
+                subject: subject,
+                content: content,
+                orderId: orderId || null
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/user/messages', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(messageData)
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Message sent successfully! Our team will respond within 24 hours.');
+                    
+                    // Reset form
+                    document.getElementById('message-form').reset();
+                    document.querySelectorAll('.message-type-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.message-type-btn[data-type="general"]').classList.add('active');
+                    document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.priority-btn[data-priority="low"]').classList.add('active');
+                    
+                    // Reload messages
+                    await loadUserMessages(token);
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showErrorMessage('Failed to send message. Please try again.');
+            }
+        }
+
+        // Update messages display
+        function updateMessagesDisplay() {
+            const container = document.getElementById('messages-container');
+            
+            if (userMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <h3>No Messages Yet</h3>
+                        <p>You haven't sent any messages to our support team yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = userMessages.map(message => {
+                const messageDate = message.createdAt ? new Date(message.createdAt).toLocaleString() : 'Unknown date';
+                const typeLabels = {
+                    'general': 'General',
+                    'order': 'Order Issue',
+                    'product': 'Product Question',
+                    'complaint': 'Complaint'
+                };
+                
+                return `
+                    <div class="message-card">
+                        <div class="message-header">
+                            <div class="message-subject">${message.subject}</div>
+                            <div class="message-date">${messageDate}</div>
+                        </div>
+                        <div class="message-meta">
+                            <span class="message-type">${typeLabels[message.type] || message.type}</span>
+                            <span class="message-priority priority-${message.priority}">${message.priority.toUpperCase()} Priority</span>
+                            <span class="message-status status-${message.status || 'pending'}">${formatMessageStatus(message.status)}</span>
+                        </div>
+                        <div class="message-content">
+                            ${message.content}
+                        </div>
+                        ${message.adminReply ? `
+                            <div class="admin-reply">
+                                <div class="admin-reply-header">
+                                    <span>Admin Response</span>
+                                    <span>${message.repliedAt ? new Date(message.repliedAt).toLocaleString() : ''}</span>
+                                </div>
+                                <div class="message-content">
+                                    ${message.adminReply}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format message status
+        function formatMessageStatus(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'answered': 'Answered',
+                'resolved': 'Resolved'
+            };
+            return statusMap[status] || status;
+        }
 
         // Update dashboard statistics
         function updateDashboardStats() {
@@ -1002,44 +1466,44 @@ async function loadDashboardData(token) {
         }
 
         // Update recent orders in dashboard
- // Update recent orders in dashboard
-function updateRecentOrders() {
-  const recentOrdersList = document.getElementById('recent-orders-list');
-  const recentOrders = userOrders.slice(0, 3); // Show last 3 orders
+        function updateRecentOrders() {
+            const recentOrdersList = document.getElementById('recent-orders-list');
+            const recentOrders = userOrders.slice(0, 3); // Show last 3 orders
 
-  if (!recentOrders || recentOrders.length === 0) {
-    recentOrdersList.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-shopping-bag"></i>
-        <h3>No Orders Yet</h3>
-        <p>You haven't placed any orders yet.</p>
-        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
-          <i class="fas fa-shopping-bag"></i> Start Shopping
-        </a>
-      </div>
-    `;
-    return;
-  }
+            if (!recentOrders || recentOrders.length === 0) {
+                recentOrdersList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No Orders Yet</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
 
-  recentOrdersList.innerHTML = recentOrders.map(order => {
-    const orderNumber = order.orderNumber || order.id || 'N/A';
-    const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
-    const totalAmount = order.totalAmount || order.amount || 0;
-    const status = order.status || 'unknown';
-    
-    return `
-      <div class="order-item">
-        <div class="order-info">
-          <h3>Order #${orderNumber}</h3>
-          <p>Placed on ${orderDate} • Total: ${totalAmount.toLocaleString()} XAF</p>
-        </div>
-        <span class="order-status status-${status}">
-          ${formatOrderStatus(status)}
-        </span>
-      </div>
-    `;
-  }).join('');
-}
+            recentOrdersList.innerHTML = recentOrders.map(order => {
+                const orderNumber = order.orderNumber || order.id || 'N/A';
+                const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+                const totalAmount = order.totalAmount || order.amount || 0;
+                const status = order.status || 'unknown';
+                
+                return `
+                    <div class="order-item">
+                        <div class="order-info">
+                            <h3>Order #${orderNumber}</h3>
+                            <p>Placed on ${orderDate} • Total: ${totalAmount.toLocaleString()} XAF</p>
+                        </div>
+                        <span class="order-status status-${status}">
+                            ${formatOrderStatus(status)}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Show specific section
         function showSection(sectionName) {
             // Hide all sections
@@ -1055,6 +1519,8 @@ function updateRecentOrders() {
                 // Load section-specific data if needed
                 if (sectionName === 'orders') {
                     loadOrdersSection();
+                } else if (sectionName === 'messages') {
+                    loadMessagesSection();
                 } else if (sectionName === 'payments') {
                     loadPaymentsSection();
                 }
@@ -1062,192 +1528,84 @@ function updateRecentOrders() {
         }
 
         // Load orders section
-// Load orders section
-function loadOrdersSection() {
-  const ordersContent = document.getElementById('orders-content');
+        function loadOrdersSection() {
+            const ordersContent = document.getElementById('orders-content');
 
-  if (!userOrders || userOrders.length === 0) {
-    ordersContent.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-clipboard-list"></i>
-        <h3>No Orders Found</h3>
-        <p>You haven't placed any orders yet.</p>
-        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
-          <i class="fas fa-shopping-bag"></i> Start Shopping
-        </a>
-      </div>
-    `;
-    return;
-  }
+            if (!userOrders || userOrders.length === 0) {
+                ordersContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="shop.html" class="view-orders-btn" style="margin-top: 15px;">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
 
-  ordersContent.innerHTML = `
-    <table class="orders-table">
-      <thead>
-        <tr>
-          <th>Order #</th>
-          <th>Date</th>
-          <th>Items</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${userOrders.map(order => {
-          const orderNumber = order.orderNumber || order.id || 'N/A';
-          const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
-          const items = order.items || [];
-          const totalAmount = order.totalAmount || order.amount || 0;
-          const status = order.status || 'unknown';
-          
-          return `
-          <tr>
-            <td>${orderNumber}</td>
-            <td>${orderDate}</td>
-            <td>
-              ${items.slice(0, 2).map(item => 
-                `${item.name || 'Item'} (${item.quantity || 1})`
-              ).join(', ')}
-              ${items.length > 2 ? `... +${items.length - 2} more` : ''}
-            </td>
-            <td>${totalAmount.toLocaleString()} XAF</td>
-            <td><span class="order-status status-${status}">${formatOrderStatus(status)}</span></td>
-            <td>
-              <div class="order-actions">
-                <button class="order-action-btn btn-view" onclick="viewOrderDetails('${order._id || order.id}')">
-                  <i class="fas fa-eye"></i> Details
-                </button>
-                ${status === 'processing' || status === 'shipped' ? `
-                  <button class="order-action-btn btn-track" onclick="trackOrder('${order._id || order.id}')">
-                    <i class="fas fa-map-marker-alt"></i> Track
-                  </button>
-                ` : ''}
-                ${status === 'pending' ? `
-                  <button class="order-action-btn btn-cancel" onclick="cancelOrder('${order._id || order.id}')">
-                    <i class="fas fa-times"></i> Cancel
-                  </button>
-                ` : ''}
-              </div>
-            </td>
-          </tr>
-          `;
-        }).join('')}
-      </tbody>
-    </table>
-  `;
-}
-// Enhanced view order details function
-// Enhanced view order details function
-async function viewOrderDetails(orderId) {
-  const token = localStorage.getItem('token');
-  
-  try {
-    const response = await fetch(`http://localhost:5000/api/user/orders/${orderId}`, {
-      method: 'GET',
-      headers: { 
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.ok) {
-      const orderData = await response.json();
-      const order = orderData.order || orderData; // Handle both response formats
-      
-      // Safe data access with fallbacks
-      const orderNumber = order.orderNumber || order.id || 'N/A';
-      const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Unknown date';
-      const orderStatus = order.status || 'unknown';
-      const totalAmount = order.totalAmount || order.amount || 0;
-      const paymentMethod = order.paymentMethod || 'Not specified';
-      const items = order.items || [];
-      const shippingAddress = order.shippingAddress || order.address || {};
-      
-      // Build items HTML safely
-      const itemsHtml = items.length > 0 ? items.map(item => `
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
-          <div>
-            <strong>${item.name || 'Unnamed Item'}</strong>
-            ${item.purchaseType === 'bulk' ? `<br><small>Bulk: ${item.bulkUnit || 'N/A'}</small>` : ''}
-          </div>
-          <div style="text-align: right;">
-            ${(item.quantity || 1)} × ${(item.price || 0).toLocaleString()} XAF<br>
-            <strong>${((item.quantity || 1) * (item.price || 0)).toLocaleString()} XAF</strong>
-          </div>
-        </div>
-      `).join('') : '<p>No items found</p>';
-      
-      // Build shipping address HTML safely
-      const shippingHtml = shippingAddress && Object.keys(shippingAddress).length > 0 ? `
-        <div style="margin-top: 20px;">
-          <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Shipping Address</h4>
-          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
-            ${shippingAddress.name ? `<strong>${shippingAddress.name}</strong><br>` : ''}
-            ${shippingAddress.phone ? `Phone: ${shippingAddress.phone}<br>` : ''}
-            ${shippingAddress.address ? `Address: ${shippingAddress.address}<br>` : ''}
-            ${shippingAddress.city ? `City: ${shippingAddress.city}<br>` : ''}
-            ${shippingAddress.country ? `Country: ${shippingAddress.country}` : ''}
-          </div>
-        </div>
-      ` : '';
-      
-      const modalHtml = `
-        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-          <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <h3 style="color: var(--dark-brown);">Order #${orderNumber}</h3>
-              <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark-brown);">&times;</button>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-              <strong>Order Date:</strong> ${orderDate}<br>
-              <strong>Status:</strong> <span class="order-status status-${orderStatus}">${formatOrderStatus(orderStatus)}</span><br>
-              <strong>Payment Method:</strong> ${paymentMethod}
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-              <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Items (${items.length})</h4>
-              ${itemsHtml}
-            </div>
-            
-            <div style="border-top: 2px solid var(--light-gold); padding-top: 15px;">
-              <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
-                <span>Total:</span>
-                <span>${totalAmount.toLocaleString()} XAF</span>
-              </div>
-            </div>
-            
-            ${shippingHtml}
-          </div>
-        </div>
-      `;
-       // Create and show modal
-        // Create and show modal
-      const modal = document.createElement('div');
-      modal.innerHTML = modalHtml;
-      document.body.appendChild(modal);
-      
-      // Add close modal function to global scope
-      window.closeModal = function() {
-        if (modal.parentElement) {
-          document.body.removeChild(modal);
+            ordersContent.innerHTML = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${userOrders.map(order => {
+                            const orderNumber = order.orderNumber || order.id || 'N/A';
+                            const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+                            const items = order.items || [];
+                            const totalAmount = order.totalAmount || order.amount || 0;
+                            const status = order.status || 'unknown';
+                            
+                            return `
+                            <tr>
+                                <td>${orderNumber}</td>
+                                <td>${orderDate}</td>
+                                <td>
+                                    ${items.slice(0, 2).map(item => 
+                                        `${item.name || 'Item'} (${item.quantity || 1})`
+                                    ).join(', ')}
+                                    ${items.length > 2 ? `... +${items.length - 2} more` : ''}
+                                </td>
+                                <td>${totalAmount.toLocaleString()} XAF</td>
+                                <td><span class="order-status status-${status}">${formatOrderStatus(status)}</span></td>
+                                <td>
+                                    <div class="order-actions">
+                                        <button class="order-action-btn btn-view" onclick="viewOrderDetails('${order._id || order.id}')">
+                                            <i class="fas fa-eye"></i> Details
+                                        </button>
+                                        ${status === 'processing' || status === 'shipped' ? `
+                                            <button class="order-action-btn btn-track" onclick="trackOrder('${order._id || order.id}')">
+                                                <i class="fas fa-map-marker-alt"></i> Track
+                                            </button>
+                                        ` : ''}
+                                        ${status === 'pending' ? `
+                                            <button class="order-action-btn btn-cancel" onclick="cancelOrder('${order._id || order.id}')">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </td>
+                            </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
         }
-      };
-      
-      // Close modal when clicking outside
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-          window.closeModal();
+
+        // Load messages section
+        function loadMessagesSection() {
+            updateMessagesDisplay();
         }
-      });
-    } else {
-      throw new Error(`Failed to fetch order: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('Error fetching order details:', error);
-    showErrorMessage('Failed to load order details. Please try again.');
-  }
-}
 
         // Load payments section
         function loadPaymentsSection() {
@@ -1289,6 +1647,118 @@ async function viewOrderDetails(orderId) {
             `).join('');
         }
 
+        // Enhanced view order details function
+        async function viewOrderDetails(orderId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`http://localhost:5000/api/user/orders/${orderId}`, {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const orderData = await response.json();
+                    const order = orderData.order || orderData;
+                    
+                    // Safe data access with fallbacks
+                    const orderNumber = order.orderNumber || order.id || 'N/A';
+                    const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Unknown date';
+                    const orderStatus = order.status || 'unknown';
+                    const totalAmount = order.totalAmount || order.amount || 0;
+                    const paymentMethod = order.paymentMethod || 'Not specified';
+                    const items = order.items || [];
+                    const shippingAddress = order.shippingAddress || order.address || {};
+                    
+                    // Build items HTML safely
+                    const itemsHtml = items.length > 0 ? items.map(item => `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+                            <div>
+                                <strong>${item.name || 'Unnamed Item'}</strong>
+                                ${item.purchaseType === 'bulk' ? `<br><small>Bulk: ${item.bulkUnit || 'N/A'}</small>` : ''}
+                            </div>
+                            <div style="text-align: right;">
+                                ${(item.quantity || 1)} × ${(item.price || 0).toLocaleString()} XAF<br>
+                                <strong>${((item.quantity || 1) * (item.price || 0)).toLocaleString()} XAF</strong>
+                            </div>
+                        </div>
+                    `).join('') : '<p>No items found</p>';
+                    
+                    // Build shipping address HTML safely
+                    const shippingHtml = shippingAddress && Object.keys(shippingAddress).length > 0 ? `
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Shipping Address</h4>
+                            <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                                ${shippingAddress.name ? `<strong>${shippingAddress.name}</strong><br>` : ''}
+                                ${shippingAddress.phone ? `Phone: ${shippingAddress.phone}<br>` : ''}
+                                ${shippingAddress.address ? `Address: ${shippingAddress.address}<br>` : ''}
+                                ${shippingAddress.city ? `City: ${shippingAddress.city}<br>` : ''}
+                                ${shippingAddress.country ? `Country: ${shippingAddress.country}` : ''}
+                            </div>
+                        </div>
+                    ` : '';
+                    
+                    const modalHtml = `
+                        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+                            <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <h3 style="color: var(--dark-brown);">Order #${orderNumber}</h3>
+                                    <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark-brown);">&times;</button>
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <strong>Order Date:</strong> ${orderDate}<br>
+                                    <strong>Status:</strong> <span class="order-status status-${orderStatus}">${formatOrderStatus(orderStatus)}</span><br>
+                                    <strong>Payment Method:</strong> ${paymentMethod}
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Items (${items.length})</h4>
+                                    ${itemsHtml}
+                                </div>
+                                
+                                <div style="border-top: 2px solid var(--light-gold); padding-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                                        <span>Total:</span>
+                                        <span>${totalAmount.toLocaleString()} XAF</span>
+                                    </div>
+                                </div>
+                                
+                                ${shippingHtml}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Create and show modal
+                    const modal = document.createElement('div');
+                    modal.innerHTML = modalHtml;
+                    document.body.appendChild(modal);
+                    
+                    // Add close modal function to global scope
+                    window.closeModal = function() {
+                        if (modal.parentElement) {
+                            document.body.removeChild(modal);
+                        }
+                    };
+                    
+                    // Close modal when clicking outside
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            window.closeModal();
+                        }
+                    });
+                } else {
+                    throw new Error(`Failed to fetch order: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+                showErrorMessage('Failed to load order details. Please try again.');
+            }
+        }
+
         // Update user profile
         async function updateProfile() {
             const token = localStorage.getItem('token');
@@ -1325,7 +1795,6 @@ async function viewOrderDetails(orderId) {
 
         // Add payment method
         function addPaymentMethod() {
-            // In a real app, this would integrate with a payment processor like Stripe
             showErrorMessage('Payment method integration is not yet implemented. This would connect to services like Stripe in a production environment.');
         }
 
@@ -1356,13 +1825,6 @@ async function viewOrderDetails(orderId) {
         }
 
         // Order actions
-        function viewOrder(orderId) {
-            const order = userOrders.find(o => o._id === orderId);
-            if (order) {
-                alert(`Order Details:\nOrder #: ${order.orderNumber}\nStatus: ${formatOrderStatus(order.status)}\nTotal: ${order.amount ? order.amount.toLocaleString() : '0'} XAF`);
-            }
-        }
-
         function trackOrder(orderId) {
             const order = userOrders.find(o => o._id === orderId);
             if (order) {
