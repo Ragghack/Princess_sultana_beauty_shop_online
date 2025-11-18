@@ -8,7 +8,7 @@ const Ticket = require("../models/Tickets");
 const path = require('path');
 const multer = require('multer');
 const adminController = require('../controllers/adminController');
-const authMiddleware = require("../middleware/auth");
+const authMiddleware = require("../middleware/Auth");
 // Use your local multer configuration instead
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
