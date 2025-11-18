@@ -241,8 +241,8 @@ const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/products");
 //const commandRoutes = require("./routes/commands");
 const adminRoutes = require("./routes/admin"); // ✅ Only one declaration
-const authMiddleware = require("./middleware/auth");
-const auth = require("./middleware/auth");
+const authMiddleware = require("./middleware/Auth");
+const auth = require("./middleware/Auth");
 
 // ✅ MOUNT ALL ROUTES PROPERLY
 app.use("/api/auth", authRoutes);
