@@ -396,7 +396,7 @@
         <header>
             <div class="logo">
                 <i class="fas fa-spa"></i>
-                <span>Pricesse Sultana Beauty</span>
+                <span>Princesse Sultana Beauty</span>
             </div>
             <nav>
                 <a href="shop.html" class="continue-shopping">
@@ -629,19 +629,19 @@ document.getElementById('checkout-btn').addEventListener('click', async function
 
 // Generate enhanced order notes with purchase type specifications
 function generateOrderNotes(items) {
-    let notes = "🛍️ ORDER DETAILS - Princesse Sultana Hair Care\n\n";
+    let notes = " ORDER DETAILS - Princesse Sultana Hair Care\n\n";
     
     items.forEach((item, index) => {
-        const purchaseType = item.isBulk ? "📦 BULK PURCHASE" : "🛍️ SINGLE ITEM";
+        const purchaseType = item.isBulk ? " BULK PURCHASE" : " SINGLE ITEM";
         const unitInfo = item.isBulk ? 
             `${item.qty} ${item.bulkUnit || 'packages'}` : 
             `${item.qty} units`;
             
-        notes += `${index + 1}. ${item.name}\n`;
-        notes += `   📋 Type: ${purchaseType}\n`;
-        notes += `   📊 Quantity: ${unitInfo}\n`;
-        notes += `   💰 Price: ${item.price.toLocaleString()} XAF each\n`;
-        notes += `   🧮 Subtotal: ${(item.price * item.qty).toLocaleString()} XAF\n\n`;
+        notes += `%0A ${index + 1}. ${item.name}\n`;
+        notes += `%0A    Type: ${purchaseType}\n`;
+        notes += `%0A    Quantity: ${unitInfo}\n`;
+        notes += `%0A    Price: ${item.price.toLocaleString()} XAF each\n`;
+        notes += `%0A    Subtotal: ${(item.price * item.qty).toLocaleString()} XAF\n\n`;
     });
     
     return notes;
