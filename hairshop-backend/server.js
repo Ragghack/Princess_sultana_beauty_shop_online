@@ -10,6 +10,7 @@ const app = express();
 // ✅ ENHANCED CORS CONFIG
 app.use(cors({
     origin: [
+      'https://princess-sultana-beauty-shop-online.vercel.app',
         'http://127.0.0.1:5501', 
         'http://localhost:3000', 
         'http://localhost:5501',

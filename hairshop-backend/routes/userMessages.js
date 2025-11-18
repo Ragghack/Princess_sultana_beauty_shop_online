@@ -1,7 +1,7 @@
 // routes/userMessages.js
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const auth = require('../middleware/Auth');
 const Message = require('../models/Message');
 
 // Send a message to admin
