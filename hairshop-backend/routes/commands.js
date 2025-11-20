@@ -119,7 +119,7 @@ router.post("/whatsapp", auth, async (req, res) => {
     
     message += '%0AThank you!';
     
-    const whatsappUrl = `https://wa.me/237679225169?text=${message}`;
+    const whatsappUrl = `https://wa.me/237693190930?text=${message}`;
 
     res.json({ 
       success: true, 
