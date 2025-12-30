@@ -1268,7 +1268,9 @@
                 }
 
                 // Load payment methods
-                const paymentsResponse = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/payments', {
+                //const paymentsResponse = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/payments', {
+                     const paymentsResponse = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/payments', {
+                    method: 'GET',
                     method: 'GET',
                     headers: { 
                         'Authorization': `Bearer ${token}`,
