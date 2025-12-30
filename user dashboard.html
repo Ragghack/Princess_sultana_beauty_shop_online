@@ -89,6 +89,7 @@
             padding: 8px 15px;
             border-radius: 5px;
             transition: all 0.3s ease;
+            position: relative;
         }
         
         .nav-link:hover {
@@ -795,6 +796,22 @@
             color: var(--light-gold);
         }
         
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: 0;
+            background: #DC3545;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .hidden {
             display: none;
         }
@@ -809,17 +826,18 @@
             </div>
             <div class="nav-links">
                 <a href="index.html" class="nav-link">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="shop.html" class="nav-link">
                     <i class="fas fa-shopping-bag"></i> Shop
                 </a>
-                <a href="shopping cart.html" class="nav-link">
+                <!-- <a href="shop.html" class="nav-link">
+                    <i class="fas fa-shopping-bag"></i> Shop
+                </a> -->
+                <a href="shopping cart.html" class="nav-link" id="cartIcon">
                     <i class="fas fa-shopping-cart"></i> Cart
+                    <span class="cart-count" id="cartCount">0</span>
                 </a>
-                <a href="#" class="nav-link active">
+                <!-- <a href="#" class="nav-link active">
                     <i class="fas fa-user"></i> Account
-                </a>
+                </a> -->
             </div>
         </header>
         
@@ -1314,6 +1332,14 @@
                 // Don't throw error for messages - it's not critical
             }
         }
+
+        function updateCartCount() {            
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        window.addEventListener('load', updateCartCount);
 
         // Populate order dropdown for message form
         function populateOrderDropdown() {
