@@ -202,7 +202,7 @@
     
     .track {
       display: flex;
-      transition: transform .6s cubic-bezier(.22, .61, .36, 1);
+      transition: transform .20s cubic-bezier(.22, .61, .36, 1);
     }
     
     .slide {
@@ -1061,11 +1061,26 @@ nav ul {
     }
 
     // Cart preview functionality
-    document.getElementById('cartIcon').addEventListener('click', function() {
+document.getElementById('cartIcon').addEventListener('click', function() {
+    const cart = getCart();
+    
+    if (cart.length === 0) {
+        // Show empty cart preview
         document.getElementById('cartPreview').classList.add('open');
         document.getElementById('cartOverlay').classList.add('active');
         updateCartPreview();
-    });
+    } else {
+        // Check auth before showing cart
+        if (!isLoggedIn()) {
+            savePendingCart();
+            checkAuthAndRedirect();
+            return;
+        }
+        document.getElementById('cartPreview').classList.add('open');
+        document.getElementById('cartOverlay').classList.add('active');
+        updateCartPreview();
+    }
+});
 
     document.getElementById('closeCart').addEventListener('click', function() {
         document.getElementById('cartPreview').classList.remove('open');
@@ -1078,16 +1093,20 @@ nav ul {
     });
 
     // Checkout functionality
-    document.getElementById('checkoutBtn').addEventListener('click', function() {
-        const cart = getCart();
-        if (cart.length === 0) {
-            showToast('Your cart is empty!');
-            return;
-        }
-        
-        // Redirect to checkout page
-        window.location.href = 'shopping Cart.html';
-    });
+document.getElementById('checkoutBtn').addEventListener('click', function() {
+    const cart = getCart();
+    if (cart.length === 0) {
+        showToast('Your cart is empty!');
+        return;
+    }
+    
+    if (!checkAuthAndRedirect()) {
+        return;
+    }
+    
+    // Redirect to checkout page
+    window.location.href = 'shopping Cart.html';
+});
 
     // Admin check
     function isAdmin() {
@@ -1422,73 +1441,147 @@ nav ul {
             });
             
             // Enhanced buy button click handler
-            buyBtn.addEventListener('click', () => {
-                const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
-                let qty = Math.max(1, parseInt(input.value || '1', 10));
-                let price, unitDescription = '';
-                
-                if (activePurchaseType === 'retail') {
-                    price = parseFloat(buyBtn.dataset.retailPrice);
-                    unitDescription = 'unit(s)';
-                } else {
-                    price = parseFloat(buyBtn.dataset.bulkPrice);
-                    unitDescription = buyBtn.dataset.bulkUnit || 'package(s)';
-                    // For bulk purchases, quantity represents number of bulk packages
-                    qty = Math.max(1, qty); // Minimum 1 bulk package
-                }
+            // Enhanced buy button click handler (Add to Cart)
+buyBtn.addEventListener('click', () => {
+    // Check authentication first
+    if (!isLoggedIn()) {
+        // Save item to temporary cart for pending login
+        const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
+        let qty = Math.max(1, parseInt(input.value || '1', 10));
+        let price, unitDescription = '';
+        
+        if (activePurchaseType === 'retail') {
+            price = parseFloat(buyBtn.dataset.retailPrice);
+            unitDescription = 'unit(s)';
+        } else {
+            price = parseFloat(buyBtn.dataset.bulkPrice);
+            unitDescription = buyBtn.dataset.bulkUnit || 'package(s)';
+            qty = Math.max(1, qty);
+        }
 
-                const item = {
-                    id: buyBtn.dataset.id,
-                    name: buyBtn.dataset.name,
-                    price: price,
-                    qty: qty,
-                    image: buyBtn.dataset.image || '',
-                    purchaseType: activePurchaseType,
-                    unitDescription: unitDescription,
-                    isBulk: activePurchaseType === 'bulk',
-                    bulkUnit: activePurchaseType === 'bulk' ? buyBtn.dataset.bulkUnit : ''
-                };
-                
-                addToCart(item);
-                showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
-            });
+        const pendingItem = {
+            id: buyBtn.dataset.id,
+            name: buyBtn.dataset.name,
+            price: price,
+            qty: qty,
+            image: buyBtn.dataset.image || '',
+            purchaseType: activePurchaseType,
+            unitDescription: unitDescription,
+            isBulk: activePurchaseType === 'bulk',
+            bulkUnit: activePurchaseType === 'bulk' ? buyBtn.dataset.bulkUnit : ''
+        };
+        
+        // Save to pending items
+        const pendingItems = JSON.parse(localStorage.getItem('pendingItems') || '[]');
+        pendingItems.push(pendingItem);
+        localStorage.setItem('pendingItems', JSON.stringify(pendingItems));
+        
+        // Redirect to login
+        checkAuthAndRedirect();
+        return;
+    }
+    
+    // User is logged in - proceed normally
+    const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
+    let qty = Math.max(1, parseInt(input.value || '1', 10));
+    let price, unitDescription = '';
+    
+    if (activePurchaseType === 'retail') {
+        price = parseFloat(buyBtn.dataset.retailPrice);
+        unitDescription = 'unit(s)';
+    } else {
+        price = parseFloat(buyBtn.dataset.bulkPrice);
+        unitDescription = buyBtn.dataset.bulkUnit || 'package(s)';
+        qty = Math.max(1, qty);
+    }
+
+    const item = {
+        id: buyBtn.dataset.id,
+        name: buyBtn.dataset.name,
+        price: price,
+        qty: qty,
+        image: buyBtn.dataset.image || '',
+        purchaseType: activePurchaseType,
+        unitDescription: unitDescription,
+        isBulk: activePurchaseType === 'bulk',
+        bulkUnit: activePurchaseType === 'bulk' ? buyBtn.dataset.bulkUnit : ''
+    };
+    
+    if (addToCart(item)) {
+        showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
+    }
+});
             
-            // Buy Now button click handler
-            buyNowBtn.addEventListener('click', () => {
-                const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
-                let qty = Math.max(1, parseInt(input.value || '1', 10));
-                let price, unitDescription = '';
-                
-                if (activePurchaseType === 'retail') {
-                    price = parseFloat(buyNowBtn.dataset.retailPrice);
-                    unitDescription = 'unit(s)';
-                } else {
-                    price = parseFloat(buyNowBtn.dataset.bulkPrice);
-                    unitDescription = buyNowBtn.dataset.bulkUnit || 'package(s)';
-                    qty = Math.max(1, qty);
-                }
+            // Buy Now button click handler// Buy Now button click handler
+buyNowBtn.addEventListener('click', () => {
+    // Check authentication first
+    if (!checkAuthAndRedirect()) {
+        // Save item to temporary cart for pending login
+        const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
+        let qty = Math.max(1, parseInt(input.value || '1', 10));
+        let price, unitDescription = '';
+        
+        if (activePurchaseType === 'retail') {
+            price = parseFloat(buyNowBtn.dataset.retailPrice);
+            unitDescription = 'unit(s)';
+        } else {
+            price = parseFloat(buyNowBtn.dataset.bulkPrice);
+            unitDescription = buyNowBtn.dataset.bulkUnit || 'package(s)';
+            qty = Math.max(1, qty);
+        }
 
-                const item = {
-                    id: buyNowBtn.dataset.id,
-                    name: buyNowBtn.dataset.name,
-                    price: price,
-                    qty: qty,
-                    image: buyNowBtn.dataset.image || '',
-                    purchaseType: activePurchaseType,
-                    unitDescription: unitDescription,
-                    isBulk: activePurchaseType === 'bulk',
-                    bulkUnit: activePurchaseType === 'bulk' ? buyNowBtn.dataset.bulkUnit : ''
-                };
-                
-                // Clear cart and add only this item
-                setCart([item]);
-                // updateCartStorage();
-                // updateCartCount();
-                showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
-                
-                // Redirect to checkout
-                window.location.href = 'shopping Cart.html';
-            });
+        const pendingItem = {
+            id: buyNowBtn.dataset.id,
+            name: buyNowBtn.dataset.name,
+            price: price,
+            qty: qty,
+            image: buyNowBtn.dataset.image || '',
+            purchaseType: activePurchaseType,
+            unitDescription: unitDescription,
+            isBulk: activePurchaseType === 'bulk',
+            bulkUnit: activePurchaseType === 'bulk' ? buyNowBtn.dataset.bulkUnit : ''
+        };
+        
+        // Save as pending buy now item
+        localStorage.setItem('pendingBuyNow', JSON.stringify(pendingItem));
+        return;
+    }
+    
+    // User is logged in - proceed with Buy Now
+    const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
+    let qty = Math.max(1, parseInt(input.value || '1', 10));
+    let price, unitDescription = '';
+    
+    if (activePurchaseType === 'retail') {
+        price = parseFloat(buyNowBtn.dataset.retailPrice);
+        unitDescription = 'unit(s)';
+    } else {
+        price = parseFloat(buyNowBtn.dataset.bulkPrice);
+        unitDescription = buyNowBtn.dataset.bulkUnit || 'package(s)';
+        qty = Math.max(1, qty);
+    }
+
+    const item = {
+        id: buyNowBtn.dataset.id,
+        name: buyNowBtn.dataset.name,
+        price: price,
+        qty: qty,
+        image: buyNowBtn.dataset.image || '',
+        purchaseType: activePurchaseType,
+        unitDescription: unitDescription,
+        isBulk: activePurchaseType === 'bulk',
+        bulkUnit: activePurchaseType === 'bulk' ? buyNowBtn.dataset.bulkUnit : ''
+    };
+    
+    // Clear cart and add only this item
+    setCart([item]);
+    updateCartStorage();
+    updateCartCount();
+    showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
+    
+    // Redirect to checkout
+    window.location.href = 'shopping Cart.html';
+});
             
             // Admin remove functionality
             const remove = slide.querySelector('[data-remove]');
@@ -1638,6 +1731,177 @@ nav ul {
         renderProducts().then(startAutoSlide);
         updateCartCount();
     });
+    // Add this function to check authentication
+// Add these authentication functions at the top of your script (before the setupSlideEvents function)
+function checkAuthAndRedirect() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (!token || !user) {
+        // Save the current cart before redirecting
+        const cart = getCart();
+        if (cart.length > 0) {
+            localStorage.setItem('pendingCart', JSON.stringify(cart));
+        }
+        
+        // Show message and redirect to login
+        showToast('Please login or register to proceed');
+        setTimeout(() => {
+            window.location.href = 'login.html?redirect=cart';
+        }, 1500);
+        return false;
+    }
+    return true;
+}
+
+function isLoggedIn() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    return !!(token && user);
+}
+
+function savePendingCart() {
+    const cart = getCart();
+    if (cart.length > 0) {
+        localStorage.setItem('pendingCart', JSON.stringify(cart));
+    }
+}
+
+// Modified addToCart function to handle pending cart
+function addToCart(item) {
+    // If user is not logged in, save to pending cart
+    if (!isLoggedIn()) {
+        savePendingCart();
+        return false;
+    }
+    
+    const cart = getCart();
+    
+    // Create a unique identifier that includes purchase type
+    const uniqueId = `${item.id}-${item.purchaseType}`;
+    
+    const existingItem = cart.find(p => 
+        p.uniqueId === uniqueId && p.purchaseType === item.purchaseType
+    );
+    
+    if (existingItem) {
+        existingItem.qty += item.qty;
+    } else {
+        cart.push({
+            uniqueId: uniqueId,
+            id: item.id,
+            name: item.name,
+            price: parseFloat(item.price),
+            qty: item.qty,
+            image: item.image || '',
+            purchaseType: item.purchaseType || 'retail',
+            isBulk: item.isBulk || false,
+            bulkUnit: item.bulkUnit || '',
+            unitDescription: item.unitDescription || 'unit(s)'
+        });
+    }
+    
+    setCart(cart);
+    updateCartStorage();
+    updateCartPreview();
+    updateCartCount();
+    return true;
+}
+
+// Update cart icon click handler
+document.getElementById('cartIcon').addEventListener('click', function(e) {
+    const cart = getCart();
+    
+    if (cart.length === 0) {
+        // Show empty cart preview
+        document.getElementById('cartPreview').classList.add('open');
+        document.getElementById('cartOverlay').classList.add('active');
+        updateCartPreview();
+    } else {
+        // Check auth before showing cart
+        if (checkAuthAndRedirect()) {
+            document.getElementById('cartPreview').classList.add('open');
+            document.getElementById('cartOverlay').classList.add('active');
+            updateCartPreview();
+        }
+    }
+});
+
+// Update the "View Full Cart" button in cart preview
+const viewCartBtn = document.querySelector('.btn-view-cart');
+if (viewCartBtn) {
+    viewCartBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!checkAuthAndRedirect()) {
+            return;
+        }
+        window.location.href = 'shopping Cart.html';
+    });
+}
+
+// Auth utility functions
+function isLoggedIn() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    return !!(token && user);
+}
+
+function getUser() {
+    try {
+        return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch {
+        return {};
+    }
+}
+
+function requireAuth(redirectTo) {
+    if (!isLoggedIn()) {
+        // Save current URL for redirect after login
+        if (redirectTo) {
+            localStorage.setItem('redirectAfterLogin', redirectTo);
+        }
+        window.location.href = 'login.html';
+        return false;
+    }
+    return true;
+}
+
+// Function to restore pending items after login
+function restorePendingItems() {
+    // Check for pending items from add to cart
+    const pendingItems = JSON.parse(localStorage.getItem('pendingItems') || '[]');
+    if (pendingItems.length > 0) {
+        pendingItems.forEach(item => {
+            addToCart(item);
+        });
+        localStorage.removeItem('pendingItems');
+        showToast('Your pending items have been added to cart!');
+    }
+    
+    // Check for pending buy now item
+    const pendingBuyNow = localStorage.getItem('pendingBuyNow');
+    if (pendingBuyNow) {
+        const buyNowItem = JSON.parse(pendingBuyNow);
+        setCart([buyNowItem]);
+        updateCartStorage();
+        updateCartCount();
+        localStorage.removeItem('pendingBuyNow');
+        
+        // Redirect to checkout for buy now
+        setTimeout(() => {
+            window.location.href = 'shopping Cart.html';
+        }, 1000);
+    }
+}
+
+// Call this on page load if user is logged in
+document.addEventListener('DOMContentLoaded', () => {
+    if (isLoggedIn()) {
+        restorePendingItems();
+    }
+    renderProducts().then(startAutoSlide);
+    updateCartCount();
+});
 </script>
 </body>
 </html>
