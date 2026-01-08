@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require('path');
 
+
 const app = express();
 
 // Middleware - MUST come before routes
@@ -241,14 +242,16 @@ const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/products");
 //const commandRoutes = require("./routes/commands");
 const adminRoutes = require("./routes/admin"); // ✅ Only one declaration
-const authMiddleware = require("./middleware/Auth");
-const auth = require("./middleware/Auth");
-
+//
+const authMiddleware = require("./middleware/auth");
+const auth = require("./middleware/auth");
+const reportRoutes = require('./routes/reportRoutes');
 // ✅ MOUNT ALL ROUTES PROPERLY
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/commands", commandRoutes);
+app.use('/api/admin/reports', reportRoutes);
 
 // ✅ Use admin routes (choose one option below):
 
