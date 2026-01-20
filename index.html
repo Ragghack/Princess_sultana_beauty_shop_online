@@ -1109,8 +1109,8 @@ nav ul {
             
             // Try multiple endpoints
             const endpoints = [
-                'https://princess-sultana-beauty-shop-online.onrender.com/api/products',
-                'https://princess-sultana-beauty-shop-online.onrender.com/api/products-debug'
+                'http://localhost:5000/api/products',
+                'http://localhost:5000/api/products-debug'
             ];
             
             let products = [];
@@ -1218,7 +1218,7 @@ nav ul {
                 imageUrl = 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
             }
             if (imageUrl.startsWith('/uploads/')) {
-                imageUrl = `https://princess-sultana-beauty-shop-online.onrender.com${imageUrl}`;
+                imageUrl = `http://localhost:5000${imageUrl}`;
             }
 
             const imageHtml = `
@@ -1497,7 +1497,7 @@ nav ul {
                     if (confirm('Are you sure you want to remove this product?')) {
                         try {
                             const token = localStorage.getItem('adminToken');
-                            const response = await fetch(`https://princess-sultana-beauty-shop-online.onrender.com/api/admin/products/${remove.dataset.id}`, { 
+                            const response = await fetch(`http://localhost:5000/api/admin/products/${remove.dataset.id}`, { 
                                 method: 'DELETE',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -1615,7 +1615,7 @@ nav ul {
         try {
             console.log('🧪 Testing products API...');
             
-            const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/products');
+            const response = await fetch('http://localhost:5000/api/products');
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
             

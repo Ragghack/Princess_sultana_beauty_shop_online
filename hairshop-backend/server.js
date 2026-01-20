@@ -243,9 +243,10 @@ const productRoutes = require("./routes/products");
 //const commandRoutes = require("./routes/commands");
 const adminRoutes = require("./routes/admin"); // ✅ Only one declaration
 //
-const authMiddleware = require("./middleware/auth");
-const auth = require("./middleware/auth");
+const authMiddleware = require("./middleware/Auth");
+const auth = require("./middleware/Auth");
 const reportRoutes = require('./routes/reportRoutes');
+const customerRoutes = require("./routes/customerRoutes");
 // ✅ MOUNT ALL ROUTES PROPERLY
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -260,7 +261,8 @@ app.use('/api/admin/reports', reportRoutes);
 
 // OPTION 2: With authentication (comment out above line and uncomment below)
 app.use("/api/admin", authMiddleware, adminRoutes);
-
+ // Make sure this matches the filename
+app.use("/api/admin/customers", customerRoutes);
 // ============================
 // 🧪 TEST ENDPOINTS
 // ============================

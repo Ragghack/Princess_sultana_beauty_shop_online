@@ -1,161 +1,143 @@
 const express = require('express');
 const router = express.Router();
 const reportController = require('../controllers/reportController');
-const { protect, authorize } = require('../middleware/auth');
+const auth = require('../middleware/Auth'); // Import the function directly
 
-// All routes are protected and require admin role
-router.use(protect);
-router.use(authorize('admin'));
+// Import Models for the inline dashboard logic
+const Order = require('../models/Order');
+const Product = require('../models/Product');
+// Assuming CustomerAnalytics is a model you've created
+// const CustomerAnalytics = require('../models/CustomerAnalytics'); 
 
-// Sales Reports
+/**
+ * @description Authentication & Authorization
+ * Since your Auth.js middleware handles both token verification 
+ * and admin checks (based on the originalUrl logic inside it), 
+ * we just need to apply it to all report routes.
+ */
+router.use(auth);
+
+// --- Sales Reports ---
+
+// GET /api/admin/reports/sales
 router.get('/sales', reportController.generateSalesReport);
+
+// GET /api/admin/reports/sales/summary
 router.get('/sales/summary', async (req, res) => {
-    // Quick summary endpoint
     try {
+        // Fetch data from the last 30 days
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
         const orders = await Order.find({
-            createdAt: { 
-                $gte: new Date(new Date().setMonth(new Date().getMonth() - 1))
-            }
+            createdAt: { $gte: oneMonthAgo }
         });
         
         const totalRevenue = orders.reduce((sum, order) => sum + (order.amount || 0), 0);
         const totalOrders = orders.length;
-        const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+        const avgOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
         
+        // Use a Set to count unique user IDs
+        const uniqueCustomers = new Set(orders.map(o => o.userId?.toString())).size;
+
         res.json({
-            totalRevenue,
-            totalOrders,
-            averageOrderValue: avgOrderValue,
-            totalCustomers: new Set(orders.map(o => o.userId?.toString())).size
+            success: true,
+            summary: {
+                totalRevenue,
+                totalOrders,
+                averageOrderValue: Math.round(avgOrderValue),
+                totalCustomers: uniqueCustomers,
+                period: "Last 30 Days"
+            }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Summary Report Error:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Customer Analytics
-router.get('/customers', reportController.getCustomerAnalytics);
-router.get('/customers/top', async (req, res) => {
-    // Get top customers only
-    try {
-        const customers = await CustomerAnalytics.find()
-            .sort({ totalSpent: -1 })
-            .limit(10);
-        
-        res.json({ customers });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+// --- Product & Inventory Analytics ---
 
-// Product Performance
+// GET /api/admin/reports/products
 router.get('/products', reportController.getProductPerformance);
+
 router.get('/products/inventory', async (req, res) => {
-    // Inventory report
     try {
-        const products = await Product.find()
-            .sort({ stock: 1 })
-            .limit(50);
+        const products = await Product.find().select('name stock price category');
         
-        const lowStock = products.filter(p => p.stock < 10);
+        const lowStock = products.filter(p => p.stock > 0 && p.stock < 10);
         const outOfStock = products.filter(p => p.stock === 0);
         
         res.json({
-            totalProducts: products.length,
-            lowStock: lowStock.length,
-            outOfStock: outOfStock.length,
-            products: products.slice(0, 20)
+            success: true,
+            inventory: {
+                totalProducts: products.length,
+                lowStockCount: lowStock.length,
+                outOfStockCount: outOfStock.length,
+                criticalItems: lowStock.slice(0, 10) // Return first 10 for quick view
+            }
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Chart Data
+// --- Chart Data (Visualizations) ---
+
 router.get('/charts', async (req, res) => {
     try {
         const { start, end } = req.query;
-        
-        const filter = {};
-        if (start && end) {
-            filter.createdAt = {
-                $gte: new Date(start),
-                $lte: new Date(end)
-            };
-        } else {
-            // Last 6 months by default
-            filter.createdAt = {
-                $gte: new Date(new Date().setMonth(new Date().getMonth() - 6))
-            };
-        }
-        
-        const orders = await Order.find(filter);
-        
-        // Revenue by month
+        let startDate = start ? new Date(start) : new Date(new Date().setMonth(new Date().getMonth() - 6));
+        let endDate = end ? new Date(end) : new Date();
+
+        const orders = await Order.find({
+            createdAt: { $gte: startDate, $lte: endDate }
+        });
+
+        // Data Aggregation
         const monthlyRevenue = {};
-        // Status distribution
         const statusCount = {};
-        // Product sales
         const productSales = {};
-        
+
         orders.forEach(order => {
-            // Monthly revenue
-            const month = order.createdAt.toISOString().substring(0, 7);
+            // 1. Monthly Revenue
+            const month = order.createdAt.toISOString().substring(0, 7); // YYYY-MM
             monthlyRevenue[month] = (monthlyRevenue[month] || 0) + (order.amount || 0);
             
-            // Status
-            const status = order.status || 'unknown';
+            // 2. Status Distribution
+            const status = order.status || 'pending';
             statusCount[status] = (statusCount[status] || 0) + 1;
             
-            // Product sales (simplified)
-            if (order.items && order.items.length > 0) {
+            // 3. Product Performance
+            if (order.items) {
                 order.items.forEach(item => {
-                    const productName = item.name || 'Unknown';
-                    productSales[productName] = (productSales[productName] || 0) + (item.quantity || 1);
+                    const name = item.name || 'Unknown';
+                    productSales[name] = (productSales[name] || 0) + (item.quantity || 1);
                 });
             }
         });
-        
-        // Format data for charts
-        const revenueData = Object.entries(monthlyRevenue)
-            .map(([month, revenue]) => ({ month, revenue }))
-            .sort((a, b) => a.month.localeCompare(b.month));
-        
-        const orderStatusData = Object.entries(statusCount)
-            .map(([status, count]) => ({ status, count }));
-        
-        const topProducts = Object.entries(productSales)
-            .map(([name, sales]) => ({ name, sales }))
-            .sort((a, b) => b.sales - a.sales)
-            .slice(0, 10);
-        
+
         res.json({
-            revenueData,
-            orderStatusData,
-            topProducts,
-            monthlySales: revenueData // For monthly sales chart
+            success: true,
+            charts: {
+                revenue: Object.entries(monthlyRevenue).map(([label, value]) => ({ label, value })),
+                status: Object.entries(statusCount).map(([name, value]) => ({ name, value })),
+                topProducts: Object.entries(productSales)
+                    .map(([name, sales]) => ({ name, sales }))
+                    .sort((a, b) => b.sales - a.sales)
+                    .slice(0, 5)
+            }
         });
-        
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Export reports
-router.post('/export', reportController.exportReport);
 
-// Saved reports management
+// --- Controller Handlers ---
+
+router.post('/export', reportController.exportReport);
 router.get('/saved', reportController.getSavedReports);
 router.delete('/saved/:id', reportController.deleteReport);
-
-// Background job to update analytics (call this periodically)
-router.post('/update-analytics', async (req, res) => {
-    try {
-        await reportController.generateCustomerAnalytics();
-        res.json({ success: true, message: 'Analytics updated successfully' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
 module.exports = router;
