@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FiFilter } from "react-icons/fi";
 import { productService } from "@services/productService";
-import ProductGrid from "@components/product/ProductGrid";
-import Button from "@components/common/Button";
+import ProductGrid from "../components/product/ProductGrid";
+import Button from "../components/common/Button";
 import { PRODUCT_CATEGORIES } from "@utils/constants";
 
 const Shop = () => {

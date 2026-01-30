@@ -5,6 +5,7 @@ import { productService } from "@services/productService";
 import ProductCard from "@components/product/ProductCard";
 import Button from "@components/common/Button";
 import LoadingSpinner from "@components/common/LoadingSpinner";
+import Badge from "../components/common/Badge";
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -79,7 +80,8 @@ const Home = () => {
             <div className="relative animate-scale-in">
               <div className="relative rounded-3xl overflow-hidden shadow-soft-lg">
                 <img
-                  src="/images/hero-banner.jpg"
+                  // src="/images/hero-banner.jpg"
+                  src="https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=1200&h=800&fit=crop&q=80"
                   alt="Princesse Sultana Hair Care"
                   className="w-full h-[500px] object-cover"
                 />
