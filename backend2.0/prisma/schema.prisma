@@ -1,0 +1,515 @@
+// This is your Prisma schema file
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// ============= ENUMS =============
+
+enum UserRole {
+    ADMIN
+    STAFF
+    DELIVERY
+    CUSTOMER
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+}
+
+enum ProductCategory {
+    HAIR_OIL
+    SHAMPOO
+    GROWTH_SERUM
+    HAIR_BUNDLE
+    CONDITIONER
+    TREATMENT
+}
+
+enum ProductStatus {
+    ACTIVE
+    INACTIVE
+    OUT_OF_STOCK
+    DISCONTINUED
+}
+
+enum OrderStatus {
+    PENDING
+    CONFIRMED
+    PROCESSING
+    ASSIGNED
+    OUT_FOR_DELIVERY
+    DELIVERED
+    CANCELLED
+    FAILED
+    REFUNDED
+}
+
+enum PaymentMethod {
+    MOBILE_MONEY
+    ORANGE_MONEY
+    CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+    REFUNDED
+}
+
+enum DiscountType {
+    PERCENTAGE
+    FIXED_AMOUNT
+}
+
+enum NotificationType {
+    EMAIL
+    WHATSAPP
+    SMS
+}
+
+enum NotificationStatus {
+    PENDING
+    SENT
+    FAILED
+}
+
+// ============= USER MANAGEMENT =============
+
+model User {
+    id            String     @id @default(uuid())
+    email         String     @unique
+    phone         String     @unique
+    password      String
+    firstName     String
+    lastName      String
+    role          UserRole   @default(CUSTOMER)
+    status        UserStatus @default(ACTIVE)
+    emailVerified Boolean    @default(false)
+    phoneVerified Boolean    @default(false)
+
+    // Relations
+    addresses      Address[]
+    orders         Order[]
+    cart           Cart?
+    reviews        Review[]
+    wishlist       WishlistItem[]
+    assignedOrders Order[]        @relation("DeliveryPersonnel")
+    refreshTokens  RefreshToken[]
+
+    // Delivery personnel specific
+    deliveryZone String?
+    vehicleType  String?
+
+    // Metadata
+    lastLoginAt DateTime?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    deletedAt   DateTime?
+
+    @@index([email])
+    @@index([phone])
+    @@index([role])
+    @@index([status])
+    @@map("users")
+}
+
+model RefreshToken {
+    id        String   @id @default(uuid())
+    token     String   @unique
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+
+    @@index([userId])
+    @@index([token])
+    @@map("refresh_tokens")
+}
+
+model Address {
+    id     String @id @default(uuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    fullName   String
+    phone      String
+    street     String
+    city       String
+    region     String
+    postalCode String?
+    landmark   String?
+    isDefault  Boolean @default(false)
+
+    orders Order[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([isDefault])
+    @@map("addresses")
+}
+
+// ============= PRODUCT CATALOG =============
+
+model Product {
+    id               String          @id @default(uuid())
+    sku              String          @unique
+    name             String
+    slug             String          @unique
+    description      String          @db.Text
+    shortDescription String?
+    category         ProductCategory
+    status           ProductStatus   @default(ACTIVE)
+
+    // Pricing
+    price          Decimal  @db.Decimal(10, 2)
+    compareAtPrice Decimal? @db.Decimal(10, 2)
+    cost           Decimal? @db.Decimal(10, 2)
+
+    // Inventory
+    stockQuantity     Int     @default(0)
+    lowStockThreshold Int     @default(10)
+    trackInventory    Boolean @default(true)
+
+    // Product details
+    weight       Decimal? @db.Decimal(8, 2)
+    volume       Decimal? @db.Decimal(8, 2)
+    bundleLength String?
+
+    // Media
+    images        ProductImage[]
+    featuredImage String?
+
+    // SEO
+    metaTitle       String?
+    metaDescription String?
+
+    // Relations
+    cartItems     CartItem[]
+    orderItems    OrderItem[]
+    reviews       Review[]
+    wishlistItems WishlistItem[]
+
+    // Metadata
+    viewCount  Int     @default(0)
+    salesCount Int     @default(0)
+    featured   Boolean @default(false)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    @@index([slug])
+    @@index([category])
+    @@index([status])
+    @@index([featured])
+    @@index([sku])
+    @@fulltext([name, description])
+    @@map("products")
+}
+
+model ProductImage {
+    id        String  @id @default(uuid())
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    url      String
+    altText  String?
+    position Int     @default(0)
+
+    createdAt DateTime @default(now())
+
+    @@index([productId])
+    @@map("product_images")
+}
+
+// ============= SHOPPING CART =============
+
+model Cart {
+    id     String @id @default(uuid())
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    items CartItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("carts")
+}
+
+model CartItem {
+    id     String @id @default(uuid())
+    cartId String
+    cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    quantity Int     @default(1)
+    price    Decimal @db.Decimal(10, 2)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([cartId, productId])
+    @@index([cartId])
+    @@index([productId])
+    @@map("cart_items")
+}
+
+// ============= ORDERS =============
+
+model Order {
+    id          String @id @default(uuid())
+    orderNumber String @unique
+
+    // Customer
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    // Delivery
+    addressId           String
+    address             Address @relation(fields: [addressId], references: [id])
+    deliveryPersonnelId String?
+    deliveryPersonnel   User?   @relation("DeliveryPersonnel", fields: [deliveryPersonnelId], references: [id])
+    deliveryFee         Decimal @db.Decimal(10, 2)
+    deliveryNotes       String? @db.Text
+
+    // Pricing
+    subtotal Decimal @db.Decimal(10, 2)
+    discount Decimal @default(0) @db.Decimal(10, 2)
+    total    Decimal @db.Decimal(10, 2)
+
+    // Discount
+    discountCodeId String?
+    discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
+
+    // Payment
+    paymentMethod    PaymentMethod
+    paymentStatus    PaymentStatus @default(PENDING)
+    paymentReference String?
+    paidAt           DateTime?
+
+    // Order status
+    status OrderStatus @default(PENDING)
+
+    // Items
+    items OrderItem[]
+
+    // Status tracking
+    statusHistory OrderStatusHistory[]
+
+    // Notifications
+    emailSent    Boolean @default(false)
+    whatsappSent Boolean @default(false)
+
+    // Notes
+    customerNotes String? @db.Text
+    adminNotes    String? @db.Text
+
+    // Timestamps
+    confirmedAt DateTime?
+    assignedAt  DateTime?
+    deliveredAt DateTime?
+    cancelledAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([orderNumber])
+    @@index([status])
+    @@index([paymentStatus])
+    @@index([deliveryPersonnelId])
+    @@index([createdAt])
+    @@map("orders")
+}
+
+model OrderItem {
+    id      String @id @default(uuid())
+    orderId String
+    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+
+    // Snapshot data
+    productName  String
+    productSku   String
+    productImage String?
+
+    quantity Int
+    price    Decimal @db.Decimal(10, 2)
+    subtotal Decimal @db.Decimal(10, 2)
+
+    createdAt DateTime @default(now())
+
+    @@index([orderId])
+    @@index([productId])
+    @@map("order_items")
+}
+
+model OrderStatusHistory {
+    id      String @id @default(uuid())
+    orderId String
+    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+    status    OrderStatus
+    notes     String?     @db.Text
+    changedBy String?
+
+    createdAt DateTime @default(now())
+
+    @@index([orderId])
+    @@index([createdAt])
+    @@map("order_status_history")
+}
+
+// ============= DISCOUNTS =============
+
+model DiscountCode {
+    id          String  @id @default(uuid())
+    code        String  @unique
+    description String?
+
+    type  DiscountType
+    value Decimal      @db.Decimal(10, 2)
+
+    // Usage limits
+    maxUses        Int?
+    usedCount      Int  @default(0)
+    maxUsesPerUser Int? @default(1)
+
+    // Constraints
+    minPurchaseAmount Decimal? @db.Decimal(10, 2)
+
+    // Validity
+    startDate DateTime
+    endDate   DateTime
+    isActive  Boolean  @default(true)
+
+    // Relations
+    orders Order[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([code])
+    @@index([isActive])
+    @@index([startDate, endDate])
+    @@map("discount_codes")
+}
+
+// ============= REVIEWS =============
+
+model Review {
+    id String @id @default(uuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    rating  Int
+    title   String?
+    comment String  @db.Text
+
+    isVerified Boolean @default(false)
+    isApproved Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, productId])
+    @@index([productId])
+    @@index([isApproved])
+    @@index([rating])
+    @@map("reviews")
+}
+
+// ============= WISHLIST =============
+
+model WishlistItem {
+    id String @id @default(uuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, productId])
+    @@index([userId])
+    @@index([productId])
+    @@map("wishlist_items")
+}
+
+// ============= NOTIFICATIONS =============
+
+model NotificationLog {
+    id String @id @default(uuid())
+
+    type   NotificationType
+    status NotificationStatus @default(PENDING)
+
+    recipient String
+    subject   String?
+    message   String  @db.Text
+
+    orderId String?
+
+    error  String?   @db.Text
+    sentAt DateTime?
+
+    createdAt DateTime @default(now())
+
+    @@index([type])
+    @@index([status])
+    @@index([orderId])
+    @@index([createdAt])
+    @@map("notification_logs")
+}
+
+// ============= SYSTEM =============
+
+model SystemSettings {
+    id          String  @id @default(uuid())
+    key         String  @unique
+    value       String  @db.Text
+    description String?
+
+    updatedAt DateTime @updatedAt
+
+    @@map("system_settings")
+}
+
+model DailyMetrics {
+    id   String   @id @default(uuid())
+    date DateTime @unique @db.Date
+
+    totalOrders  Int     @default(0)
+    totalRevenue Decimal @default(0) @db.Decimal(12, 2)
+    totalProfit  Decimal @default(0) @db.Decimal(12, 2)
+
+    newCustomers Int @default(0)
+    productViews Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    @@index([date])
+    @@map("daily_metrics")
+}
