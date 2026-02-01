@@ -1,28 +1,30 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import MainLayout from "@/layouts/MainLayout";
-import AdminLayout from "@/layouts/AdminLayout";
+import MainLayout from "../layouts/MainLayout";
+import AdminLayout from "../layouts/AdminLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
 
 // Pages
-import Home from "@pages/Home";
-import Shop from "@pages/Shop";
-import ProductDetailsPage from "@pages/ProductDetailsPage";
-import Cart from "@pages/Cart";
-import Checkout from "@pages/Checkout";
-import OrderConfirmation from "@pages/OrderConfirmation";
-import Login from "@pages/Login";
-import Register from "@pages/Register";
-import Account from "@pages/Account";
-import About from "@pages/About";
-import Contact from "@pages/Contact";
-import FAQ from "@pages/FAQ";
+import Home from "../pages/Home";
+import Shop from "../pages/Shop";
+import ProductDetailsPage from "../pages/ProductDetailsPage";
+import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
+import OrderConfirmation from "../pages/OrderConfirmation";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import Account from "../pages/Account";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+import FAQ from "../pages/FAQ";
 
 // Admin Pages
-import AdminDashboard from "@pages/admin/Dashboard";
-import AdminProducts from "@pages/admin/Products";
-import AdminOrders from "@pages/admin/Orders";
+import AdminDashboard from "../pages/admin/Dashboard";
+import AdminProducts from "../pages/admin/Products";
+import AdminOrders from "../pages/admin/Orders";
+import AdminCustomers from "../pages/admin/Customers";
+import AdminSettings from "../pages/admin/Settings";
 
 const AppRoutes = () => {
   return (
@@ -62,6 +64,8 @@ const AppRoutes = () => {
         <Route index element={<AdminDashboard />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="orders" element={<AdminOrders />} />
+        <Route path="customers" element={<AdminCustomers />} />
+        <Route path="settings" element={<AdminSettings />} />
       </Route>
     </Routes>
   );

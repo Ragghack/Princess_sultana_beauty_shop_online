@@ -180,7 +180,7 @@ exports.generateSalesReport = async (req, res) => {
             period: period,
             startDate: start,
             endDate: end,
-            generatedBy: req.user.userId || req.user.id,
+            generatedBy: req.user.id,
             data: reportData,
             summary: {
                 totalRevenue,

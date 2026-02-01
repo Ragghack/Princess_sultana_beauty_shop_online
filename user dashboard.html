@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+              <link rel="icon" type="image/png" href="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png">
+    <!-- Optional for Apple/Android homescreens -->
+    <link rel="apple-touch-icon" href="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png">
+
+    <!-- 🔍 Google Structured Data (shows logo in search results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://www.sultanahaircare.com",
+      "logo": "https://www.olyshair.com/sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png"
+    }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+            --light-gray: #E9ECEF;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--dark-brown);
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--light-gold);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: var(--dark-brown);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            background: rgba(183, 110, 34, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 5px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--black);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .account-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .account-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .account-sidebar {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            align-self: start;
+        }
+        
+        .user-profile {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--light-gold);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 15px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .account-menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--black);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-link:hover, .menu-link.active {
+            background: rgba(183, 110, 34, 0.1);
+            color: var(--dark-brown);
+        }
+        
+        .menu-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .account-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .content-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .content-title {
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background: var(--off-white);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--golden-brown);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            color: var(--golden-brown);
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-brown);
+        }
+        
+        .recent-orders {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .orders-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .order-item:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .order-info h3 {
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .order-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-processing {
+            background: #CCE5FF;
+            color: #004085;
+        }
+        
+        .status-shipped {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+        
+        .status-delivered {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+        
+        .view-orders-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .view-orders-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--off-white);
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark-brown);
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            color: var(--golden-brown);
+            margin-bottom: 10px;
+        }
+        
+        .action-text {
+            font-weight: 600;
+        }
+        
+        /* Order Management Styles */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .orders-table th {
+            background: var(--light-gold);
+            color: var(--dark-brown);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .orders-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .orders-table tr:hover {
+            background: var(--off-white);
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .order-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view {
+            background: var(--blue);
+            color: white;
+        }
+        
+        .btn-track {
+            background: var(--green);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: var(--red);
+            color: white;
+        }
+        
+        .btn-view:hover, .btn-track:hover, .btn-cancel:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Profile Form Styles */
+        .profile-form {
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--golden-brown);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        /* Payment Methods Styles */
+        .payment-methods {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .payment-card {
+            background: var(--off-white);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+        }
+        
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .payment-icon {
+            font-size: 2rem;
+            color: var(--golden-brown);
+        }
+        
+        .payment-details h3 {
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .payment-details p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-remove {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-remove:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .add-payment-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .add-payment-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-3px);
+        }
+        
+        /* Messages/Customer Support Styles */
+        .messages-section {
+            max-width: 800px;
+        }
+        
+        .message-form {
+            background: var(--off-white);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .message-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .message-type-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--light-gold);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .message-type-btn.active {
+            background: var(--light-gold);
+            color: white;
+        }
+        
+        .message-type-btn:hover:not(.active) {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .priority-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .priority-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .priority-btn.active {
+            background: var(--light-gold);
+            color: white;
+            border-color: var(--light-gold);
+        }
+        
+        .priority-high.active {
+            background: var(--red);
+            border-color: var(--red);
+        }
+        
+        .priority-medium.active {
+            background: var(--golden-brown);
+            border-color: var(--golden-brown);
+        }
+        
+        .priority-low.active {
+            background: var(--green);
+            border-color: var(--green);
+        }
+        
+        .messages-list {
+            margin-top: 30px;
+        }
+        
+        .message-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .message-card:hover {
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .message-subject {
+            font-weight: 600;
+            color: var(--dark-brown);
+            font-size: 1.1rem;
+        }
+        
+        .message-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .message-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .message-type {
+            background: var(--light-gold);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .message-priority {
+            font-weight: 600;
+        }
+        
+        .priority-high {
+            color: var(--red);
+        }
+        
+        .priority-medium {
+            color: var(--golden-brown);
+        }
+        
+        .priority-low {
+            color: var(--green);
+        }
+        
+        .message-content {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .message-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-answered {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .status-resolved {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+        
+        .admin-reply {
+            background: var(--off-white);
+            border-left: 4px solid var(--light-gold);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .admin-reply-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
+        /* Loading and Message Styles */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: #d00;
+        }
+        
+        .success-message {
+            background: #efe;
+            border: 1px solid #cfc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: #0a0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--light-gold);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: 0;
+            background: #DC3545;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-spa"></i>
+                <span>Huile de Chèbe</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-shopping-bag"></i> Shop
+                </a>
+                <!-- <a href="shop.html" class="nav-link">
+                    <i class="fas fa-shopping-bag"></i> Shop
+                </a> -->
+                <a href="shopping cart.html" class="nav-link" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i> Cart
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <!-- <a href="#" class="nav-link active">
+                    <i class="fas fa-user"></i> Account
+                </a> -->
+            </div>
+        </header>
+        
+        <div class="page-header">
+            <h1>My Account</h1>
+            <p>Manage your orders, profile, and preferences</p>
+        </div>
+        
+        <div class="account-container">
+            <div class="account-sidebar">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-name">Loading...</div>
+                    <div class="user-email">Loading...</div>
+                </div>
+                
+                <ul class="account-menu">
+                    <li class="menu-item">
+                        <a href="#" class="menu-link active" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-section="orders">
+                            <i class="fas fa-clipboard-list"></i> My Orders
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-section="profile">
+                            <i class="fas fa-user-edit"></i> Profile
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-section="messages">
+                            <i class="fas fa-comments"></i> Customer Support
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" data-section="payments">
+                            <i class="fas fa-credit-card"></i> Payment Methods
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="account-content">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section">
+                    <div class="content-header">
+                        <h2 class="content-title">Account Dashboard</h2>
+                        <p>Welcome back! Here's your account overview.</p>
+                    </div>
+                    
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="card-title">Total Orders</div>
+                            <div class="card-value" id="total-orders">0</div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="card-title">Completed</div>
+                            <div class="card-value" id="completed-orders">0</div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="card-title">In Progress</div>
+                            <div class="card-value" id="progress-orders">0</div>
+                        </div>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="card-title">Loyalty Points</div>
+                            <div class="card-value" id="loyalty-points">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-orders">
+                        <h3 class="section-title">Recent Orders</h3>
+                        
+                        <div class="orders-list" id="recent-orders-list">
+                            <!-- Recent orders will be loaded here -->
+                        </div>
+                        
+                        <button class="view-orders-btn" data-section="orders">
+                            <i class="fas fa-clipboard-list"></i> View All Orders
+                        </button>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <a href="index.html" class="action-btn">
+                            <div class="action-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="action-text">Continue Shopping</div>
+                        </a>
+                        
+                        <a href="#" class="action-btn" data-section="orders">
+                            <div class="action-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="action-text">Track Orders</div>
+                        </a>
+                        
+                        <a href="#" class="action-btn" data-section="messages">
+                            <div class="action-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="action-text">Contact Support</div>
+                        </a>
+                        
+                        <a href="#" class="action-btn" data-section="profile">
+                            <div class="action-icon">
+                                <i class="fas fa-user-cog"></i>
+                            </div>
+                            <div class="action-text">Account Settings</div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Orders Section -->
+                <div id="orders-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">My Orders</h2>
+                        <p>View and manage your orders</p>
+                    </div>
+                    
+                    <div id="orders-content">
+                        <!-- Orders will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Profile Section -->
+                <div id="profile-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Profile Settings</h2>
+                        <p>Manage your account information</p>
+                    </div>
+                    
+                    <form id="profile-form" class="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="profile-name">Full Name</label>
+                                <input type="text" id="profile-name" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="profile-email">Email Address</label>
+                                <input type="email" id="profile-email" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="profile-phone">Phone Number</label>
+                            <input type="tel" id="profile-phone" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="profile-address">Address</label>
+                            <textarea id="profile-address" class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Messages/Customer Support Section -->
+                <div id="messages-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Customer Support</h2>
+                        <p>Contact our support team for assistance</p>
+                    </div>
+                    
+                    <div class="messages-section">
+                        <div class="message-form">
+                            <h3 style="color: var(--dark-brown); margin-bottom: 20px;">Send a Message</h3>
+                            
+                            <div class="message-type-selector">
+                                <button type="button" class="message-type-btn active" data-type="general">
+                                    <i class="fas fa-question-circle"></i> General Inquiry
+                                </button>
+                                <button type="button" class="message-type-btn" data-type="order">
+                                    <i class="fas fa-shopping-bag"></i> Order Issue
+                                </button>
+                                <button type="button" class="message-type-btn" data-type="product">
+                                    <i class="fas fa-cube"></i> Product Question
+                                </button>
+                                <button type="button" class="message-type-btn" data-type="complaint">
+                                    <i class="fas fa-exclamation-triangle"></i> Complaint
+                                </button>
+                            </div>
+                            
+                            <div class="priority-selector">
+                                <button type="button" class="priority-btn priority-low active" data-priority="low">
+                                    Low Priority
+                                </button>
+                                <button type="button" class="priority-btn priority-medium" data-priority="medium">
+                                    Medium Priority
+                                </button>
+                                <button type="button" class="priority-btn priority-high" data-priority="high">
+                                    High Priority
+                                </button>
+                            </div>
+                            
+                            <form id="message-form">
+                                <div class="form-group">
+                                    <label class="form-label" for="message-subject">Subject</label>
+                                    <input type="text" id="message-subject" class="form-control" placeholder="Brief description of your issue" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="message-content">Message</label>
+                                    <textarea id="message-content" class="form-control" rows="6" placeholder="Please provide detailed information about your inquiry..." required></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="message-order">Related Order (Optional)</label>
+                                    <select id="message-order" class="form-control">
+                                        <option value="">Select an order (if applicable)</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Send Message
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="messages-list">
+                            <h3 style="color: var(--dark-brown); margin-bottom: 20px;">Your Messages</h3>
+                            <div id="messages-container">
+                                <div class="empty-state">
+                                    <i class="fas fa-comments"></i>
+                                    <h3>No Messages Yet</h3>
+                                    <p>You haven't sent any messages to our support team yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Methods Section -->
+                <div id="payments-section" class="hidden">
+                    <div class="content-header">
+                        <h2 class="content-title">Payment Methods</h2>
+                        <p>Manage your saved payment methods</p>
+                    </div>
+                    
+                    <div class="payment-methods" id="payment-methods-list">
+                        <!-- Payment methods will be loaded here -->
+                    </div>
+                    
+                    <button class="add-payment-btn">
+                        <i class="fas fa-plus"></i> Add New Payment Method
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userOrders = [];
+        let userPayments = [];
+        let userMessages = [];
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            setupEventListeners();
+        });
+
+        // Initialize dashboard
+        async function initializeDashboard() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            showLoadingState();
+            
+            try {
+                // Load user data
+                await loadUserData(token);
+                
+                // Load dashboard data
+                await loadDashboardData(token);
+                
+                // Set active section
+                showSection('dashboard');
+                
+                hideLoadingState();
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                showErrorMessage('Failed to load dashboard data');
+                hideLoadingState();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Menu navigation
+            document.querySelectorAll('.menu-link[data-section]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active menu item
+                    document.querySelectorAll('.menu-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+
+            // View orders buttons
+            document.querySelectorAll('.view-orders-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Update active menu item
+                    document.querySelectorAll('.menu-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.querySelector(`.menu-link[data-section="${section}"]`).classList.add('active');
+                });
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+
+            // Profile form submission
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProfile();
+            });
+
+            // Message form submission
+            document.getElementById('message-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+
+            // Message type selector
+            document.querySelectorAll('.message-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.message-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Priority selector
+            document.querySelectorAll('.priority-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Add payment method button
+            document.querySelector('.add-payment-btn').addEventListener('click', function() {
+                addPaymentMethod();
+            });
+        }
+
+        // Load user data from backend
+        async function loadUserData(token) {
+            try {
+                const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/profile', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const data = await response.json();
+                currentUser = data.user;
+                
+                // Update UI with user data
+                document.querySelector('.user-name').textContent = currentUser.name;
+                document.querySelector('.user-email').textContent = currentUser.email;
+                
+                // Pre-fill profile form
+                document.getElementById('profile-name').value = currentUser.name;
+                document.getElementById('profile-email').value = currentUser.email;
+                
+                return data;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                throw error;
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData(token) {
+            try {
+                // Load orders for dashboard
+                const ordersResponse = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/orders', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (ordersResponse.ok) {
+                    const ordersData = await ordersResponse.json();
+                    userOrders = ordersData.orders || [];
+                    updateDashboardStats();
+                    updateRecentOrders();
+                    populateOrderDropdown();
+                } else {
+                    throw new Error('Failed to fetch orders');
+                }
+
+                // Load payment methods
+                //const paymentsResponse = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/payments', {
+                     const paymentsResponse = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/payments', {
+                    method: 'GET',
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (paymentsResponse.ok) {
+                    const paymentsData = await paymentsResponse.json();
+                    userPayments = paymentsData.payments || [];
+                    updatePaymentMethods();
+                }
+
+                // Load messages
+                await loadUserMessages(token);
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                throw error;
+            }
+        }
+
+        // Load user messages
+        async function loadUserMessages(token) {
+            try {
+                const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/messages', {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    userMessages = data.messages || [];
+                    updateMessagesDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                // Don't throw error for messages - it's not critical
+            }
+        }
+
+        function updateCartCount() {            
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        window.addEventListener('load', updateCartCount);
+
+        // Populate order dropdown for message form
+        function populateOrderDropdown() {
+            const orderSelect = document.getElementById('message-order');
+            
+            if (userOrders.length === 0) {
+                orderSelect.innerHTML = '<option value="">No orders found</option>';
+                return;
+            }
+
+            let options = '<option value="">Select an order (if applicable)</option>';
+            
+            userOrders.forEach(order => {
+                const orderNumber = order.orderNumber || order.id || 'N/A';
+                const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+                options += `<option value="${order._id || order.id}">Order #${orderNumber} - ${orderDate}</option>`;
+            });
+            
+            orderSelect.innerHTML = options;
+        }
+
+        // Send message to admin
+        async function sendMessage() {
+            const token = localStorage.getItem('token');
+            
+            const messageType = document.querySelector('.message-type-btn.active').getAttribute('data-type');
+            const priority = document.querySelector('.priority-btn.active').getAttribute('data-priority');
+            const subject = document.getElementById('message-subject').value.trim();
+            const content = document.getElementById('message-content').value.trim();
+            const orderId = document.getElementById('message-order').value;
+
+            if (!subject || !content) {
+                showErrorMessage('Please fill in both subject and message fields');
+                return;
+            }
+
+            const messageData = {
+                type: messageType,
+                priority: priority,
+                subject: subject,
+                content: content,
+                orderId: orderId || null
+            };
+
+            try {
+                const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/messages', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(messageData)
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Message sent successfully! Our team will respond within 24 hours.');
+                    
+                    // Reset form
+                    document.getElementById('message-form').reset();
+                    document.querySelectorAll('.message-type-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.message-type-btn[data-type="general"]').classList.add('active');
+                    document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.priority-btn[data-priority="low"]').classList.add('active');
+                    
+                    // Reload messages
+                    await loadUserMessages(token);
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showErrorMessage('Failed to send message. Please try again.');
+            }
+        }
+
+        // Update messages display
+        function updateMessagesDisplay() {
+            const container = document.getElementById('messages-container');
+            
+            if (userMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <h3>No Messages Yet</h3>
+                        <p>You haven't sent any messages to our support team yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = userMessages.map(message => {
+                const messageDate = message.createdAt ? new Date(message.createdAt).toLocaleString() : 'Unknown date';
+                const typeLabels = {
+                    'general': 'General',
+                    'order': 'Order Issue',
+                    'product': 'Product Question',
+                    'complaint': 'Complaint'
+                };
+                
+                return `
+                    <div class="message-card">
+                        <div class="message-header">
+                            <div class="message-subject">${message.subject}</div>
+                            <div class="message-date">${messageDate}</div>
+                        </div>
+                        <div class="message-meta">
+                            <span class="message-type">${typeLabels[message.type] || message.type}</span>
+                            <span class="message-priority priority-${message.priority}">${message.priority.toUpperCase()} Priority</span>
+                            <span class="message-status status-${message.status || 'pending'}">${formatMessageStatus(message.status)}</span>
+                        </div>
+                        <div class="message-content">
+                            ${message.content}
+                        </div>
+                        ${message.adminReply ? `
+                            <div class="admin-reply">
+                                <div class="admin-reply-header">
+                                    <span>Admin Response</span>
+                                    <span>${message.repliedAt ? new Date(message.repliedAt).toLocaleString() : ''}</span>
+                                </div>
+                                <div class="message-content">
+                                    ${message.adminReply}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format message status
+        function formatMessageStatus(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'answered': 'Answered',
+                'resolved': 'Resolved'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            const totalOrders = userOrders.length;
+            const completedOrders = userOrders.filter(order => order.status === 'delivered').length;
+            const progressOrders = userOrders.filter(order => 
+                ['pending', 'processing', 'shipped'].includes(order.status)
+            ).length;
+
+            document.getElementById('total-orders').textContent = totalOrders;
+            document.getElementById('completed-orders').textContent = completedOrders;
+            document.getElementById('progress-orders').textContent = progressOrders;
+            document.getElementById('loyalty-points').textContent = completedOrders * 50; // 50 points per completed order
+        }
+
+        // Update recent orders in dashboard
+        function updateRecentOrders() {
+            const recentOrdersList = document.getElementById('recent-orders-list');
+            const recentOrders = userOrders.slice(0, 3); // Show last 3 orders
+
+            if (!recentOrders || recentOrders.length === 0) {
+                recentOrdersList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No Orders Yet</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="index.html" class="view-orders-btn" style="margin-top: 15px;">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            recentOrdersList.innerHTML = recentOrders.map(order => {
+                const orderNumber = order.orderNumber || order.id || 'N/A';
+                const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+                const totalAmount = order.totalAmount || order.amount || 0;
+                const status = order.status || 'unknown';
+                
+                return `
+                    <div class="order-item">
+                        <div class="order-info">
+                            <h3>Order #${orderNumber}</h3>
+                            <p>Placed on ${orderDate} • Total: ${totalAmount.toLocaleString()} XAF</p>
+                        </div>
+                        <span class="order-status status-${status}">
+                            ${formatOrderStatus(status)}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show specific section
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.account-content > div').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            const section = document.getElementById(`${sectionName}-section`);
+            if (section) {
+                section.classList.remove('hidden');
+                
+                // Load section-specific data if needed
+                if (sectionName === 'orders') {
+                    loadOrdersSection();
+                } else if (sectionName === 'messages') {
+                    loadMessagesSection();
+                } else if (sectionName === 'payments') {
+                    loadPaymentsSection();
+                }
+            }
+        }
+
+        // Load orders section
+        function loadOrdersSection() {
+            const ordersContent = document.getElementById('orders-content');
+
+            if (!userOrders || userOrders.length === 0) {
+                ordersContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <a href="index.html" class="view-orders-btn" style="margin-top: 15px;">
+                            <i class="fas fa-shopping-bag"></i> Start Shopping
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersContent.innerHTML = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${userOrders.map(order => {
+                            const orderNumber = order.orderNumber || order.id || 'N/A';
+                            const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Unknown';
+                            const items = order.items || [];
+                            const totalAmount = order.totalAmount || order.amount || 0;
+                            const status = order.status || 'unknown';
+                            
+                            return `
+                            <tr>
+                                <td>${orderNumber}</td>
+                                <td>${orderDate}</td>
+                                <td>
+                                    ${items.slice(0, 2).map(item => 
+                                        `${item.name || 'Item'} (${item.quantity || 1})`
+                                    ).join(', ')}
+                                    ${items.length > 2 ? `... +${items.length - 2} more` : ''}
+                                </td>
+                                <td>${totalAmount.toLocaleString()} XAF</td>
+                                <td><span class="order-status status-${status}">${formatOrderStatus(status)}</span></td>
+                                <td>
+                                    <div class="order-actions">
+                                        <button class="order-action-btn btn-view" onclick="viewOrderDetails('${order._id || order.id}')">
+                                            <i class="fas fa-eye"></i> Details
+                                        </button>
+                                        ${status === 'processing' || status === 'shipped' ? `
+                                            <button class="order-action-btn btn-track" onclick="trackOrder('${order._id || order.id}')">
+                                                <i class="fas fa-map-marker-alt"></i> Track
+                                            </button>
+                                        ` : ''}
+                                        ${status === 'pending' ? `
+                                            <button class="order-action-btn btn-cancel" onclick="cancelOrder('${order._id || order.id}')">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </td>
+                            </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Load messages section
+        function loadMessagesSection() {
+            updateMessagesDisplay();
+        }
+
+        // Load payments section
+        function loadPaymentsSection() {
+            updatePaymentMethods();
+        }
+
+        // Update payment methods display
+        function updatePaymentMethods() {
+            const paymentsList = document.getElementById('payment-methods-list');
+
+            if (userPayments.length === 0) {
+                paymentsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>No Payment Methods</h3>
+                        <p>You haven't added any payment methods yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            paymentsList.innerHTML = userPayments.map(payment => `
+                <div class="payment-card">
+                    <div class="payment-info">
+                        <div class="payment-icon">
+                            <i class="fab fa-${getPaymentIcon(payment.type)}"></i>
+                        </div>
+                        <div class="payment-details">
+                            <h3>${payment.type.toUpperCase()} •••• ${payment.last4}</h3>
+                            <p>Expires ${payment.expiry}</p>
+                        </div>
+                    </div>
+                    <div class="payment-actions">
+                        <button class="btn-remove" onclick="removePaymentMethod('${payment._id}')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Enhanced view order details function
+        async function viewOrderDetails(orderId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`https://princess-sultana-beauty-shop-online.onrender.com/api/user/orders/${orderId}`, {
+                    method: 'GET',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const orderData = await response.json();
+                    const order = orderData.order || orderData;
+                    
+                    // Safe data access with fallbacks
+                    const orderNumber = order.orderNumber || order.id || 'N/A';
+                    const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Unknown date';
+                    const orderStatus = order.status || 'unknown';
+                    const totalAmount = order.totalAmount || order.amount || 0;
+                    const paymentMethod = order.paymentMethod || 'Not specified';
+                    const items = order.items || [];
+                    const shippingAddress = order.shippingAddress || order.address || {};
+                    
+                    // Build items HTML safely
+                    const itemsHtml = items.length > 0 ? items.map(item => `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+                            <div>
+                                <strong>${item.name || 'Unnamed Item'}</strong>
+                                ${item.purchaseType === 'bulk' ? `<br><small>Bulk: ${item.bulkUnit || 'N/A'}</small>` : ''}
+                            </div>
+                            <div style="text-align: right;">
+                                ${(item.quantity || 1)} × ${(item.price || 0).toLocaleString()} XAF<br>
+                                <strong>${((item.quantity || 1) * (item.price || 0)).toLocaleString()} XAF</strong>
+                            </div>
+                        </div>
+                    `).join('') : '<p>No items found</p>';
+                    
+                    // Build shipping address HTML safely
+                    const shippingHtml = shippingAddress && Object.keys(shippingAddress).length > 0 ? `
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Shipping Address</h4>
+                            <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+                                ${shippingAddress.name ? `<strong>${shippingAddress.name}</strong><br>` : ''}
+                                ${shippingAddress.phone ? `Phone: ${shippingAddress.phone}<br>` : ''}
+                                ${shippingAddress.address ? `Address: ${shippingAddress.address}<br>` : ''}
+                                ${shippingAddress.city ? `City: ${shippingAddress.city}<br>` : ''}
+                                ${shippingAddress.country ? `Country: ${shippingAddress.country}` : ''}
+                            </div>
+                        </div>
+                    ` : '';
+                    
+                    const modalHtml = `
+                        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+                            <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <h3 style="color: var(--dark-brown);">Order #${orderNumber}</h3>
+                                    <button onclick="closeModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark-brown);">&times;</button>
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <strong>Order Date:</strong> ${orderDate}<br>
+                                    <strong>Status:</strong> <span class="order-status status-${orderStatus}">${formatOrderStatus(orderStatus)}</span><br>
+                                    <strong>Payment Method:</strong> ${paymentMethod}
+                                </div>
+                                
+                                <div style="margin-bottom: 20px;">
+                                    <h4 style="color: var(--dark-brown); margin-bottom: 10px;">Items (${items.length})</h4>
+                                    ${itemsHtml}
+                                </div>
+                                
+                                <div style="border-top: 2px solid var(--light-gold); padding-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                                        <span>Total:</span>
+                                        <span>${totalAmount.toLocaleString()} XAF</span>
+                                    </div>
+                                </div>
+                                
+                                ${shippingHtml}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Create and show modal
+                    const modal = document.createElement('div');
+                    modal.innerHTML = modalHtml;
+                    document.body.appendChild(modal);
+                    
+                    // Add close modal function to global scope
+                    window.closeModal = function() {
+                        if (modal.parentElement) {
+                            document.body.removeChild(modal);
+                        }
+                    };
+                    
+                    // Close modal when clicking outside
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            window.closeModal();
+                        }
+                    });
+                } else {
+                    throw new Error(`Failed to fetch order: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+                showErrorMessage('Failed to load order details. Please try again.');
+            }
+        }
+
+        // Update user profile
+        async function updateProfile() {
+            const token = localStorage.getItem('token');
+            const formData = {
+                name: document.getElementById('profile-name').value,
+                email: document.getElementById('profile-email').value,
+                phone: document.getElementById('profile-phone').value,
+                address: document.getElementById('profile-address').value
+            };
+
+            try {
+                const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/user/profile', {
+                    method: 'PUT',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Profile updated successfully!');
+                    // Update user data in UI
+                    currentUser = { ...currentUser, ...formData };
+                    document.querySelector('.user-name').textContent = currentUser.name;
+                } else {
+                    throw new Error('Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showErrorMessage('Failed to update profile');
+            }
+        }
+
+        // Add payment method
+        function addPaymentMethod() {
+            showErrorMessage('Payment method integration is not yet implemented. This would connect to services like Stripe in a production environment.');
+        }
+
+        // Remove payment method
+        async function removePaymentMethod(paymentId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`https://princess-sultana-beauty-shop-online.onrender.com/api/user/payments/${paymentId}`, {
+                    method: 'DELETE',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Payment method removed successfully!');
+                    // Reload payments
+                    await loadDashboardData(token);
+                } else {
+                    throw new Error('Failed to remove payment method');
+                }
+            } catch (error) {
+                console.error('Error removing payment method:', error);
+                showErrorMessage('Failed to remove payment method');
+            }
+        }
+
+        // Order actions
+        function trackOrder(orderId) {
+            const order = userOrders.find(o => o._id === orderId);
+            if (order) {
+                alert(`Tracking information for order ${order.orderNumber} would be displayed here.`);
+            }
+        }
+
+        async function cancelOrder(orderId) {
+            const token = localStorage.getItem('token');
+            
+            if (!confirm('Are you sure you want to cancel this order?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://princess-sultana-beauty-shop-online.onrender.com/api/user/orders/${orderId}/cancel`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccessMessage('Order cancelled successfully!');
+                    // Reload orders
+                    await loadDashboardData(token);
+                    loadOrdersSection();
+                } else {
+                    throw new Error('Failed to cancel order');
+                }
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                showErrorMessage('Failed to cancel order');
+            }
+        }
+
+        // Utility functions
+        function formatOrderStatus(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'processing': 'Processing',
+                'shipped': 'Shipped',
+                'delivered': 'Delivered',
+                'cancelled': 'Cancelled'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getPaymentIcon(type) {
+            const iconMap = {
+                'visa': 'cc-visa',
+                'mastercard': 'cc-mastercard',
+                'paypal': 'cc-paypal',
+                'amex': 'cc-amex'
+            };
+            return iconMap[type] || 'credit-card';
+        }
+
+        function showLoadingState() {
+            document.querySelector('.user-name').textContent = 'Loading...';
+            document.querySelector('.user-email').textContent = 'Loading...';
+        }
+
+        function hideLoadingState() {
+            // Loading state is hidden when data is loaded
+        }
+
+        function showErrorMessage(message) {
+            // Remove existing messages
+            document.querySelectorAll('.error-message, .success-message').forEach(msg => msg.remove());
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                ${message}
+            `;
+            document.querySelector('.account-content').prepend(errorDiv);
+            
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showSuccessMessage(message) {
+            // Remove existing messages
+            document.querySelectorAll('.error-message, .success-message').forEach(msg => msg.remove());
+            
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ${message}
+            `;
+            document.querySelector('.account-content').prepend(successDiv);
+            
+            setTimeout(() => {
+                if (successDiv.parentElement) {
+                    successDiv.remove();
+                }
+            }, 3000);
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                showSuccessMessage('Logging out...');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
