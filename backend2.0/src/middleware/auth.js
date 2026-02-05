@@ -37,7 +37,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
     });
 
     if (!user) {
-      throw new ApiError(401, "Utilisateur non trouvé");
+      throw new ApiError(401, "user not found");
     }
 
     if (user.status !== "ACTIVE") {
@@ -48,9 +48,12 @@ const authenticate = asyncHandler(async (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      throw new ApiError(401, "Token expiré");
+      throw new ApiError(401, "Token expiré. Veuillez vous reconnecter.");
     }
-    throw new ApiError(401, "Token invalide");
+    if (error.name === "JsonWebTokenError") {
+      throw new ApiError(401, "Token invalide.");
+    }
+    throw new ApiError(401, "Échec d'authentification.");
   }
 });
 

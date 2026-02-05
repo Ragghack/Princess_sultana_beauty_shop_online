@@ -950,7 +950,37 @@ nav ul {
       <p>&copy; 2023 Princesse Sultana Hair Care | All Rights Reserved</p>
     </div>
   </footer>
+
+
 <script>
+  // Add these utility functions at the top of the script in index.html:
+function isLoggedIn() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    return !!(token && user);
+}
+
+function getUser() {
+    try {
+        return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch {
+        return {};
+    }
+}
+
+function requireAuth(redirectTo) {
+    if (!isLoggedIn()) {
+        // Save current URL for redirect after login
+        if (redirectTo) {
+            localStorage.setItem('redirectAfterLogin', redirectTo);
+        }
+        window.location.href = 'login.html?redirect=cart';
+        return false;
+    }
+    return true;
+}
+
+  
     // Enhanced Cart Functions with Bulk Support
     function getCart() {
         try { 
@@ -1078,17 +1108,24 @@ nav ul {
     });
 
     // Checkout functionality
-    document.getElementById('checkoutBtn').addEventListener('click', function() {
-        const cart = getCart();
-        if (cart.length === 0) {
-            showToast('Your cart is empty!');
-            return;
-        }
-        
-        // Redirect to checkout page
-        window.location.href = 'shopping Cart.html';
-    });
-
+document.getElementById('checkoutBtn').addEventListener('click', function() {
+    const cart = getCart();
+    if (cart.length === 0) {
+        showToast('Your cart is empty!');
+        return;
+    }
+    
+    // Check if user is logged in
+    if (!requireAuth('cart')) {
+        // Save cart temporarily
+        localStorage.setItem('pendingCart', JSON.stringify(cart));
+        showToast('Please login or register to proceed to checkout');
+        return;
+    }
+    
+    // Redirect to checkout page
+    window.location.href = 'shopping Cart.html';
+});
     // Admin check
     function isAdmin() {
         const token = localStorage.getItem('adminToken');
@@ -1454,41 +1491,49 @@ nav ul {
             });
             
             // Buy Now button click handler
-            buyNowBtn.addEventListener('click', () => {
-                const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
-                let qty = Math.max(1, parseInt(input.value || '1', 10));
-                let price, unitDescription = '';
-                
-                if (activePurchaseType === 'retail') {
-                    price = parseFloat(buyNowBtn.dataset.retailPrice);
-                    unitDescription = 'unit(s)';
-                } else {
-                    price = parseFloat(buyNowBtn.dataset.bulkPrice);
-                    unitDescription = buyNowBtn.dataset.bulkUnit || 'package(s)';
-                    qty = Math.max(1, qty);
-                }
+buyNowBtn.addEventListener('click', () => {
+    const activePurchaseType = slide.querySelector('.purchase-option.active').getAttribute('data-type');
+    let qty = Math.max(1, parseInt(input.value || '1', 10));
+    let price, unitDescription = '';
+    
+    if (activePurchaseType === 'retail') {
+        price = parseFloat(buyNowBtn.dataset.retailPrice);
+        unitDescription = 'unit(s)';
+    } else {
+        price = parseFloat(buyNowBtn.dataset.bulkPrice);
+        unitDescription = buyNowBtn.dataset.bulkUnit || 'package(s)';
+        qty = Math.max(1, qty);
+    }
 
-                const item = {
-                    id: buyNowBtn.dataset.id,
-                    name: buyNowBtn.dataset.name,
-                    price: price,
-                    qty: qty,
-                    image: buyNowBtn.dataset.image || '',
-                    purchaseType: activePurchaseType,
-                    unitDescription: unitDescription,
-                    isBulk: activePurchaseType === 'bulk',
-                    bulkUnit: activePurchaseType === 'bulk' ? buyNowBtn.dataset.bulkUnit : ''
-                };
-                
+    const item = {
+        id: buyNowBtn.dataset.id,
+        name: buyNowBtn.dataset.name,
+        price: price,
+        qty: qty,
+        image: buyNowBtn.dataset.image || '',
+        purchaseType: activePurchaseType,
+        unitDescription: unitDescription,
+        isBulk: activePurchaseType === 'bulk',
+        bulkUnit: activePurchaseType === 'bulk' ? buyNowBtn.dataset.bulkUnit : ''
+    };
                 // Clear cart and add only this item
-                setCart([item]);
-                // updateCartStorage();
-                // updateCartCount();
-                showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
-                
-                // Redirect to checkout
-                window.location.href = 'shopping Cart.html';
-            });
+               // Check if user is logged in before proceeding
+    if (!requireAuth('cart')) {
+        // Save this single item as pending cart
+        localStorage.setItem('pendingCart', JSON.stringify([item]));
+        showToast('Please login or register to complete your purchase');
+        return;
+    }
+    
+    // Clear cart and add only this item
+    setCart([item]);
+    updateCartStorage();
+    updateCartCount();
+    showToast(`${item.name} ×${item.qty} ${unitDescription} (${activePurchaseType}) added to cart`);
+    
+    // Redirect to checkout
+    window.location.href = 'shopping Cart.html';
+});
             
             // Admin remove functionality
             const remove = slide.querySelector('[data-remove]');
@@ -1528,6 +1573,23 @@ nav ul {
             }
         });
     }
+    // Also add this check for the "View Full Cart" link:
+document.querySelector('.btn-view-cart').addEventListener('click', function(e) {
+    const cart = getCart();
+    if (cart.length === 0) {
+        e.preventDefault();
+        showToast('Your cart is empty!');
+        return;
+    }
+    
+    // Check if user is logged in
+    if (!requireAuth('cart')) {
+        e.preventDefault();
+        // Save cart temporarily
+        localStorage.setItem('pendingCart', JSON.stringify(cart));
+        showToast('Please login or register to view your cart');
+    }
+});
 
     // Slider navigation
     const dotsWrap = document.getElementById('dots');

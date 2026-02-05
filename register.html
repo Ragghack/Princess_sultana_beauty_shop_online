@@ -790,6 +790,7 @@ Hair care</span>
             });
             
             // Form validation
+// In register.html - UPDATE the existing registration form submission:
 document.getElementById('registerForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const fullName = document.getElementById('fullName').value;
@@ -837,6 +838,15 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
                         const loginData = await loginResponse.json();
                         localStorage.setItem('token', loginData.token);
                         localStorage.setItem('user', JSON.stringify(loginData.user));
+                        
+                        // Restore cart from pending state
+                        try {
+                            const cartData = JSON.parse(pendingCart);
+                            localStorage.setItem('cart', JSON.stringify(cartData));
+                            localStorage.removeItem('pendingCart');
+                        } catch (err) {
+                            console.error('Failed to restore cart:', err);
+                        }
                         
                         alert('Registration successful! You have been logged in automatically.');
                         window.location.href = 'shopping Cart.html';
@@ -929,6 +939,32 @@ function requireAuth(redirectTo) {
     }
     return true;
 }
+// Add this to login.html script (after DOMContentLoaded):
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if redirected from cart
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    
+    if (redirect === 'cart') {
+        // Show a message encouraging login/register
+        const loginHeader = document.querySelector('.login-header');
+        if (loginHeader) {
+            const message = document.createElement('p');
+            message.className = 'cart-redirect-message';
+            message.style.cssText = `
+                color: var(--golden-brown);
+                font-weight: bold;
+                margin-top: 10px;
+                background: rgba(183, 110, 34, 0.1);
+                padding: 10px;
+                border-radius: 8px;
+                border-left: 3px solid var(--golden-brown);
+            `;
+            message.textContent = 'Please login to complete your purchase';
+            loginHeader.appendChild(message);
+        }
+    }
+});
     </script>
 </body>
 </html>
