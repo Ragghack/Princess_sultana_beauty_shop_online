@@ -659,7 +659,7 @@ document.getElementById('checkout-btn').addEventListener('click', async function
             shippingAddress: shippingAddress
         });
 
-        const response = await fetch('http://localhost:5000/api/commands/whatsapp', {
+        const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/commands/whatsapp', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
