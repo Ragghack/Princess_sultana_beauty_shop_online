@@ -864,7 +864,7 @@ nav ul {
       <li><a href="index.html" class="active">Home</a></li>
        <li><a href="user dashboard.html">profile</a></li>
       <!-- <li><a href="shop.html" class="active">Shop</a></li> -->
-      <li><a href="about.html">About</a></li>
+      <li><a href="how-to-use.html">About</a></li>
       <li><a href="Order Management.html">Orders</a></li>
       <li class="cart-icon" id="cartIcon">
         <i class="fas fa-shopping-cart"></i>
@@ -1146,8 +1146,8 @@ document.getElementById('checkoutBtn').addEventListener('click', function() {
             
             // Try multiple endpoints
             const endpoints = [
-                'http://localhost:5000/api/products',
-                'http://localhost:5000/api/products-debug'
+                'https://princess-sultana-beauty-shop-online.onrender.com/api/products',
+                'https://princess-sultana-beauty-shop-online.onrender.com/api/products-debug'
             ];
             
             let products = [];
@@ -1542,7 +1542,7 @@ buyNowBtn.addEventListener('click', () => {
                     if (confirm('Are you sure you want to remove this product?')) {
                         try {
                             const token = localStorage.getItem('adminToken');
-                            const response = await fetch(`http://localhost:5000/api/admin/products/${remove.dataset.id}`, { 
+                            const response = await fetch(`https://princess-sultana-beauty-shop-online.onrender.com/api/admin/products/${remove.dataset.id}`, { 
                                 method: 'DELETE',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -1677,7 +1677,7 @@ document.querySelector('.btn-view-cart').addEventListener('click', function(e) {
         try {
             console.log('🧪 Testing products API...');
             
-            const response = await fetch('http://localhost:5000/api/products');
+            const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/products');
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
             
