@@ -19,10 +19,13 @@ export const ORDER_STATUS = {
 export const PRODUCT_CATEGORIES = [
   { id: "HAIR_OIL", name: "Huiles Capillaires" },
   { id: "SHAMPOO", name: "Shampoings" },
-  { id: "GROWTH_SERUM", name: "Sérums de Croissance" },
-  { id: "HAIR_BUNDLE", name: "Tissages" },
-  { id: "CONDITIONER", name: "Après-Shampoings" },
-  { id: "TREATMENT", name: "Traitements" },
+  { id: "MASK", name: "Masque Capillaires" },
+  { id: "BUTTER", name: "Beurre" },
 ];
 
-export const DELIVERY_FEE = Number(import.meta.env.VITE_DELIVERY_FEE) || 2000;
+export const DELIVERY_FEE = Number(import.meta.env.VITE_DELIVERY_FEE) || 1000;
+export const ADMIN_WHATSAPP = "+237688049127";
+
+export const EMAILJS_SERVICE_ID = import.meta.env.EMAILJS_SERVICE_ID;
+export const EMAILJS_TEMPLATE_ID = import.meta.env.EMAILJS_TEMPLATE_ID;
+export const EMAILJS_USER_ID = import.meta.env.EMAILJS_USER_ID;

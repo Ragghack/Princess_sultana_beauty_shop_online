@@ -1,42 +1,12 @@
-import React, { useState } from "react";
 import Card from "../../components/common/Card";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import { FiSave } from "react-icons/fi";
+import { useSettings } from "../../hooks/useSettings";
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
-    deliveryFee: "2000",
-    shopName: "Princesse Sultana Hair Care",
-    shopEmail: "contact@princesse-sultana.cm",
-    shopPhone: "+237 6 XX XX XX XX",
-    shopAddress: "Akwa, Douala, Cameroun",
-    lowStockThreshold: "10",
-    taxRate: "0",
-    currency: "XAF",
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const handleChange = (e) => {
-    setSettings({
-      ...settings,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    }, 1000);
-  };
+  const { handleSubmit, handleChange, loading, success, settings } =
+    useSettings();
 
   return (
     <div className="space-y-6">

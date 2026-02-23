@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
@@ -16,6 +16,16 @@ const Login = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.title === "toBeAuthToAddToCart") {
+      alert("Svp vous devez vous authentifier avant d'ajouter au panier");
+    }
+  }, [location]);
+
+  // Get the page user was trying to access (if any)
+  const from = location.state?.from?.pathname || null;
 
   const handleChange = (e) => {
     setFormData({
@@ -30,12 +40,40 @@ const Login = () => {
     setError("");
 
     try {
-      await login(formData.email, formData.password);
-      navigate("/");
+      const user = await login(formData.email, formData.password);
+
+      // Role-based redirect
+      redirectBasedOnRole(user);
     } catch (err) {
       setError(err.response?.data?.error || "Erreur de connexion");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const redirectBasedOnRole = (user) => {
+    // If user was trying to access a specific page, go there
+    if (from) {
+      navigate(from, { replace: true });
+      return;
+    }
+
+    // Otherwise, redirect based on role
+    switch (user.role) {
+      case "ADMIN":
+        navigate("/admin", { replace: true });
+        break;
+      case "STAFF":
+        navigate("/admin", { replace: true });
+        break;
+      case "DELIVERY":
+        navigate("/delivery", { replace: true });
+        break;
+      case "CUSTOMER":
+        navigate("/", { replace: true });
+        break;
+      default:
+        navigate("/", { replace: true });
     }
   };
 

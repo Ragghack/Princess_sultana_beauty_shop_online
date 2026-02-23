@@ -1,8 +1,15 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const OrderConfirmation = () => {
   const { orderId } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("/shop");
+    }, 800);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50 py-12">
@@ -17,7 +24,7 @@ const OrderConfirmation = () => {
               Votre commande #{orderId} a été reçue avec succès.
             </p>
             <p className="text-gray-600">
-              Vous recevrez un email de confirmation sous peu.
+              Vous recevrez un message de confirmation sous peu.
             </p>
           </div>
         </div>

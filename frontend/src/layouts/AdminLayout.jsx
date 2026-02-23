@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   FiHome,
@@ -14,6 +14,10 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   const menuItems = [
     { path: "/admin", icon: <FiHome size={20} />, label: "Tableau de Bord" },
     {
@@ -25,6 +29,11 @@ const AdminLayout = () => {
       path: "/admin/products",
       icon: <FiShoppingBag size={20} />,
       label: "Produits",
+    },
+    {
+      path: "/admin/bundles",
+      icon: <FiPackage size={20} />,
+      label: "Bundles",
     },
     { path: "/admin/customers", icon: <FiUsers size={20} />, label: "Clients" },
     {

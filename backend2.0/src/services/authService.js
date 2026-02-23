@@ -70,6 +70,7 @@ class AuthService {
     // Find user
     const user = await prisma.user.findUnique({
       where: { email },
+      include: { addresses: true },
     });
 
     if (!user) {
@@ -100,7 +101,19 @@ class AuthService {
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user;
 
-    return { user: userWithoutPassword, ...tokens };
+    return {
+      user: {
+        id: userWithoutPassword.id,
+        email: userWithoutPassword.email,
+        firstName: userWithoutPassword.firstName,
+        lastName: userWithoutPassword.lastName,
+        role: userWithoutPassword.role, // ← This is important!
+        status: userWithoutPassword.status,
+        phone: userWithoutPassword.phone,
+        addresses: userWithoutPassword.addresses,
+      },
+      ...tokens,
+    };
   }
 
   /**

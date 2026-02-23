@@ -1,3 +1,5 @@
 .vs/
 frontend/node_modules/
 backend2.0/node_modules/
+frontend/.env
+backend2.0/.env

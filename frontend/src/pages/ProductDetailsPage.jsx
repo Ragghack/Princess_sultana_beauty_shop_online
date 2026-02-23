@@ -1,56 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { FiMinus, FiPlus, FiShoppingCart, FiHeart } from "react-icons/fi";
-import { productService } from "@services/productService";
-import { useCart } from "@hooks/useCart";
 import { formatCurrency } from "@utils/formatters";
 import Button from "@components/common/Button";
 import Badge from "@components/common/Badge";
 import Card from "@components/common/Card";
 import LoadingSpinner from "@components/common/LoadingSpinner";
+import { useProductDetails } from "../hooks/useProductDetails";
+const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
 
 const ProductDetailsPage = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  const { addToCart } = useCart();
-
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [adding, setAdding] = useState(false);
-
-  useEffect(() => {
-    fetchProduct();
-  }, [slug]);
-
-  const fetchProduct = async () => {
-    try {
-      const data = await productService.getProductBySlug(slug);
-      setProduct(data);
-    } catch (error) {
-      console.error("Failed to fetch product:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAddToCart = async () => {
-    setAdding(true);
-    try {
-      await addToCart(product, quantity);
-      // Show success message
-    } catch (error) {
-      console.error("Failed to add to cart:", error);
-    } finally {
-      setAdding(false);
-    }
-  };
-
-  const handleBuyNow = async () => {
-    await handleAddToCart();
-    navigate("/checkout");
-  };
+  const {
+    handleAddToCart,
+    handleBuyNow,
+    addToCart,
+    adding,
+    selectedImage,
+    setSelectedImage,
+    quantity,
+    setQuantity,
+    loading,
+    navigate,
+    slug,
+    product,
+  } = useProductDetails();
 
   if (loading) {
     return (
@@ -94,8 +65,8 @@ const ProductDetailsPage = () => {
               <div className="relative aspect-square bg-white rounded-2xl overflow-hidden shadow-soft-lg">
                 <img
                   src={
-                    product.images?.[selectedImage]?.url ||
-                    product.featuredImage
+                    `${VITE_APP_IMAGE_BASE_URL}${product.images?.[selectedImage]?.url}` ||
+                    `${VITE_APP_IMAGE_BASE_URL}${product.featuredImage}`
                   }
                   alt={product.name}
                   className="w-full h-full object-cover"
@@ -123,7 +94,8 @@ const ProductDetailsPage = () => {
                       }`}
                     >
                       <img
-                        src={image.url}
+                        // src={image.url}
+                        src={`${VITE_APP_IMAGE_BASE_URL}${image.url}`}
                         alt={`${product.name} ${index + 1}`}
                         className="w-full h-full object-cover"
                       />

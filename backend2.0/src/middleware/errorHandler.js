@@ -1,4 +1,5 @@
 const ApiError = require("../utils/ApiError");
+const multer = require("multer");
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
@@ -36,5 +37,21 @@ const errorHandler = (err, req, res, next) => {
     error: error.message || "Erreur serveur",
     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
+
+  // Handle multer errors
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({
+        success: false,
+        message: "Le fichier est trop volumineux. Maximum 5MB.",
+      });
+    }
+    if (err.code === "LIMIT_FILE_COUNT") {
+      return res.status(400).json({
+        success: false,
+        message: "Trop de fichiers. Maximum 6 images pour la galerie.",
+      });
+    }
+  }
 };
 module.exports = errorHandler;

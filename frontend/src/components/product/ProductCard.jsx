@@ -1,26 +1,43 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiHeart, FiShoppingCart } from "react-icons/fi";
 import { useCart } from "@hooks/useCart";
+import { useWishlist } from "@hooks/useWishlist";
 import { formatCurrency } from "@utils/formatters";
 import Button from "@components/common/Button";
 import Badge from "@components/common/Badge";
+import { useAuth } from "@hooks/useAuth";
+
+const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
+  const inWishlist = isInWishlist(product.id, false);
+
+  const { isAuthenticated } = useAuth();
+
+  const navigate = useNavigate();
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsAdding(true);
-    try {
-      await addToCart(product);
-    } catch (error) {
-      console.error("Failed to add to cart:", error);
-    } finally {
-      setIsAdding(false);
+    if (!isAuthenticated) {
+      navigate("/login", {
+        state: { title: "toBeAuthToAddToCart", from: { pathname: "/shop" } },
+      });
+    } else {
+      setIsAdding(true);
+      try {
+        await addToCart(product);
+      } catch (error) {
+        console.error("Failed to add to cart:", error);
+      } finally {
+        setIsAdding(false);
+      }
     }
   };
 
@@ -28,6 +45,20 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
     setIsWishlisted(!isWishlisted);
+  };
+
+  const handleToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      if (inWishlist) {
+        await removeFromWishlist(product.id, false);
+      } else {
+        await addToWishlist(product);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const discount = product.compareAtPrice
@@ -46,7 +77,7 @@ const ProductCard = ({ product }) => {
           {/* Image Container */}
           <div className="relative aspect-square overflow-hidden bg-gray-100">
             <img
-              src={product.featuredImage || "/images/placeholder-product.jpg"}
+              src={`${VITE_APP_IMAGE_BASE_URL}${product.featuredImage}`}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
@@ -72,13 +103,13 @@ const ProductCard = ({ product }) => {
 
             {/* Wishlist Button */}
             <button
-              onClick={handleWishlist}
+              onClick={handleToggle}
               className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-soft hover:shadow-soft-md transition-all duration-300 hover:scale-110"
             >
               <FiHeart
                 size={18}
                 className={
-                  isWishlisted
+                  inWishlist
                     ? "fill-primary-500 text-primary-500"
                     : "text-gray-600"
                 }

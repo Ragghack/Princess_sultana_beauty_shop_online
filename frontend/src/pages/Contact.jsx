@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FiMail, FiPhone, FiMapPin, FiClock, FiSend } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import Card from "../components/common/Card";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
+import emailjs from "@emailjs/browser";
+import { ADMIN_WHATSAPP } from "../utils/constants";
+const num = import.meta.env.VITE_ADMIN_WHATSAPP;
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +18,7 @@ const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const form = useRef();
 
   const handleChange = (e) => {
     setFormData({
@@ -26,6 +30,19 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    console.log(num);
+
+    try {
+      await emailjs.sendForm(
+        "service_wva89ci",
+        "template_yaykmsl",
+        form.current,
+        "bVggAlqK4wNLbS9fQ",
+      );
+    } catch (error) {
+      console.error("Failed to send email:", error);
+    }
 
     // Simulate form submission
     setTimeout(() => {
@@ -178,7 +195,7 @@ const Contact = () => {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form ref={form} onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <Input
                       label="Nom complet"

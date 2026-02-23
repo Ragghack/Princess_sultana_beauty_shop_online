@@ -1,7 +1,9 @@
-// This is your Prisma schema file
+// This is your COMPLETE Prisma schema file with Bundle functionality
+// REPLACE your existing schema.prisma with this file
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextIndex"]
 }
 
 datasource db {
@@ -27,10 +29,8 @@ enum UserStatus {
 enum ProductCategory {
     HAIR_OIL
     SHAMPOO
-    GROWTH_SERUM
-    HAIR_BUNDLE
-    CONDITIONER
-    TREATMENT
+    MASK
+    BUTTER
 }
 
 enum ProductStatus {
@@ -38,6 +38,12 @@ enum ProductStatus {
     INACTIVE
     OUT_OF_STOCK
     DISCONTINUED
+}
+
+enum BundleStatus {
+    ACTIVE
+    INACTIVE
+    OUT_OF_STOCK
 }
 
 enum OrderStatus {
@@ -199,6 +205,7 @@ model Product {
     orderItems    OrderItem[]
     reviews       Review[]
     wishlistItems WishlistItem[]
+    bundleItems   BundleItem[]
 
     // Metadata
     viewCount  Int     @default(0)
@@ -233,6 +240,71 @@ model ProductImage {
     @@map("product_images")
 }
 
+// ============= PRODUCT BUNDLES =============
+
+model Bundle {
+    id               String       @id @default(uuid())
+    name             String
+    slug             String       @unique
+    description      String       @db.Text
+    shortDescription String?
+    status           BundleStatus @default(ACTIVE)
+
+    // Pricing
+    bundlePrice    Decimal @db.Decimal(10, 2)
+    originalPrice  Decimal @db.Decimal(10, 2)
+    savingsAmount  Decimal @db.Decimal(10, 2)
+    savingsPercent Decimal @db.Decimal(5, 2)
+
+    // Bundle items
+    items BundleItem[]
+
+    // Relations
+    cartItems     CartItem[]
+    orderItems    OrderItem[]
+    wishlistItems WishlistItem[]
+
+    // Metadata
+    viewCount  Int     @default(0)
+    salesCount Int     @default(0)
+    featured   Boolean @default(false)
+
+    // SEO
+    metaTitle       String?
+    metaDescription String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    @@index([slug])
+    @@index([status])
+    @@index([featured])
+    @@fulltext([name, description])
+    @@map("bundles")
+}
+
+model BundleItem {
+    id       String @id @default(uuid())
+    bundleId String
+    bundle   Bundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    quantity     Int     @default(1)
+    productName  String
+    productPrice Decimal @db.Decimal(10, 2)
+    productImage String?
+
+    createdAt DateTime @default(now())
+
+    @@unique([bundleId, productId])
+    @@index([bundleId])
+    @@index([productId])
+    @@map("bundle_items")
+}
+
 // ============= SHOPPING CART =============
 
 model Cart {
@@ -253,18 +325,24 @@ model CartItem {
     cartId String
     cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
-    productId String
-    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    // Can be either a product OR a bundle
+    productId String?
+    product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+    bundleId String?
+    bundle   Bundle? @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+    isBundle Boolean @default(false)
     quantity Int     @default(1)
     price    Decimal @db.Decimal(10, 2)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@unique([cartId, productId])
+    @@unique([cartId, productId, bundleId])
     @@index([cartId])
     @@index([productId])
+    @@index([bundleId])
     @@map("cart_items")
 }
 
@@ -341,13 +419,23 @@ model OrderItem {
     orderId String
     order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-    productId String
-    product   Product @relation(fields: [productId], references: [id])
+    // Can be either a product OR a bundle
+    productId String?
+    product   Product? @relation(fields: [productId], references: [id])
+
+    bundleId String?
+    bundle   Bundle? @relation(fields: [bundleId], references: [id])
+
+    isBundle Boolean @default(false)
 
     // Snapshot data
     productName  String
-    productSku   String
+    productSku   String?
     productImage String?
+
+    // For bundles, store the items as JSON
+    bundleName  String?
+    bundleItems String? @db.Text // JSON array of bundle items
 
     quantity Int
     price    Decimal @db.Decimal(10, 2)
@@ -357,6 +445,7 @@ model OrderItem {
 
     @@index([orderId])
     @@index([productId])
+    @@index([bundleId])
     @@map("order_items")
 }
 
@@ -447,14 +536,21 @@ model WishlistItem {
     userId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    productId String
-    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    // Can be either a product OR a bundle
+    productId String?
+    product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    bundleId String?
+    bundle   Bundle? @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+    isBundle Boolean @default(false)
 
     createdAt DateTime @default(now())
 
-    @@unique([userId, productId])
+    @@unique([userId, productId, bundleId])
     @@index([userId])
     @@index([productId])
+    @@index([bundleId])
     @@map("wishlist_items")
 }
 

@@ -1,31 +1,53 @@
-import React, { useState, useEffect } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiSearch } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiSearch,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import Card from "../../components/common/Card";
 import Button from "../../components/common/Button";
 import Badge from "../../components/common/Badge";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { formatCurrency } from "../../utils/formatters";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { PRODUCT_CATEGORIES } from "../../utils/constants";
+const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
 
 const Products = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchProducts();
-  }, [categoryFilter]);
+  }, [currentPage, categoryFilter]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const params = {};
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+      };
+
       if (categoryFilter !== "ALL") {
         params.category = categoryFilter;
       }
+
       const response = await api.get("/products", { params });
       setProducts(response.data.data.products || []);
+      setTotalPages(response.data.data.pagination?.pages || 1);
+      setTotalProducts(response.data.data.pagination?.total || 0);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     } finally {
@@ -37,26 +59,39 @@ const Products = () => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit?")) {
       try {
         await api.delete(`/products/${id}`);
+        alert("Produit supprimé avec succès");
         fetchProducts();
       } catch (error) {
-        console.error("Failed to delete product:", error);
-        alert("Erreur lors de la suppression");
+        alert("Échec de la suppression du produit");
       }
     }
   };
 
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "ACTIVE":
+        return "success";
+      case "INACTIVE":
+        return "warning";
+      case "OUT_OF_STOCK":
+        return "error";
+      case "DISCONTINUED":
+        return "default";
+      default:
+        return "default";
+    }
+  };
+
+  // Client-side search filter
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const getStatusBadge = (status) => {
-    const variants = {
-      ACTIVE: "success",
-      INACTIVE: "warning",
-      OUT_OF_STOCK: "danger",
-      DISCONTINUED: "danger",
-    };
-    return variants[status] || "primary";
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   if (loading) {
@@ -69,9 +104,22 @@ const Products = () => {
         <h1 className="font-serif text-3xl font-bold text-gray-800">
           Produits
         </h1>
-        <Button variant="primary" icon={<FiPlus />}>
-          Nouveau Produit
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            variant="primary"
+            icon={<FiPlus />}
+            onClick={() => navigate("/admin/products/add")}
+          >
+            Nouveau Produit
+          </Button>
+          <Button
+            variant="primary"
+            icon={<FiPlus />}
+            onClick={() => navigate("/admin/bundles/add")}
+          >
+            Nouveau Bundle
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -89,16 +137,18 @@ const Products = () => {
           </div>
           <select
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setCurrentPage(1); // Reset to first page on filter change
+            }}
             className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-300 focus:outline-none"
           >
             <option value="ALL">Toutes catégories</option>
-            <option value="HAIR_OIL">Huiles Capillaires</option>
-            <option value="SHAMPOO">Shampoings</option>
-            <option value="GROWTH_SERUM">Sérums de Croissance</option>
-            <option value="HAIR_BUNDLE">Tissages</option>
-            <option value="CONDITIONER">Après-Shampoings</option>
-            <option value="TREATMENT">Traitements</option>
+            {PRODUCT_CATEGORIES.map((item, index) => (
+              <option key={index} value={item.id}>
+                {item.name}
+              </option>
+            ))}
           </select>
         </div>
       </Card>
@@ -143,13 +193,21 @@ const Products = () => {
                 >
                   <td className="py-3 px-4">
                     <img
-                      src={product.featuredImage}
+                      src={
+                        `${VITE_APP_IMAGE_BASE_URL}${product.featuredImage}` ||
+                        `${product.featuredImage}`
+                      }
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                   </td>
                   <td className="py-3 px-4">
-                    <p className="font-medium text-gray-800">{product.name}</p>
+                    <Link
+                      to={`/products/${product.slug}`}
+                      className="font-medium text-gray-800 hover:text-primary-500"
+                    >
+                      {product.name}
+                    </Link>
                   </td>
                   <td className="py-3 px-4 text-gray-600">{product.sku}</td>
                   <td className="py-3 px-4 text-gray-600">
@@ -176,7 +234,12 @@ const Products = () => {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex gap-2">
-                      <button className="p-2 text-primary-500 hover:bg-primary-50 rounded-lg">
+                      <button
+                        onClick={() =>
+                          navigate(`/admin/products/edit/${product.id}`)
+                        }
+                        className="p-2 text-primary-500 hover:bg-primary-50 rounded-lg"
+                      >
                         <FiEdit2 size={18} />
                       </button>
                       <button
@@ -198,6 +261,82 @@ const Products = () => {
             </div>
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+            <div className="text-sm text-gray-600">
+              Affichage de {(currentPage - 1) * itemsPerPage + 1} à{" "}
+              {Math.min(currentPage * itemsPerPage, totalProducts)} sur{" "}
+              {totalProducts} produits
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-lg border-2 ${
+                  currentPage === 1
+                    ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <FiChevronLeft size={20} />
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex gap-1">
+                {[...Array(totalPages)].map((_, index) => {
+                  const page = index + 1;
+                  // Show first page, last page, current page, and pages around current
+                  if (
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                  ) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-lg border-2 font-medium ${
+                          currentPage === page
+                            ? "border-primary-500 bg-primary-500 text-white"
+                            : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  } else if (
+                    page === currentPage - 2 ||
+                    page === currentPage + 2
+                  ) {
+                    return (
+                      <span key={page} className="px-2 py-2 text-gray-400">
+                        ...
+                      </span>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-lg border-2 ${
+                  currentPage === totalPages
+                    ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <FiChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );

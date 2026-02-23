@@ -1,7 +1,3 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useCart } from "@hooks/useCart";
-import { useAuth } from "@hooks/useAuth";
 import { formatCurrency } from "@utils/formatters";
 import { PAYMENT_METHODS, DELIVERY_FEE } from "@utils/constants";
 import Input from "@components/common/Input";
@@ -14,118 +10,27 @@ import {
   FiUser,
   FiCreditCard,
 } from "react-icons/fi";
-import api from "@services/api";
+import { useCheckout } from "../hooks/useCheckout";
+const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
 
 const Checkout = () => {
-  const { cartItems, getCartTotal, clearCart } = useCart();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    street: "",
-    city: "",
-    region: "",
-    landmark: "",
-  });
-
-  const [paymentMethod, setPaymentMethod] = useState("MOBILE_MONEY");
-  const [discountCode, setDiscountCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  const subtotal = getCartTotal();
-  const total = subtotal + DELIVERY_FEE - discount;
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    // Clear error for this field
-    if (errors[e.target.name]) {
-      setErrors({
-        ...errors,
-        [e.target.name]: "",
-      });
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.firstName.trim()) newErrors.firstName = "Prénom requis";
-    if (!formData.lastName.trim()) newErrors.lastName = "Nom requis";
-    if (!formData.email.trim()) newErrors.email = "Email requis";
-    if (!formData.phone.trim()) newErrors.phone = "Téléphone requis";
-    if (!formData.street.trim()) newErrors.street = "Adresse requise";
-    if (!formData.city.trim()) newErrors.city = "Ville requise";
-    if (!formData.region.trim()) newErrors.region = "Région requise";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const applyDiscountCode = async () => {
-    try {
-      const response = await api.post("/discounts/validate", {
-        code: discountCode,
-      });
-      const { type, value } = response.data;
-
-      let discountAmount = 0;
-      if (type === "PERCENTAGE") {
-        discountAmount = (subtotal * value) / 100;
-      } else {
-        discountAmount = value;
-      }
-
-      setDiscount(discountAmount);
-    } catch (error) {
-      alert("Code promo invalide");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const orderData = {
-        items: cartItems.map((item) => ({
-          productId: item.product.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        address: formData,
-        paymentMethod,
-        discountCode: discountCode || null,
-      };
-
-      const response = await api.post("/orders", orderData);
-      const { order } = response.data;
-
-      // Clear cart
-      await clearCart();
-
-      // Redirect to order confirmation
-      navigate(`/order-confirmation/${order.id}`);
-    } catch (error) {
-      console.error("Order failed:", error);
-      alert("Erreur lors de la commande. Veuillez réessayer.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    handleChange,
+    handleSubmit,
+    applyDiscountCode,
+    total,
+    loading,
+    discount,
+    discountCode,
+    setDiscountCode,
+    paymentMethod,
+    setPaymentMethod,
+    navigate,
+    cartItems,
+    formData,
+    errors,
+    subtotal,
+  } = useCheckout();
 
   if (cartItems.length === 0) {
     return (
@@ -289,30 +194,81 @@ const Checkout = () => {
 
                 {/* Cart Items */}
                 <div className="space-y-4 mb-6">
-                  {cartItems.map((item) => (
-                    <div key={item.product.id} className="flex gap-3">
-                      <img
-                        src={item.product.featuredImage}
-                        alt={item.product.name}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <p className="font-medium text-sm text-gray-800 line-clamp-2">
-                          {item.product.name}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Qté: {item.quantity}
-                        </p>
-                      </div>
-                      <p className="font-semibold text-gray-800">
-                        {formatCurrency(item.price * item.quantity)}
-                      </p>
-                    </div>
-                  ))}
+                  {cartItems.map((item) => {
+                    if (!item.isBundle && !item.bundle) {
+                      return (
+                        <div key={item.id} className="flex gap-3">
+                          <img
+                            src={`${VITE_APP_IMAGE_BASE_URL}${item.product?.featuredImage}`}
+                            alt={item.product.name}
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                          <div className="flex-1">
+                            <p className="font-medium text-sm text-gray-800 line-clamp-2">
+                              {item.product.name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Qté: {item.quantity}
+                            </p>
+                          </div>
+                          <p className="font-semibold text-gray-800">
+                            {formatCurrency(item.price * item.quantity)}
+                          </p>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div key={item.id} className="flex gap-3">
+                          <div
+                            className={`grid gap-1 w-32 h-32 ${
+                              item.bundle.items?.length === 1
+                                ? "grid-cols-1"
+                                : item.bundle.items?.length === 2
+                                  ? "grid-cols-2"
+                                  : item.bundle.items?.length === 3
+                                    ? "grid-cols-3"
+                                    : "grid-cols-2 grid-rows-2"
+                            }`}
+                          >
+                            {item.bundle.items
+                              ?.slice(0, 4)
+                              .map((bundleItem, idx) => (
+                                <div
+                                  key={idx}
+                                  className="relative rounded overflow-hidden bg-gray-100"
+                                >
+                                  <img
+                                    src={`${VITE_APP_IMAGE_BASE_URL}${bundleItem.productImage || bundleItem.product?.featuredImage}`}
+                                    alt={bundleItem.productName}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  {bundleItem.quantity > 1 && (
+                                    <div className="absolute bottom-0 right-0 bg-black bg-opacity-70 text-white text-xs px-1">
+                                      x{bundleItem.quantity}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium text-sm text-gray-800 line-clamp-2">
+                              {item.bundle.name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Qté: {item.quantity}
+                            </p>
+                          </div>
+                          <p className="font-semibold text-gray-800">
+                            {formatCurrency(item.price * item.quantity)}
+                          </p>
+                        </div>
+                      );
+                    }
+                  })}
                 </div>
 
                 {/* Discount Code */}
-                <div className="border-t border-gray-200 pt-4 mb-4">
+                {/* <div className="border-t border-gray-200 pt-4 mb-4">
                   <div className="flex gap-2">
                     <input
                       type="text"
@@ -329,7 +285,7 @@ const Checkout = () => {
                       Appliquer
                     </Button>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Price Breakdown */}
                 <div className="border-t border-gray-200 pt-4 space-y-3">
