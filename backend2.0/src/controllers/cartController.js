@@ -80,12 +80,19 @@ class CartController {
     }
 
     // Check if item already exists
+<<<<<<< HEAD
     const existingItem = await prisma.cartItem.findUnique({
       where: {
         cartId_productId: {
           cartId: cart.id,
           productId,
         },
+=======
+    const existingItem = await prisma.cartItem.findFirst({
+      where: {
+        cartId: cart.id,
+        productId: productId,
+>>>>>>> bf4d5ac84f28d8a1ec6fda138943f77553c88a66
       },
     });
 
@@ -95,10 +102,25 @@ class CartController {
       // Update quantity
       cartItem = await prisma.cartItem.update({
         where: { id: existingItem.id },
+<<<<<<< HEAD
         data: {
           quantity: existingItem.quantity + quantity,
-        },
+=======
+        data: { quantity: existingItem.quantity + quantity },
+        include: { product: true },
       });
+    } else {
+      // Add new item
+      cartItem = await prisma.cartItem.create({
+        data: {
+          cartId: cart.id,
+          productId: productId,
+          quantity: quantity,
+>>>>>>> bf4d5ac84f28d8a1ec6fda138943f77553c88a66
+        },
+        include: { product: true },
+      });
+<<<<<<< HEAD
     } else {
       // Create new item
       cartItem = await prisma.cartItem.create({
@@ -234,14 +256,158 @@ class CartController {
     });
 
     const cart = await prisma.cart.findUnique({
+=======
+    }
+
+    // Get updated cart
+    const updatedCart = await prisma.cart.findUnique({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, updatedCart, 'Article ajouté au panier')
+    );
+  });
+
+  /**
+   * @route   PATCH /api/v1/cart/items/:itemId
+   * @desc    Update cart item quantity
+   * @access  Private
+   */
+  updateItem = asyncHandler(async (req, res) => {
+    const { itemId } = req.params;
+    const { quantity } = req.body;
+    const userId = req.user.id;
+
+    // Validate cart item belongs to user
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { id: itemId },
+      include: {
+        cart: true,
+        product: true,
+      },
+    });
+
+    if (!cartItem || cartItem.cart.userId !== userId) {
+      throw new ApiError(404, 'Article non trouvé');
+    }
+
+    if (cartItem.product.stockQuantity < quantity) {
+      throw new ApiError(400, 'Stock insuffisant');
+    }
+
+    await prisma.cartItem.update({
+      where: { id: itemId },
+      data: { quantity },
+    });
+
+    // Get updated cart
+    const cart = await prisma.cart.findUnique({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, cart, 'Quantité mise à jour')
+    );
+  });
+
+  /**
+   * @route   DELETE /api/v1/cart/items/:itemId
+   * @desc    Remove item from cart
+   * @access  Private
+   */
+  removeItem = asyncHandler(async (req, res) => {
+    const { itemId } = req.params;
+    const userId = req.user.id;
+
+    // Validate cart item belongs to user
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { id: itemId },
+      include: {
+        cart: true,
+      },
+    });
+
+    if (!cartItem || cartItem.cart.userId !== userId) {
+      throw new ApiError(404, 'Article non trouvé');
+    }
+
+    await prisma.cartItem.delete({
+      where: { id: itemId },
+    });
+
+    // Get updated cart
+    const cart = await prisma.cart.findUnique({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, cart, 'Article retiré du panier')
+    );
+  });
+
+  /**
+   * @route   DELETE /api/v1/cart/clear
+   * @desc    Clear cart
+   * @access  Private
+   */
+  clearCart = asyncHandler(async (req, res) => {
+    const userId = req.user.id;
+
+    // Get cart first
+    const cart = await prisma.cart.findUnique({
+      where: { userId },
+    });
+
+    if (cart) {
+      await prisma.cartItem.deleteMany({
+        where: {
+          cartId: cart.id,
+        },
+      });
+    }
+
+    const updatedCart = await prisma.cart.findUnique({
+>>>>>>> bf4d5ac84f28d8a1ec6fda138943f77553c88a66
       where: { userId },
       include: {
         items: true,
       },
     });
 
+<<<<<<< HEAD
     res.status(200).json(new ApiResponse(200, cart, "Panier vidé"));
   });
 }
 
 module.exports = new CartController();
+=======
+    res.status(200).json(
+      new ApiResponse(200, updatedCart, 'Panier vidé')
+    );
+  });
+}
+
+module.exports = new CartController();
+>>>>>>> bf4d5ac84f28d8a1ec6fda138943f77553c88a66

@@ -1,0 +1,1113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+            <link rel="icon" type="image/png" href="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png">
+    <!-- Optional for Apple/Android homescreens -->
+    <link rel="apple-touch-icon" href="sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png">
+
+    <!-- 🔍 Google Structured Data (shows logo in search results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://www.sultanahaircare.com",
+      "logo": "https://www.olyshair.com/sultana pictures/WhatsApp Image 2025-09-11 at 18.38.45_80dff706.png"
+    }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--dark-brown);
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--light-gold);
+        }
+        
+        .cart-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .cart-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        .cart-header p {
+            font-size: 1.1rem;
+            color: var(--black);
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        .cart-summary {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            align-self: start;
+        }
+        
+        .section-title {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gold);
+        }
+        
+        .cart-item {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-details {
+            flex-grow: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .item-price {
+            color: var(--golden-brown);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .item-quantity {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--light-gold);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        .item-total {
+            font-weight: 600;
+            color: var(--dark-brown);
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .remove-item {
+            color: var(--red);
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .summary-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark-brown);
+            border-top: 2px solid var(--light-gold);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--golden-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--light-gold);
+            margin-bottom: 20px;
+        }
+        
+        .empty-cart p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--black);
+        }
+        
+        .currency-converter {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .converter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .converter-form select, .converter-form input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .converter-form button {
+            padding: 12px 20px;
+            background: var(--golden-brown);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .conversion-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--off-white);
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+        
+        .order-management {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-top: 40px;
+        }
+        
+        .order-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .order-filters button {
+            padding: 10px 20px;
+            border: 1px solid var(--light-gold);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .order-filters button.active {
+            background: var(--golden-brown);
+            color: white;
+        }
+        
+        .orders-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .order-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-info h3 {
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-processing {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-shipped {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+        
+        .status-delivered {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: white;
+            color: var(--dark-brown);
+            border: 2px solid var(--light-gold);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .continue-shopping:hover {
+            background: var(--off-white);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-spa"></i>
+                <span>Princesse Sultana Beauty</span>
+            </div>
+            <nav>
+                <a href="index.html" class="continue-shopping">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </a>
+            </nav>
+        </header>
+        
+        <div class="cart-header">
+            <h1>Your Shopping Cart</h1>
+            <p>Review your items and proceed to checkout</p>
+        </div>
+        
+        <!-- Currency Converter -->
+        <div class="currency-converter">
+            <h2 class="section-title">Currency Converter</h2>
+            <p>Convert prices to your local currency (FCFA is the default)</p>
+            
+            <div class="converter-form">
+                <select id="currency-from">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="XAF" selected>XAF - CFA Franc</option>
+                    <option value="NGN">NGN - Nigerian Naira</option>
+                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                    <option value="ZAR">ZAR - South African Rand</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                </select>
+                
+                <span>to</span>
+                
+                <select id="currency-to">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="XAF" selected>XAF - CFA Franc</option>
+                    <option value="NGN">NGN - Nigerian Naira</option>
+                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                    <option value="ZAR">ZAR - South African Rand</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                </select>
+                
+                <input type="number" id="amount" placeholder="Amount" value="1">
+                
+                <button id="convert-btn">Convert</button>
+            </div>
+            
+            <div class="conversion-result" id="conversion-result">
+                Enter an amount and click Convert
+            </div>
+        </div>
+        
+        <div class="cart-container">
+            <div class="cart-items">
+                <h2 class="section-title">Cart Items</h2>
+                
+                <div id="cart-items-container">
+                    <!-- Cart items will be dynamically inserted here -->
+                </div>
+                
+                <div class="empty-cart" id="empty-cart-message">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Your cart is empty</p>
+                    <a href="index.html" class="checkout-btn">Browse Products</a>
+                </div>
+            </div>
+            
+            <div class="cart-summary">
+                <h2 class="section-title">Order Summary</h2>
+                
+                <div class="summary-line">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">0 XAF</span>
+                </div>
+                
+                <div class="summary-line">
+                    <span>Dilivery-fee:</span>
+                    <span id="shipping">1,500 XAF</span>
+                </div>
+                
+                <div class="summary-line">
+                    <span>Tax:</span>
+                    <span id="tax">0 XAF</span>
+                </div>
+                
+                <div class="summary-line summary-total">
+                    <span>Total:</span>
+                    <span id="total">0 XAF</span>
+                </div>
+                
+                <!-- <a href="checkout.html" class="checkout-btn" id="checkout-btn">Proceed to Checkout</a> -->
+                <button class="checkout-btn" id="checkout-btn">Proceed via WhatsApp</button>
+            </div>
+        </div>
+        
+        <!-- Order Management Section -->
+        <div class="order-management">
+            <h2 class="section-title">Recent Orders</h2>
+            
+            <div class="order-filters">
+                <button class="active">All Orders</button>
+                <button>Processing</button>
+                <button>Shipped</button>
+                <button>Delivered</button>
+            </div>
+            
+            <div class="orders-list">
+                
+                
+                <div class="order-card">
+                   
+                </div>
+                
+                <div class="order-card">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Check authentication on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (!token || !user) {
+        // Save the current cart before redirecting
+        const currentCart = getCartFromStorage();
+        if (currentCart && currentCart.length > 0) {
+            localStorage.setItem('pendingCart', JSON.stringify(currentCart));
+        }
+        
+        // Show message and redirect to login
+        alert('Please login or create an account to access your shopping cart');
+        window.location.href = 'login.html?redirect=cart';
+        return;
+    }
+    
+    // Restore pending cart if exists
+    const pendingCart = localStorage.getItem('pendingCart');
+    if (pendingCart) {
+        const parsedCart = JSON.parse(pendingCart);
+        if (parsedCart.length > 0) {
+            // Merge with existing cart
+            const currentCart = getCartFromStorage();
+            const mergedCart = [...currentCart];
+            
+            parsedCart.forEach(pendingItem => {
+                const existingIndex = mergedCart.findIndex(item => 
+                    item.uniqueId === pendingItem.uniqueId
+                );
+                
+                if (existingIndex > -1) {
+                    mergedCart[existingIndex].qty += pendingItem.qty;
+                } else {
+                    mergedCart.push(pendingItem);
+                }
+            });
+            
+            localStorage.setItem('cart', JSON.stringify(mergedCart));
+            localStorage.removeItem('pendingCart');
+            
+            // Show success message
+            showToast('Your cart items have been restored!');
+        }
+    }
+    
+    // Continue with normal cart initialization
+    initializeCart();
+});
+
+
+// Enhanced WhatsApp Order Function
+document.getElementById('checkout-btn').addEventListener('click', async function() {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    const cartTotal = localStorage.getItem('cartTotal') || '0';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (cartItems.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+
+    // Validate user data
+    if (!user || !user.name) {
+        alert('Please complete your profile with name and phone number before checkout.');
+        return;
+    }
+
+    // Get shipping address from user or prompt for it
+    const shippingAddress = {
+        name: user.name || '',
+        phone: user.phone || prompt('Please enter your phone number:') || '',
+        address: user.address || prompt('Please enter your email-address/town-address :') || '',
+        email: user.email || ''
+    };
+
+    // Validate required fields
+    if (!shippingAddress.name || !shippingAddress.phone) {
+        alert('Name and phone number are required for delivery.');
+        return;
+    }
+
+    try {
+        // Format items with purchase type information for WhatsApp message
+        const formattedItems = cartItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            qty: item.qty,
+            price: item.price,
+            purchaseType: item.purchaseType,
+            isBulk: item.isBulk,
+            unitDescription: item.unitDescription,
+            bulkUnit: item.bulkUnit || '',
+            total: (item.price * item.qty).toFixed(2)
+        }));
+
+        console.log('Sending enhanced order data:', {
+            items: formattedItems,
+            amount: parseFloat(cartTotal),
+            shippingAddress: shippingAddress
+        });
+
+        const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/commands/whatsapp', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                items: formattedItems,
+                amount: parseFloat(cartTotal),
+                shippingAddress: shippingAddress,
+                notes: generateOrderNotes(formattedItems) // Enhanced notes with purchase types
+            })
+        });
+
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.error || result.message || `HTTP error! status: ${response.status}`);
+        }
+        
+        if (result.success) {
+            // Clear cart completely
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('cartTotal');
+            localStorage.removeItem('cart');
+            localStorage.removeItem('cartSubtotal');
+            localStorage.removeItem('cartShipping');
+            localStorage.removeItem('cartCurrency');
+            
+            // Show success message
+            showToast('Order placed successfully! Redirecting to WhatsApp...');
+            
+            // Redirect to WhatsApp after a short delay
+            setTimeout(() => {
+                if (result.whatsappUrl) {
+                    window.open(result.whatsappUrl, '_blank');
+                } else {
+                    // Fallback WhatsApp URL generation
+                    const orderSummary = generateOrderSummary(formattedItems, cartTotal);
+                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(orderSummary)}`;
+                    window.open(whatsappUrl, '_blank');
+                }
+            }, 1000);
+        } else {
+            throw new Error(result.error || 'Failed to place order');
+        }
+    } catch (error) {
+        console.error('Order error:', error);
+        alert('Failed to place order: ' + error.message);
+    }
+});
+
+// Generate enhanced order notes with purchase type specifications
+function generateOrderNotes(items) {
+    let notes = " ORDER DETAILS - Princesse Sultana Hair Care\n\n";
+    
+    items.forEach((item, index) => {
+        const purchaseType = item.isBulk ? " BULK PURCHASE" : " SINGLE ITEM";
+        const unitInfo = item.isBulk ? 
+            `${item.qty} ${item.bulkUnit || 'packages'}` : 
+            `${item.qty} units`;
+            
+        notes += `%0A ${index + 1}. ${item.name}\n`;
+        notes += `%0A    Type: ${purchaseType}\n`;
+        notes += `%0A    Quantity: ${unitInfo}\n`;
+        notes += `%0A    Price: ${item.price.toLocaleString()} XAF each\n`;
+        notes += `%0A    Subtotal: ${(item.price * item.qty).toLocaleString()} XAF\n\n`;
+    });
+    
+    return notes;
+}
+
+// Generate order summary for fallback WhatsApp URL
+function generateOrderSummary(items, total) {
+    let summary = "🛍️ NEW ORDER - Princesse Sultana Hair Care\n\n";
+    summary += "Order Items:\n";
+    
+    items.forEach((item, index) => {
+        const purchaseType = item.isBulk ? "📦 BULK" : "🛍️ SINGLE";
+        const unitInfo = item.isBulk ? 
+            `${item.qty} ${item.bulkUnit || 'packages'}` : 
+            `${item.qty} units`;
+            
+        summary += `${index + 1}. ${item.name}\n`;
+        summary += `   ${purchaseType} - ${unitInfo}\n`;
+        summary += `   ${(item.price * item.qty).toLocaleString()} XAF\n\n`;
+    });
+    
+    summary += `💰 TOTAL: ${parseFloat(total).toLocaleString()} XAF\n`;
+    summary += "\nPlease confirm this order and provide shipping details.";
+    
+    return summary;
+}
+
+// Toast notification function
+function showToast(message) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--deep-green);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
+    `;
+    toast.textContent = message;
+    
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(toast);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+        }
+    }, 3000);
+}
+
+// Enhanced cart functions
+function getCart() {
+    try { 
+        return JSON.parse(localStorage.getItem('cart') || '[]'); 
+    } catch { 
+        return []; 
+    }
+}
+
+function setCart(c) { 
+    localStorage.setItem('cart', JSON.stringify(c)); 
+}
+
+function addToCart(item) {
+    const cart = getCart();
+    
+    // Create a unique identifier that includes purchase type
+    const uniqueId = `${item.id}-${item.purchaseType}`;
+    
+    const existingItem = cart.find(p => 
+        p.uniqueId === uniqueId && p.purchaseType === item.purchaseType
+    );
+    
+    if (existingItem) {
+        existingItem.qty += item.qty;
+    } else {
+        cart.push({
+            uniqueId: uniqueId,
+            id: item.id,
+            name: item.name,
+            price: parseFloat(item.price),
+            qty: item.qty,
+            image: item.image || '',
+            purchaseType: item.purchaseType || 'retail',
+            isBulk: item.isBulk || false,
+            bulkUnit: item.bulkUnit || '',
+            unitDescription: item.unitDescription || 'unit(s)'
+        });
+    }
+    
+    setCart(cart);
+    updateCartStorage();
+}
+
+function updateCartStorage() {
+    const cart = getCart();
+    localStorage.setItem('cartItems', JSON.stringify(cart));
+    
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const shipping = 1500;
+    const total = subtotal + shipping;
+    
+    localStorage.setItem('cartSubtotal', subtotal);
+    localStorage.setItem('cartShipping', shipping);
+    localStorage.setItem('cartTotal', total);
+    localStorage.setItem('cartCurrency', 'XAF');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get cart data from localStorage
+    function getCartFromStorage() {
+        try {
+            const cartData = localStorage.getItem('cart');
+            return cartData ? JSON.parse(cartData) : [];
+        } catch (e) {
+            console.error('Error reading cart from localStorage:', e);
+            return [];
+        }
+    }
+    
+    // Currency exchange rates (relative to USD)
+    const exchangeRates = {
+        USD: 1,
+        EUR: 0.93,
+        GBP: 0.81,
+        XAF: 605.50, // CFA Franc
+        NGN: 770.50, // Nigerian Naira
+        GHS: 11.80, // Ghanaian Cedi
+        ZAR: 18.70, // South African Rand
+        CAD: 1.37, // Canadian Dollar
+        AUD: 1.54  // Australian Dollar
+    };
+    
+    const cartContainer = document.getElementById('cart-items-container');
+    const emptyCartMessage = document.getElementById('empty-cart-message');
+    const subtotalElement = document.getElementById('subtotal');
+    const taxElement = document.getElementById('tax');
+    const totalElement = document.getElementById('total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const convertBtn = document.getElementById('convert-btn');
+    const conversionResult = document.getElementById('conversion-result');
+    
+    let currentCurrency = 'XAF'; // Default to CFA Franc
+    let cartItems = getCartFromStorage(); // Get cart from localStorage
+    
+    // Format currency based on currency code
+    function formatCurrency(amount, currency) {
+        if (currency === 'XAF') {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'XAF',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currency,
+            minimumFractionDigits: 2
+        });
+        
+        return formatter.format(amount);
+    }
+    
+    // Convert currency
+    function convertCurrency(amount, fromCurrency, toCurrency) {
+        // Convert to USD first, then to target currency
+        const amountInUSD = amount / exchangeRates[fromCurrency];
+        return amountInUSD * exchangeRates[toCurrency];
+    }
+    
+    // Enhanced Render cart items with bulk/single distinction
+    function renderCartItems() {
+        cartContainer.innerHTML = '';
+        
+        if (cartItems.length === 0) {
+            emptyCartMessage.style.display = 'block';
+            checkoutBtn.style.display = 'none';
+            return;
+        }
+        
+        emptyCartMessage.style.display = 'none';
+        checkoutBtn.style.display = 'block';
+        
+        cartItems.forEach(item => {
+            const priceInXAF = item.price;
+            const itemTotal = priceInXAF * item.qty;
+            const convertedPrice = convertCurrency(priceInXAF, 'XAF', currentCurrency);
+            const convertedTotal = convertCurrency(itemTotal, 'XAF', currentCurrency);
+            
+            // Add purchase type badge
+            const purchaseTypeBadge = item.purchaseType === 'bulk' 
+                ? `<span style="background: var(--golden-brown); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-left: 8px;">BULK</span>`
+                : `<span style="background: var(--blue); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-left: 8px;">SINGLE</span>`;
+            
+            // Add unit description
+            const unitDisplay = item.isBulk ? 
+                `${item.qty} ${item.bulkUnit || 'package(s)'}` : 
+                `${item.qty} unit(s)`;
+            
+            const cartItemElement = document.createElement('div');
+            cartItemElement.className = 'cart-item';
+            cartItemElement.innerHTML = `
+                <div class="item-image">
+                    <img src="${item.image || 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'}" alt="${item.name}">
+                </div>
+                <div class="item-details">
+                    <div class="item-name">
+                        ${item.name}
+                        ${purchaseTypeBadge}
+                    </div>
+                    <div class="item-price">${formatCurrency(convertedPrice, currentCurrency)}</div>
+                    <div class="item-quantity">
+                        <button class="quantity-btn" data-action="decrease" data-uniqueid="${item.uniqueId}">-</button>
+                        <input type="number" class="quantity-input" value="${item.qty}" min="1" data-uniqueid="${item.uniqueId}">
+                        <span style="margin-left: 8px; font-size: 0.9rem; color: var(--gray);">${item.unitDescription}</span>
+                        <button class="quantity-btn" data-action="increase" data-uniqueid="${item.uniqueId}">+</button>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--dark-brown); margin-top: 5px;">
+                        <strong>Total:</strong> ${unitDisplay}
+                    </div>
+                    ${item.isBulk && item.bulkUnit ? `
+                        <div style="font-size: 0.8rem; color: var(--golden-brown); margin-top: 5px;">
+                            <i class="fas fa-box"></i> ${item.bulkUnit}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="item-total">${formatCurrency(convertedTotal, currentCurrency)}</div>
+                <button class="remove-item" data-uniqueid="${item.uniqueId}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            
+            cartContainer.appendChild(cartItemElement);
+        });
+        
+        updateCartSummary();
+    }
+    
+    // Update cart summary
+    function updateCartSummary() {
+        const subtotal = cartItems.reduce((total, item) => {
+            const priceInXAF = item.price;
+            return total + (priceInXAF * item.qty);
+        }, 0);
+        
+        const shipping = 1500; // Fixed shipping cost in XAF
+        const tax = 0; // No tax
+        const total = subtotal + shipping + tax;
+        
+        const convertedSubtotal = convertCurrency(subtotal, 'XAF', currentCurrency);
+        const convertedShipping = convertCurrency(shipping, 'XAF', currentCurrency);
+        const convertedTax = convertCurrency(tax, 'XAF', currentCurrency);
+        const convertedTotal = convertCurrency(total, 'XAF', currentCurrency);
+        
+        subtotalElement.textContent = formatCurrency(convertedSubtotal, currentCurrency);
+        taxElement.textContent = formatCurrency(convertedTax, currentCurrency);
+        totalElement.textContent = formatCurrency(convertedTotal, currentCurrency);
+        
+        // Save cart to localStorage for checkout page
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        localStorage.setItem('cartTotal', convertedTotal);
+        localStorage.setItem('cartCurrency', currentCurrency);
+    }
+    
+    // Update cart in localStorage
+    function updateCartInStorage() {
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+    }
+    
+    // Enhanced quantity handling for bulk items
+    function handleQuantityChange(uniqueId, action, inputElement = null) {
+        const item = cartItems.find(item => item.uniqueId === uniqueId);
+        
+        if (!item) return;
+        
+        if (action === 'increase') {
+            item.qty++;
+        } else if (action === 'decrease') {
+            // For bulk items, minimum is 1 package
+            // For retail items, minimum is 1 unit
+            item.qty = Math.max(1, item.qty - 1);
+        } else if (action === 'input' && inputElement) {
+            const newQuantity = parseInt(inputElement.value);
+            if (!isNaN(newQuantity) && newQuantity >= 1) {
+                item.qty = newQuantity;
+            } else {
+                inputElement.value = item.qty; // Reset to previous value
+            }
+        }
+        
+        updateCartInStorage();
+        renderCartItems();
+    }
+    
+    // Initialize cart
+    renderCartItems();
+    
+    // Event listeners for quantity buttons
+    cartContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('quantity-btn') || e.target.parentElement.classList.contains('quantity-btn')) {
+            const button = e.target.classList.contains('quantity-btn') ? e.target : e.target.parentElement;
+            const action = button.getAttribute('data-action');
+            const uniqueId = button.getAttribute('data-uniqueid');
+            
+            handleQuantityChange(uniqueId, action);
+        }
+        
+        if (e.target.classList.contains('remove-item') || e.target.parentElement.classList.contains('remove-item')) {
+            const button = e.target.classList.contains('remove-item') ? e.target : e.target.parentElement;
+            const uniqueId = button.getAttribute('data-uniqueid');
+            
+            cartItems = cartItems.filter(item => item.uniqueId !== uniqueId);
+            updateCartInStorage();
+            renderCartItems();
+        }
+    });
+    
+    // Event listeners for quantity inputs
+    cartContainer.addEventListener('change', function(e) {
+        if (e.target.classList.contains('quantity-input')) {
+            const uniqueId = e.target.getAttribute('data-uniqueid');
+            handleQuantityChange(uniqueId, 'input', e.target);
+        }
+    });
+    
+    // Event listeners for quantity input blur (when user types directly)
+    cartContainer.addEventListener('blur', function(e) {
+        if (e.target.classList.contains('quantity-input')) {
+            const uniqueId = e.target.getAttribute('data-uniqueid');
+            const quantity = parseInt(e.target.value);
+            
+            if (isNaN(quantity) || quantity < 1) {
+                const item = cartItems.find(item => item.uniqueId === uniqueId);
+                e.target.value = item ? item.qty : 1;
+                return;
+            }
+            
+            handleQuantityChange(uniqueId, 'input', e.target);
+        }
+    }, true);
+    
+    // Currency conversion
+    convertBtn.addEventListener('click', function() {
+        const fromCurrency = document.getElementById('currency-from').value;
+        const toCurrency = document.getElementById('currency-to').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        
+        if (isNaN(amount) || amount <= 0) {
+            conversionResult.textContent = 'Please enter a valid amount';
+            return;
+        }
+        
+        const convertedAmount = convertCurrency(amount, fromCurrency, toCurrency);
+        conversionResult.textContent = `${formatCurrency(amount, fromCurrency)} = ${formatCurrency(convertedAmount, toCurrency)}`;
+        
+        // Update cart currency and refresh display
+        currentCurrency = toCurrency;
+        renderCartItems();
+    });
+    
+    // Add keyboard support for quantity inputs
+    cartContainer.addEventListener('keydown', function(e) {
+        if (e.target.classList.contains('quantity-input') && e.key === 'Enter') {
+            e.target.blur();
+        }
+    });
+    
+    // Check if cart is empty and disable checkout if so
+    if (cartItems.length === 0) {
+        checkoutBtn.style.display = 'none';
+    }
+});
+// Auth utility functions
+function isLoggedIn() {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    return !!(token && user);
+}
+
+function getUser() {
+    try {
+        return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch {
+        return {};
+    }
+}
+
+function requireAuth(redirectTo) {
+    if (!isLoggedIn()) {
+        // Save current URL for redirect after login
+        if (redirectTo) {
+            localStorage.setItem('redirectAfterLogin', redirectTo);
+        }
+        window.location.href = 'login.html';
+        return false;
+    }
+    return true;
+}
+
+</script>
+</body>
+</html>
