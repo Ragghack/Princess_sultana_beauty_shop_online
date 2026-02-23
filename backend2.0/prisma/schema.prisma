@@ -1,13 +1,10 @@
-// This is your COMPLETE Prisma schema file with Bundle functionality
-// REPLACE your existing schema.prisma with this file
-
 generator client {
     provider        = "prisma-client-js"
     previewFeatures = ["fullTextIndex"]
 }
 
 datasource db {
-    provider = "mongodb"
+    provider = "mysql"
     url      = env("DATABASE_URL")
 }
 
@@ -91,7 +88,7 @@ enum NotificationStatus {
 // ============= USER MANAGEMENT =============
 
 model User {
-    id            String     @id @default(auto()) @map("_id") @db.ObjectId
+    id            String     @id @default(uuid())
     email         String     @unique
     phone         String     @unique
     password      String
@@ -121,26 +118,29 @@ model User {
     updatedAt   DateTime  @updatedAt
     deletedAt   DateTime?
 
+    @@index([email])
+    @@index([phone])
     @@index([role])
     @@index([status])
     @@map("users")
 }
 
 model RefreshToken {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    id        String   @id @default(uuid())
     token     String   @unique
-    userId    String   @db.ObjectId
+    userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     expiresAt DateTime
     createdAt DateTime @default(now())
 
     @@index([userId])
+    @@index([token])
     @@map("refresh_tokens")
 }
 
 model Address {
-    id     String @id @default(auto()) @map("_id") @db.ObjectId
-    userId String @db.ObjectId
+    id     String @id @default(uuid())
+    userId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     fullName   String
@@ -165,19 +165,19 @@ model Address {
 // ============= PRODUCT CATALOG =============
 
 model Product {
-    id               String          @id @default(auto()) @map("_id") @db.ObjectId
+    id               String          @id @default(uuid())
     sku              String          @unique
     name             String
     slug             String          @unique
-    description      String
+    description      String          @db.Text
     shortDescription String?
     category         ProductCategory
     status           ProductStatus   @default(ACTIVE)
 
     // Pricing
-    price          Float
-    compareAtPrice Float?
-    cost           Float?
+    price          Decimal  @db.Decimal(10, 2)
+    compareAtPrice Decimal? @db.Decimal(10, 2)
+    cost           Decimal? @db.Decimal(10, 2)
 
     // Inventory
     stockQuantity     Int     @default(0)
@@ -185,8 +185,8 @@ model Product {
     trackInventory    Boolean @default(true)
 
     // Product details
-    weight       Float?
-    volume       Float?
+    weight       Decimal? @db.Decimal(8, 2)
+    volume       Decimal? @db.Decimal(8, 2)
     bundleLength String?
 
     // Media
@@ -213,15 +213,18 @@ model Product {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
+    @@index([slug])
     @@index([category])
     @@index([status])
     @@index([featured])
+    @@index([sku])
+    @@fulltext([name, description])
     @@map("products")
 }
 
 model ProductImage {
-    id        String  @id @default(auto()) @map("_id") @db.ObjectId
-    productId String  @db.ObjectId
+    id        String  @id @default(uuid())
+    productId String
     product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
     url      String
@@ -302,8 +305,8 @@ model BundleItem {
 // ============= SHOPPING CART =============
 
 model Cart {
-    id     String @id @default(auto()) @map("_id") @db.ObjectId
-    userId String @unique @db.ObjectId
+    id     String @id @default(uuid())
+    userId String @unique
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     items CartItem[]
@@ -343,28 +346,28 @@ model CartItem {
 // ============= ORDERS =============
 
 model Order {
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id          String @id @default(uuid())
     orderNumber String @unique
 
     // Customer
-    userId String @db.ObjectId
+    userId String
     user   User   @relation(fields: [userId], references: [id])
 
     // Delivery
-    addressId           String  @db.ObjectId
+    addressId           String
     address             Address @relation(fields: [addressId], references: [id])
-    deliveryPersonnelId String? @db.ObjectId
+    deliveryPersonnelId String?
     deliveryPersonnel   User?   @relation("DeliveryPersonnel", fields: [deliveryPersonnelId], references: [id])
-    deliveryFee         Float
-    deliveryNotes       String?
+    deliveryFee         Decimal @db.Decimal(10, 2)
+    deliveryNotes       String? @db.Text
 
     // Pricing
-    subtotal Float
-    discount Float @default(0)
-    total    Float
+    subtotal Decimal @db.Decimal(10, 2)
+    discount Decimal @default(0) @db.Decimal(10, 2)
+    total    Decimal @db.Decimal(10, 2)
 
     // Discount
-    discountCodeId String?       @db.ObjectId
+    discountCodeId String?
     discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
 
     // Payment
@@ -387,8 +390,8 @@ model Order {
     whatsappSent Boolean @default(false)
 
     // Notes
-    customerNotes String?
-    adminNotes    String?
+    customerNotes String? @db.Text
+    adminNotes    String? @db.Text
 
     // Timestamps
     confirmedAt DateTime?
@@ -400,6 +403,7 @@ model Order {
     updatedAt DateTime @updatedAt
 
     @@index([userId])
+    @@index([orderNumber])
     @@index([status])
     @@index([paymentStatus])
     @@index([deliveryPersonnelId])
@@ -431,8 +435,8 @@ model OrderItem {
     bundleItems String? @db.Text // JSON array of bundle items
 
     quantity Int
-    price    Float
-    subtotal Float
+    price    Decimal @db.Decimal(10, 2)
+    subtotal Decimal @db.Decimal(10, 2)
 
     createdAt DateTime @default(now())
 
@@ -443,12 +447,12 @@ model OrderItem {
 }
 
 model OrderStatusHistory {
-    id      String @id @default(auto()) @map("_id") @db.ObjectId
-    orderId String @db.ObjectId
+    id      String @id @default(uuid())
+    orderId String
     order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
     status    OrderStatus
-    notes     String?
+    notes     String?     @db.Text
     changedBy String?
 
     createdAt DateTime @default(now())
@@ -461,12 +465,12 @@ model OrderStatusHistory {
 // ============= DISCOUNTS =============
 
 model DiscountCode {
-    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    id          String  @id @default(uuid())
     code        String  @unique
     description String?
 
     type  DiscountType
-    value Float
+    value Decimal      @db.Decimal(10, 2)
 
     // Usage limits
     maxUses        Int?
@@ -474,7 +478,7 @@ model DiscountCode {
     maxUsesPerUser Int? @default(1)
 
     // Constraints
-    minPurchaseAmount Float?
+    minPurchaseAmount Decimal @db.Decimal(10, 2)
 
     // Validity
     startDate DateTime
@@ -487,6 +491,7 @@ model DiscountCode {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@index([code])
     @@index([isActive])
     @@index([startDate, endDate])
     @@map("discount_codes")
@@ -495,17 +500,17 @@ model DiscountCode {
 // ============= REVIEWS =============
 
 model Review {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
+    id String @id @default(uuid())
 
-    userId String @db.ObjectId
+    userId String
     user   User   @relation(fields: [userId], references: [id])
 
-    productId String  @db.ObjectId
+    productId String
     product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
     rating  Int
     title   String?
-    comment String
+    comment String  @db.Text
 
     isVerified Boolean @default(false)
     isApproved Boolean @default(false)
@@ -523,9 +528,9 @@ model Review {
 // ============= WISHLIST =============
 
 model WishlistItem {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
+    id String @id @default(uuid())
 
-    userId String @db.ObjectId
+    userId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     // Can be either a product OR a bundle
@@ -549,18 +554,18 @@ model WishlistItem {
 // ============= NOTIFICATIONS =============
 
 model NotificationLog {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
+    id String @id @default(uuid())
 
     type   NotificationType
     status NotificationStatus @default(PENDING)
 
     recipient String
     subject   String?
-    message   String
+    message   String  @db.Text
 
-    orderId String? @db.ObjectId
+    orderId String?
 
-    error  String?
+    error  String?   @db.Text
     sentAt DateTime?
 
     createdAt DateTime @default(now())
@@ -575,9 +580,9 @@ model NotificationLog {
 // ============= SYSTEM =============
 
 model SystemSettings {
-    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    id          String  @id @default(uuid())
     key         String  @unique
-    value       String
+    value       String  @db.Text
     description String?
 
     updatedAt DateTime @updatedAt
@@ -586,12 +591,12 @@ model SystemSettings {
 }
 
 model DailyMetrics {
-    id   String   @id @default(auto()) @map("_id") @db.ObjectId
-    date DateTime @unique
+    id   String   @id @default(uuid())
+    date DateTime @unique @db.Date
 
-    totalOrders  Int   @default(0)
-    totalRevenue Float @default(0)
-    totalProfit  Float @default(0)
+    totalOrders  Int     @default(0)
+    totalRevenue Decimal @default(0) @db.Decimal(12, 2)
+    totalProfit  Decimal @default(0) @db.Decimal(12, 2)
 
     newCustomers Int @default(0)
     productViews Int @default(0)

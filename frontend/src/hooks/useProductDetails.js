@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { productService } from "@services/productService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "@hooks/useCart";
+import { useWishlist } from "@hooks/useWishlist";
 
 export const useProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { addBundleToWishlist, addToWishlist } = useWishlist();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,5 +61,7 @@ export const useProductDetails = () => {
     navigate,
     slug,
     product,
+    addBundleToWishlist,
+    addToWishlist,
   };
 };

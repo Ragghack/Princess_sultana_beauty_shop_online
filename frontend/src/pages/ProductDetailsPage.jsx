@@ -21,6 +21,8 @@ const ProductDetailsPage = () => {
     navigate,
     slug,
     product,
+    addBundleToWishlist,
+    addToWishlist,
   } = useProductDetails();
 
   if (loading) {
@@ -209,7 +211,7 @@ const ProductDetailsPage = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="sm"
                   fullWidth
                   onClick={handleBuyNow}
                   disabled={isOutOfStock}
@@ -220,14 +222,14 @@ const ProductDetailsPage = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  size="lg"
+                  size="sm"
                   onClick={handleAddToCart}
                   disabled={isOutOfStock}
                   loading={adding}
                 >
                   Ajouter au Panier
                 </Button>
-                <Button variant="ghost" size="lg" icon={<FiHeart />}></Button>
+                {/* <Button variant="ghost" size="sm" icon={<FiHeart />}></Button> */}
               </div>
 
               {/* Product Features */}
