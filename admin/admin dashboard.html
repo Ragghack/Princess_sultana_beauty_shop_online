@@ -1526,6 +1526,7 @@
                             <label for="editProductCategory">Category</label>
                             <select id="editProductCategory" class="form-control" required>
                                 <option value="">Select Category</option>
+                                <option value="full-gamme">Full Gamme</option>
                                 <option value="hair-oil">Hair Oil</option>
                                 <option value="shampoo">Shampoo</option>
                                 <option value="conditioner">Conditioner</option>
@@ -1604,8 +1605,8 @@
 
     <script>
         // API Configuration
-        const API_BASE_URL = 'https://princess-sultana-beauty-shop-online.onrender.com/api';
-       // const API_BASE_URL = 'http://localhost:5000/api';
+      //  const API_BASE_URL = 'https://princess-sultana-beauty-shop-online.onrender.com/api';
+        const API_BASE_URL = 'http://localhost:5000/api';
         
         // API Endpoints
         const API_ENDPOINTS = {
@@ -1675,7 +1676,7 @@
         function redirectToLogin() {
             console.log('🔒 Redirecting to login...');
             localStorage.removeItem('adminToken');
-            window.location.href = 'Admin-Auth.html';
+            window.location.href = 'index.html';
         }
 
         // Panel switching functionality

@@ -230,7 +230,7 @@
     }
     
     .slide:hover .media img {
-      transform: scale(2.06);
+      transform: scale(1.06);
     }
     
     .image-placeholder {
@@ -1146,8 +1146,8 @@ document.getElementById('checkoutBtn').addEventListener('click', function() {
             
             // Try multiple endpoints
             const endpoints = [
-                'https://princess-sultana-beauty-shop-online.onrender.com/api/products',
-                'https://princess-sultana-beauty-shop-online.onrender.com/api/products-debug'
+                'http://localhost:5000/api/products',
+                'http://localhost:5000/api/products-debug'
             ];
             
             let products = [];
@@ -1542,7 +1542,7 @@ buyNowBtn.addEventListener('click', () => {
                     if (confirm('Are you sure you want to remove this product?')) {
                         try {
                             const token = localStorage.getItem('adminToken');
-                            const response = await fetch(`https://princess-sultana-beauty-shop-online.onrender.com/api/admin/products/${remove.dataset.id}`, { 
+                            const response = await fetch(`http://localhost:5000/api/admin/products/${remove.dataset.id}`, { 
                                 method: 'DELETE',
                                 headers: {
                                     'Authorization': `Bearer ${token}`
@@ -1677,7 +1677,7 @@ document.querySelector('.btn-view-cart').addEventListener('click', function(e) {
         try {
             console.log('🧪 Testing products API...');
             
-            const response = await fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/products');
+            const response = await fetch('http://localhost:5000/api/products');
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
             

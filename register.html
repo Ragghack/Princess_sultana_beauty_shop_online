@@ -815,7 +815,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     }
     
     // Backend API call for registration
-    fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/auth/register', {
+    fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: fullName, email, password })
@@ -828,7 +828,7 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
             
             if (pendingCart) {
                 // Auto-login after registration and redirect to cart
-                fetch('https://princess-sultana-beauty-shop-online.onrender.com/api/auth/login', {
+                fetch('http://localhost:5000/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
