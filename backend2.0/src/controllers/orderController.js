@@ -8,28 +8,47 @@ const {
   isDiscountCodeValid,
 } = require("../utils/helpers");
 const { DELIVERY_FEE } = require("../config/constants");
+const WhatsAppService = require("../services/simpleWhatsAppService");
 
 class OrderController {
   /**
    * @route   POST /api/v1/orders
-   * @desc    Create new order
+   * @desc    Create new order with WhatsApp notifications
    * @access  Private
    */
   createOrder = asyncHandler(async (req, res) => {
-    const { addressId, paymentMethod, items, discountCode, customerNotes } =
-      req.body;
+    const {
+      addressId,
+      paymentMethod,
+      items,
+      discountCode,
+      customerNotes,
+      address,
+    } = req.body;
     const userId = req.user.id;
 
-    // Validate address belongs to user
-    const address = await prisma.address.findFirst({
+    // Check if user has address
+    let userAddress = await prisma.address.findFirst({
       where: {
-        id: addressId,
         userId,
+        street: address.street,
       },
     });
 
-    if (!address) {
-      throw new ApiError(400, "Adresse invalide");
+    if (!userAddress) {
+      userAddress = await prisma.address.create({
+        data: {
+          userId,
+          city: address.city,
+          fullName: address.firstName + " " + address.lastName,
+          phone: address.phone,
+          region: address.region,
+          street: address.street,
+          isDefault: true,
+          landmark: address.landmark,
+          postalCode: address.postalCode,
+        },
+      });
     }
 
     // Validate items and calculate subtotal
@@ -106,7 +125,7 @@ class OrderController {
         data: {
           orderNumber,
           userId,
-          addressId,
+          addressId: userAddress.id,
           paymentMethod,
           subtotal,
           discount,
@@ -172,8 +191,19 @@ class OrderController {
       return newOrder;
     });
 
-    // TODO: Send notifications (email & WhatsApp)
-    // await notificationService.sendOrderConfirmation(order);
+    // // ✅ SEND WHATSAPP NOTIFICATIONS
+    // try {
+    //   // Send confirmation to customer
+    //   await WhatsAppService.sendOrderConfirmation(order);
+
+    //   // Send notification to admin
+    //   await WhatsAppService.sendAdminOrderNotification(order);
+
+    //   console.log("✅ WhatsApp notifications sent successfully");
+    // } catch (error) {
+    //   console.error("WhatsApp notification failed:", error);
+    //   // Don't fail the order creation if notification fails
+    // }
 
     res
       .status(201)
@@ -329,6 +359,7 @@ class OrderController {
         data: {
           status,
           ...(status === "CONFIRMED" && { confirmedAt: new Date() }),
+          ...(status === "CONFIRMED" && { paymentStatus: "COMPLETED" }),
           ...(status === "DELIVERED" && { deliveredAt: new Date() }),
           ...(status === "CANCELLED" && { cancelledAt: new Date() }),
         },
@@ -363,9 +394,6 @@ class OrderController {
 
       return updatedOrder;
     });
-
-    // TODO: Send notification
-    // await notificationService.sendOrderStatusUpdate(order);
 
     res.status(200).json(new ApiResponse(200, order, "Statut mis à jour"));
   });
@@ -412,15 +440,12 @@ class OrderController {
       },
     });
 
-    // TODO: Send notification to delivery personnel
-    // await notificationService.sendDeliveryAssignment(order);
-
     res.status(200).json(new ApiResponse(200, order, "Livreur assigné"));
   });
 
   /**
    * @route   PATCH /api/v1/orders/:id/mark-delivered
-   * @desc    Mark order as delivered (Delivery personnel)
+   * @desc    Mark order as delivered
    * @access  Private (Delivery)
    */
   markAsDelivered = asyncHandler(async (req, res) => {
@@ -469,9 +494,6 @@ class OrderController {
 
       return updated;
     });
-
-    // TODO: Send notification
-    // await notificationService.sendDeliveryConfirmation(updatedOrder);
 
     res
       .status(200)
@@ -544,9 +566,6 @@ class OrderController {
 
       return updated;
     });
-
-    // TODO: Send notification and process refund if paid
-    // await notificationService.sendOrderCancellation(cancelledOrder);
 
     res
       .status(200)

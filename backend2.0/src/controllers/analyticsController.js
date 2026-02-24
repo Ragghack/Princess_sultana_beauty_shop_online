@@ -1,207 +1,229 @@
-// src/controllers/analyticsController.js
 const prisma = require("../config/database");
-const asyncHandler = require("../utils/asyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
-const ApiError = require("../utils/ApiError");
+const asyncHandler = require("../utils/asyncHandler");
 
 class AnalyticsController {
   /**
    * @route   GET /api/v1/analytics/dashboard
-   * @desc    Get dashboard overview analytics
+   * @desc    Get dashboard analytics
    * @access  Private (Admin/Staff)
    */
   getDashboardAnalytics = asyncHandler(async (req, res) => {
-    const { startDate, endDate } = req.query;
-    
-    const whereCondition = {};
-    
-    if (startDate && endDate) {
-      whereCondition.createdAt = {
-        gte: new Date(startDate),
-        lte: new Date(endDate),
-      };
-    }
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    // Get counts
-    const [
-      totalOrders,
-      totalRevenue,
-      totalCustomers,
-      totalProducts,
-      recentOrders,
-      topProducts,
-    ] = await Promise.all([
-      // Total orders
-      prisma.order.count({
-        where: whereCondition,
-      }),
-      
-      // Total revenue (sum of order totals)
-      prisma.order.aggregate({
-        where: whereCondition,
-        _sum: {
-          total: true,
+    // Get total orders
+    const totalOrders = await prisma.order.count();
+
+    // Get total revenue
+    const revenueData = await prisma.order.aggregate({
+      where: {
+        paymentStatus: "COMPLETED",
+      },
+      _sum: {
+        total: true,
+      },
+    });
+
+    // Get total customers
+    const totalCustomers = await prisma.user.count({
+      where: { role: "CUSTOMER" },
+    });
+
+    // Get pending orders
+    const pendingOrders = await prisma.order.count({
+      where: { status: "PENDING" },
+    });
+
+    // Get orders from last 30 days
+    const ordersLast30Days = await prisma.order.count({
+      where: {
+        createdAt: {
+          gte: thirtyDaysAgo,
         },
-      }),
-      
-      // Total customers
-      prisma.user.count({
-        where: {
-          ...whereCondition,
-          role: "CUSTOMER",
+      },
+    });
+
+    // Get this month revenue
+    const thisMonthRevenue = await prisma.order.aggregate({
+      where: {
+        paymentStatus: "COMPLETED",
+        createdAt: {
+          gte: thisMonth,
         },
-      }),
-      
-      // Total products
-      prisma.product.count({
-        where: {
-          deletedAt: null,
+      },
+      _sum: {
+        total: true,
+      },
+    });
+
+    // Get last month revenue
+    const lastMonthRevenue = await prisma.order.aggregate({
+      where: {
+        paymentStatus: "COMPLETED",
+        createdAt: {
+          gte: lastMonth,
+          lt: thisMonth,
         },
-      }),
-      
-      // Recent orders
-      prisma.order.findMany({
-        where: whereCondition,
-        take: 5,
-        orderBy: { createdAt: "desc" },
-        include: {
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
+      },
+      _sum: {
+        total: true,
+      },
+    });
+
+    // Calculate revenue growth
+    const revenueGrowth = lastMonthRevenue._sum.total
+      ? (
+          (((thisMonthRevenue._sum.total || 0) - lastMonthRevenue._sum.total) /
+            lastMonthRevenue._sum.total) *
+          100
+        ).toFixed(2)
+      : 0;
+
+    // Get recent orders
+    const recentOrders = await prisma.order.findMany({
+      take: 10,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
           },
         },
-      }),
-      
-      // Top selling products
-      prisma.product.findMany({
-        where: {
-          deletedAt: null,
-        },
-        take: 5,
-        orderBy: { salesCount: "desc" },
-        include: {
-          images: {
-            take: 1,
-          },
-        },
-      }),
-    ]);
+      },
+    });
 
-    // Calculate revenue growth (compared to previous period)
-    let revenueGrowth = 0;
-    if (startDate && endDate) {
-      const prevStartDate = new Date(startDate);
-      const prevEndDate = new Date(endDate);
-      const periodDiff = prevEndDate - prevStartDate;
-      
-      prevStartDate.setTime(prevStartDate.getTime() - periodDiff);
-      prevEndDate.setTime(prevEndDate.getTime() - periodDiff);
-      
-      const previousRevenue = await prisma.order.aggregate({
+    // Get sales data for chart (last 7 days)
+    const salesData = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+
+      const nextDate = new Date(date);
+      nextDate.setDate(nextDate.getDate() + 1);
+
+      const dayOrders = await prisma.order.count({
         where: {
           createdAt: {
-            gte: prevStartDate,
-            lte: prevEndDate,
+            gte: date,
+            lt: nextDate,
+          },
+        },
+      });
+
+      const dayRevenue = await prisma.order.aggregate({
+        where: {
+          paymentStatus: "COMPLETED",
+          createdAt: {
+            gte: date,
+            lt: nextDate,
           },
         },
         _sum: {
           total: true,
         },
       });
-      
-      const currentRevenue = totalRevenue._sum.total || 0;
-      const prevRevenue = previousRevenue._sum.total || 0;
-      
-      if (prevRevenue > 0) {
-        revenueGrowth = ((currentRevenue - prevRevenue) / prevRevenue) * 100;
-      }
+
+      salesData.push({
+        date: date.toISOString().split("T")[0],
+        month: date.toLocaleDateString("fr-FR", { month: "short" }),
+        orders: dayOrders,
+        revenue: parseFloat(dayRevenue._sum.total || 0),
+      });
     }
 
     res.status(200).json(
       new ApiResponse(200, {
-        overview: {
+        stats: {
           totalOrders,
-          totalRevenue: totalRevenue._sum.total || 0,
+          totalRevenue: parseFloat(revenueData._sum.total || 0),
           totalCustomers,
-          totalProducts,
-          revenueGrowth: parseFloat(revenueGrowth.toFixed(2)),
+          pendingOrders,
+          ordersLast30Days,
+          revenueGrowth: parseFloat(revenueGrowth),
         },
         recentOrders,
-        topProducts,
-      })
+        salesData,
+      }),
     );
   });
 
   /**
    * @route   GET /api/v1/analytics/sales
-   * @desc    Get sales analytics with time series
+   * @desc    Get sales analytics
    * @access  Private (Admin/Staff)
    */
   getSalesAnalytics = asyncHandler(async (req, res) => {
-    const { period = "monthly", startDate, endDate } = req.query;
-    
-    let dateFormat;
-    switch (period) {
-      case "daily":
-        dateFormat = "%Y-%m-%d";
-        break;
-      case "weekly":
-        dateFormat = "%Y-%u";
-        break;
-      case "monthly":
-      default:
-        dateFormat = "%Y-%m";
-        break;
-      case "yearly":
-        dateFormat = "%Y";
-        break;
-    }
+    const { startDate, endDate, groupBy = "day" } = req.query;
 
-    // For MongoDB, we need to use aggregation pipeline
-    const salesData = await prisma.order.groupBy({
-      by: ['createdAt'],
+    const start = startDate
+      ? new Date(startDate)
+      : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const end = endDate ? new Date(endDate) : new Date();
+
+    // Get orders in date range
+    const orders = await prisma.order.findMany({
       where: {
-        ...(startDate && endDate && {
-          createdAt: {
-            gte: new Date(startDate),
-            lte: new Date(endDate),
-          },
-        }),
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+        paymentStatus: "COMPLETED",
       },
-      _sum: {
+      select: {
+        createdAt: true,
         total: true,
-      },
-      _count: {
-        id: true,
-      },
-      orderBy: {
-        createdAt: 'asc',
+        items: {
+          select: {
+            quantity: true,
+            subtotal: true,
+          },
+        },
       },
     });
 
-    // Format data for chart
-    const formattedData = salesData.map(item => ({
-      date: item.createdAt,
-      revenue: item._sum.total || 0,
-      orders: item._count.id,
-    }));
+    // Group by date
+    const groupedData = {};
 
-    // Calculate totals
-    const totalRevenue = formattedData.reduce((sum, item) => sum + item.revenue, 0);
-    const totalOrders = formattedData.reduce((sum, item) => sum + item.orders, 0);
+    orders.forEach((order) => {
+      let dateKey;
+      const orderDate = new Date(order.createdAt);
 
-    res.status(200).json(
-      new ApiResponse(200, {
-        period,
-        totalRevenue,
-        totalOrders,
-        averageOrderValue: totalOrders > 0 ? totalRevenue / totalOrders : 0,
-        data: formattedData,
-      })
+      if (groupBy === "month") {
+        dateKey = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, "0")}`;
+      } else if (groupBy === "week") {
+        const weekNumber = Math.ceil(orderDate.getDate() / 7);
+        dateKey = `${orderDate.getFullYear()}-W${weekNumber}`;
+      } else {
+        dateKey = orderDate.toISOString().split("T")[0];
+      }
+
+      if (!groupedData[dateKey]) {
+        groupedData[dateKey] = {
+          date: dateKey,
+          orders: 0,
+          revenue: 0,
+          items: 0,
+        };
+      }
+
+      groupedData[dateKey].orders += 1;
+      groupedData[dateKey].revenue += parseFloat(order.total);
+      groupedData[dateKey].items += order.items.reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+      );
+    });
+
+    const salesData = Object.values(groupedData).sort((a, b) =>
+      a.date.localeCompare(b.date),
     );
+
+    res.status(200).json(new ApiResponse(200, salesData));
   });
 
   /**
@@ -210,67 +232,57 @@ class AnalyticsController {
    * @access  Private (Admin/Staff)
    */
   getProductAnalytics = asyncHandler(async (req, res) => {
-    const { limit = 10, sortBy = "sales", order = "desc" } = req.query;
+    // Top selling products
+    const topProducts = await prisma.product.findMany({
+      take: 10,
+      orderBy: { salesCount: "desc" },
+      select: {
+        id: true,
+        name: true,
+        sku: true,
+        salesCount: true,
+        stockQuantity: true,
+        price: true,
+      },
+    });
 
-    const products = await prisma.product.findMany({
+    // Low stock products
+    const lowStockProducts = await prisma.product.findMany({
+      where: {
+        stockQuantity: {
+          lte: 10, // Using hardcoded value instead of field reference
+        },
+        status: "ACTIVE",
+      },
+      select: {
+        id: true,
+        name: true,
+        sku: true,
+        stockQuantity: true,
+        lowStockThreshold: true,
+      },
+    });
+
+    // Products by category
+    const productsByCategory = await prisma.product.groupBy({
+      by: ["category"],
+      _count: {
+        id: true,
+      },
+      _sum: {
+        salesCount: true,
+      },
       where: {
         deletedAt: null,
       },
-      take: parseInt(limit),
-      orderBy: {
-        [sortBy]: order,
-      },
-      include: {
-        images: {
-          take: 1,
-        },
-        reviews: {
-          select: {
-            rating: true,
-          },
-        },
-      },
     });
-
-    // Calculate additional metrics
-    const productsWithMetrics = products.map((product) => {
-      const ratings = product.reviews.map((r) => r.rating);
-      const avgRating = ratings.length > 0
-        ? ratings.reduce((a, b) => a + b, 0) / ratings.length
-        : 0;
-
-      const stockStatus = product.stockQuantity === 0
-        ? "OUT_OF_STOCK"
-        : product.stockQuantity <= product.lowStockThreshold
-        ? "LOW_STOCK"
-        : "IN_STOCK";
-
-      return {
-        ...product,
-        avgRating: parseFloat(avgRating.toFixed(1)),
-        reviewCount: ratings.length,
-        stockStatus,
-        conversionRate: product.viewCount > 0
-          ? (product.salesCount / product.viewCount) * 100
-          : 0,
-        reviews: undefined, // Remove reviews array
-      };
-    });
-
-    // Get stock summary
-    const stockSummary = {
-      total: products.length,
-      inStock: products.filter(p => p.stockQuantity > 0).length,
-      lowStock: products.filter(p => p.stockQuantity > 0 && p.stockQuantity <= p.lowStockThreshold).length,
-      outOfStock: products.filter(p => p.stockQuantity === 0).length,
-    };
 
     res.status(200).json(
       new ApiResponse(200, {
-        products: productsWithMetrics,
-        stockSummary,
-        topCategories: await this.getTopCategories(),
-      })
+        topProducts,
+        lowStockProducts,
+        productsByCategory,
+      }),
     );
   });
 
@@ -280,328 +292,200 @@ class AnalyticsController {
    * @access  Private (Admin/Staff)
    */
   getCustomerAnalytics = asyncHandler(async (req, res) => {
-    const { startDate, endDate } = req.query;
-    
-    const whereCondition = {};
-    
-    if (startDate && endDate) {
-      whereCondition.createdAt = {
-        gte: new Date(startDate),
-        lte: new Date(endDate),
-      };
-    }
+    // Total customers
+    const totalCustomers = await prisma.user.count({
+      where: { role: "CUSTOMER" },
+    });
 
-    const [
-      totalCustomers,
-      newCustomers,
-      topCustomers,
-      customerGrowth,
-    ] = await Promise.all([
-      // Total customers
-      prisma.user.count({
-        where: {
-          ...whereCondition,
-          role: "CUSTOMER",
+    // New customers this month
+    const thisMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1,
+    );
+    const newCustomers = await prisma.user.count({
+      where: {
+        role: "CUSTOMER",
+        createdAt: {
+          gte: thisMonth,
         },
-      }),
-      
-      // New customers (last 30 days)
-      prisma.user.count({
+      },
+    });
+
+    // Top customers by order value
+    const topCustomers = await prisma.user.findMany({
+      where: { role: "CUSTOMER" },
+      take: 10,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        orders: {
+          where: {
+            paymentStatus: "COMPLETED",
+          },
+          select: {
+            total: true,
+          },
+        },
+      },
+    });
+
+    const topCustomersWithTotal = topCustomers
+      .map((customer) => ({
+        id: customer.id,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        email: customer.email,
+        totalSpent: customer.orders.reduce(
+          (sum, order) => sum + parseFloat(order.total),
+          0,
+        ),
+        orderCount: customer.orders.length,
+      }))
+      .sort((a, b) => b.totalSpent - a.totalSpent);
+
+    // Customer acquisition by month (last 6 months)
+    const acquisitionData = [];
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+      const count = await prisma.user.count({
         where: {
           role: "CUSTOMER",
           createdAt: {
-            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+            gte: startOfMonth,
+            lte: endOfMonth,
           },
         },
-      }),
-      
-      // Top customers by order value
-      prisma.user.findMany({
-        where: {
-          role: "CUSTOMER",
-        },
-        take: 10,
-        include: {
-          orders: {
-            select: {
-              total: true,
-            },
-          },
-        },
-      }).then(users => 
-        users.map(user => ({
-          ...user,
-          totalSpent: user.orders.reduce((sum, order) => sum + (order.total || 0), 0),
-          orderCount: user.orders.length,
-          orders: undefined, // Remove orders array
-        }))
-        .sort((a, b) => b.totalSpent - a.totalSpent)
-      ),
-      
-      // Customer growth over time
-      this.getCustomerGrowthData(startDate, endDate),
-    ]);
+      });
+
+      acquisitionData.push({
+        month: startOfMonth.toISOString().slice(0, 7),
+        customers: count,
+      });
+    }
 
     res.status(200).json(
       new ApiResponse(200, {
-        overview: {
-          totalCustomers,
-          newCustomers,
-          averageOrderValue: await this.getAverageOrderValue(),
-          repeatPurchaseRate: await this.getRepeatPurchaseRate(),
-        },
-        topCustomers,
-        growthData: customerGrowth,
-      })
+        totalCustomers,
+        newCustomers,
+        topCustomers: topCustomersWithTotal,
+        acquisitionData,
+      }),
     );
   });
 
   /**
    * @route   GET /api/v1/analytics/revenue
-   * @desc    Get revenue analytics
+   * @desc    Get revenue breakdown
    * @access  Private (Admin/Staff)
    */
   getRevenueAnalytics = asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    
-    const whereCondition = {};
-    
-    if (startDate && endDate) {
-      whereCondition.createdAt = {
-        gte: new Date(startDate),
-        lte: new Date(endDate),
-      };
-    }
 
-    const [
-      revenueData,
-      revenueByCategory,
-      paymentMethods,
-    ] = await Promise.all([
-      // Revenue over time
-      prisma.order.groupBy({
-        by: ['createdAt'],
-        where: whereCondition,
-        _sum: {
-          total: true,
-        },
-        orderBy: {
-          createdAt: 'asc',
-        },
-      }),
-      
-      // Revenue by product category
-      this.getRevenueByCategory(startDate, endDate),
-      
-      // Payment method distribution
-      prisma.order.groupBy({
-        by: ['paymentMethod'],
-        where: whereCondition,
-        _sum: {
-          total: true,
-        },
-        _count: {
-          id: true,
-        },
-      }),
-    ]);
+    const start = startDate
+      ? new Date(startDate)
+      : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const end = endDate ? new Date(endDate) : new Date();
 
-    const formattedRevenueData = revenueData.map(item => ({
-      date: item.createdAt,
-      revenue: item._sum.total || 0,
-    }));
-
-    const totalRevenue = formattedRevenueData.reduce((sum, item) => sum + item.revenue, 0);
-
-    res.status(200).json(
-      new ApiResponse(200, {
-        totalRevenue,
-        revenueOverTime: formattedRevenueData,
-        revenueByCategory,
-        paymentMethods: paymentMethods.map(pm => ({
-          method: pm.paymentMethod,
-          revenue: pm._sum.total || 0,
-          count: pm._count.id,
-          percentage: totalRevenue > 0 ? ((pm._sum.total || 0) / totalRevenue) * 100 : 0,
-        })),
-        metrics: {
-          averageOrderValue: await this.getAverageOrderValue(whereCondition),
-          revenueGrowth: await this.getRevenueGrowth(startDate, endDate),
-        },
-      })
-    );
-  });
-
-  // Helper methods
-  async getTopCategories() {
-    const categories = await prisma.product.groupBy({
-      by: ['category'],
+    // Total revenue
+    const totalRevenue = await prisma.order.aggregate({
       where: {
-        deletedAt: null,
+        paymentStatus: "COMPLETED",
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      },
+      _sum: {
+        total: true,
+        subtotal: true,
+        deliveryFee: true,
+        discount: true,
+      },
+    });
+
+    // Revenue by payment method
+    const revenueByPaymentMethod = await prisma.order.groupBy({
+      by: ["paymentMethod"],
+      where: {
+        paymentStatus: "COMPLETED",
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      },
+      _sum: {
+        total: true,
       },
       _count: {
         id: true,
       },
-      _sum: {
-        salesCount: true,
-      },
-      orderBy: {
-        _sum: {
-          salesCount: 'desc',
-        },
-      },
-      take: 5,
     });
 
-    return categories.map(cat => ({
-      category: cat.category,
-      productCount: cat._count.id,
-      totalSales: cat._sum.salesCount || 0,
-    }));
-  }
-
-  async getCustomerGrowthData(startDate, endDate) {
-    // Simplified - in production, you'd want proper time series data
-    const currentPeriod = await prisma.user.count({
+    // Revenue by category
+    const revenueByCategory = await prisma.orderItem.groupBy({
+      by: ["productId"],
       where: {
-        role: "CUSTOMER",
-        ...(startDate && endDate && {
+        order: {
+          paymentStatus: "COMPLETED",
           createdAt: {
-            gte: new Date(startDate),
-            lte: new Date(endDate),
+            gte: start,
+            lte: end,
           },
-        }),
+        },
+      },
+      _sum: {
+        subtotal: true,
       },
     });
 
-    const previousPeriod = startDate && endDate
-      ? await prisma.user.count({
-          where: {
-            role: "CUSTOMER",
-            createdAt: {
-              gte: new Date(new Date(startDate).getTime() - (30 * 24 * 60 * 60 * 1000)),
-              lte: new Date(new Date(endDate).getTime() - (30 * 24 * 60 * 60 * 1000)),
-            },
-          },
-        })
-      : 0;
-
-    return {
-      currentPeriod,
-      previousPeriod,
-      growth: previousPeriod > 0 ? ((currentPeriod - previousPeriod) / previousPeriod) * 100 : 100,
-    };
-  }
-
-  async getAverageOrderValue(whereCondition = {}) {
-    const result = await prisma.order.aggregate({
-      where: whereCondition,
-      _avg: {
-        total: true,
-      },
-    });
-
-    return result._avg.total || 0;
-  }
-
-  async getRepeatPurchaseRate() {
-    const totalCustomers = await prisma.user.count({
-      where: { role: "CUSTOMER" },
-    });
-
-    const repeatCustomers = await prisma.user.count({
+    // Get product categories for the items
+    const productIds = revenueByCategory.map((item) => item.productId);
+    const products = await prisma.product.findMany({
       where: {
-        role: "CUSTOMER",
-        orders: {
-          some: {},
-        },
+        id: { in: productIds },
+      },
+      select: {
+        id: true,
+        category: true,
       },
     });
 
-    return totalCustomers > 0 ? (repeatCustomers / totalCustomers) * 100 : 0;
-  }
-
-  async getRevenueByCategory(startDate, endDate) {
-    const whereCondition = {};
-    
-    if (startDate && endDate) {
-      whereCondition.createdAt = {
-        gte: new Date(startDate),
-        lte: new Date(endDate),
-      };
-    }
-
-    const orders = await prisma.order.findMany({
-      where: whereCondition,
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                category: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    const revenueByCategory = {};
-
-    orders.forEach(order => {
-      order.items.forEach(item => {
-        const category = item.product.category || 'Uncategorized';
-        const revenue = item.price * item.quantity;
-        
-        if (!revenueByCategory[category]) {
-          revenueByCategory[category] = 0;
+    const categoryRevenue = {};
+    revenueByCategory.forEach((item) => {
+      const product = products.find((p) => p.id === item.productId);
+      if (product) {
+        if (!categoryRevenue[product.category]) {
+          categoryRevenue[product.category] = 0;
         }
-        
-        revenueByCategory[category] += revenue;
-      });
+        categoryRevenue[product.category] += parseFloat(item._sum.subtotal);
+      }
     });
 
-    return Object.entries(revenueByCategory).map(([category, revenue]) => ({
-      category,
-      revenue,
-    }));
-  }
-
-  async getRevenueGrowth(startDate, endDate) {
-    if (!startDate || !endDate) return 0;
-
-    const currentRevenue = await prisma.order.aggregate({
-      where: {
-        createdAt: {
-          gte: new Date(startDate),
-          lte: new Date(endDate),
+    res.status(200).json(
+      new ApiResponse(200, {
+        totalRevenue: {
+          total: parseFloat(totalRevenue._sum.total || 0),
+          subtotal: parseFloat(totalRevenue._sum.subtotal || 0),
+          deliveryFees: parseFloat(totalRevenue._sum.deliveryFee || 0),
+          discounts: parseFloat(totalRevenue._sum.discount || 0),
         },
-      },
-      _sum: {
-        total: true,
-      },
-    });
-
-    const prevStartDate = new Date(new Date(startDate).getTime() - (30 * 24 * 60 * 60 * 1000));
-    const prevEndDate = new Date(new Date(endDate).getTime() - (30 * 24 * 60 * 60 * 1000));
-
-    const previousRevenue = await prisma.order.aggregate({
-      where: {
-        createdAt: {
-          gte: prevStartDate,
-          lte: prevEndDate,
-        },
-      },
-      _sum: {
-        total: true,
-      },
-    });
-
-    const current = currentRevenue._sum.total || 0;
-    const previous = previousRevenue._sum.total || 0;
-
-    return previous > 0 ? ((current - previous) / previous) * 100 : 100;
-  }
+        revenueByPaymentMethod,
+        revenueByCategory: Object.entries(categoryRevenue).map(
+          ([category, revenue]) => ({
+            category,
+            revenue,
+          }),
+        ),
+      }),
+    );
+  });
 }
 
 module.exports = new AnalyticsController();

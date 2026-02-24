@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FiMail, FiPhone, FiCalendar } from "react-icons/fi";
+import {
+  FiMail,
+  FiPhone,
+  FiCalendar,
+  FiChevronRight,
+  FiChevronLeft,
+} from "react-icons/fi";
 import Card from "../../components/common/Card";
 import Badge from "../../components/common/Badge";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
@@ -14,6 +20,10 @@ const Customers = () => {
     activeCustomers: 0,
     newThisMonth: 0,
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchCustomers();
@@ -22,52 +32,23 @@ const Customers = () => {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      // Simulated data - replace with actual API call
-      // const response = await api.get('/users?role=CUSTOMER');
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+        role: "CUSTOMER",
+      };
+      const response = await api.get("/users", { params });
+      const statResponse = await api.get("/users/customers");
+      const customerStat = statResponse.data.data.customers;
+      setCustomers(response.data.data.users || []);
+      setTotalPages(response.data.data.pagination?.page || 1);
+      setTotalCustomers(response.data.data.pagination?.total || 0);
 
-      // Mock data for demonstration
-      const mockCustomers = [
-        {
-          id: "1",
-          firstName: "Grace",
-          lastName: "Nkolo",
-          email: "grace.nkolo@example.com",
-          phone: "+237 670 00 00 04",
-          status: "ACTIVE",
-          createdAt: "2024-01-15T10:00:00Z",
-          totalOrders: 5,
-          totalSpent: 125000,
-        },
-        {
-          id: "2",
-          firstName: "Aminata",
-          lastName: "Diop",
-          email: "aminata.diop@example.com",
-          phone: "+237 670 00 00 05",
-          status: "ACTIVE",
-          createdAt: "2024-02-20T14:30:00Z",
-          totalOrders: 3,
-          totalSpent: 78000,
-        },
-        {
-          id: "3",
-          firstName: "Marie",
-          lastName: "Kamga",
-          email: "marie.k@example.com",
-          phone: "+237 670 00 00 06",
-          status: "ACTIVE",
-          createdAt: "2024-03-10T09:15:00Z",
-          totalOrders: 8,
-          totalSpent: 215000,
-        },
-      ];
-
-      setCustomers(mockCustomers);
       setStats({
-        totalCustomers: mockCustomers.length,
-        activeCustomers: mockCustomers.filter((c) => c.status === "ACTIVE")
+        totalCustomers: customerStat?.length,
+        activeCustomers: customerStat?.filter((c) => c.status === "ACTIVE")
           .length,
-        newThisMonth: mockCustomers.filter((c) => {
+        newThisMonth: customerStat?.filter((c) => {
           const createdDate = new Date(c.createdAt);
           const now = new Date();
           return (
@@ -81,6 +62,24 @@ const Customers = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const totalSpent = (orders) => {
+    console.log(orders.filter((order) => order.paymentStatus === "COMPLETED"));
+    orders
+      .filter((order) => order.paymentStatus === "COMPLETED")
+      .reduce((accumulator, currentValue) => {
+        return formatCurrency(
+          accumulator + parseFloat(currentValue.total, 10) || 0,
+        );
+      }, 0);
   };
 
   if (loading) {
@@ -165,67 +164,145 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {customers.map((customer) => (
-                <tr
-                  key={customer.id}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary-300 to-primary-500 rounded-full flex items-center justify-center text-white font-semibold">
-                        {customer.firstName.charAt(0)}
-                        {customer.lastName.charAt(0)}
+              {customers.length > 0 &&
+                customers.map((customer) => (
+                  <tr
+                    key={customer.id}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-primary-300 to-primary-500 rounded-full flex items-center justify-center text-white font-semibold">
+                          {customer.firstName.charAt(0)}
+                          {customer.lastName.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-800">
+                            {customer.firstName} {customer.lastName}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-800">
-                          {customer.firstName} {customer.lastName}
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="space-y-1">
+                        <p className="flex items-center gap-2 text-sm text-gray-600">
+                          <FiMail size={14} />
+                          {customer.email}
+                        </p>
+                        <p className="flex items-center gap-2 text-sm text-gray-600">
+                          <FiPhone size={14} />
+                          {customer.phone}
                         </p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4">
-                    <div className="space-y-1">
-                      <p className="flex items-center gap-2 text-sm text-gray-600">
-                        <FiMail size={14} />
-                        {customer.email}
-                      </p>
-                      <p className="flex items-center gap-2 text-sm text-gray-600">
-                        <FiPhone size={14} />
-                        {customer.phone}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <FiCalendar size={14} />
-                      {formatDate(customer.createdAt)}
-                    </div>
-                  </td>
-                  <td className="py-4 px-4">
-                    <span className="font-semibold text-gray-800">
-                      {customer.totalOrders}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 font-semibold text-primary-500">
-                    {formatCurrency(customer.totalSpent)}
-                  </td>
-                  <td className="py-4 px-4">
-                    <Badge
-                      variant={
-                        customer.status === "ACTIVE" ? "success" : "warning"
-                      }
-                    >
-                      {customer.status}
-                    </Badge>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="py-4 px-4 text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <FiCalendar size={14} />
+                        {formatDate(customer.createdAt)}
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className="font-semibold text-gray-800">
+                        {customer.orders.length}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 font-semibold text-primary-500">
+                      {/* {formatCurrency(customer.totalSpent || 0)} */}
+                      {totalSpent(customer.orders)}
+                    </td>
+                    <td className="py-4 px-4">
+                      <Badge
+                        variant={
+                          customer.status === "ACTIVE" ? "success" : "warning"
+                        }
+                      >
+                        {customer.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 
           {customers.length === 0 && (
             <div className="text-center py-12 text-gray-500">
               Aucun client trouvé
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
+              <div className="text-sm text-gray-600">
+                Affichage de {(currentPage - 1) * itemsPerPage + 1} à{" "}
+                {Math.min(currentPage * itemsPerPage, totalCustomers)} sur{" "}
+                {totalCustomers} produits
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Previous Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-lg border-2 ${
+                    currentPage === 1
+                      ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                      : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <FiChevronLeft size={20} />
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex gap-1">
+                  {[...Array(totalPages)].map((_, index) => {
+                    const page = index + 1;
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`px-4 py-2 rounded-lg border-2 font-medium ${
+                            currentPage === page
+                              ? "border-primary-500 bg-primary-500 text-white"
+                              : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    } else if (
+                      page === currentPage - 2 ||
+                      page === currentPage + 2
+                    ) {
+                      return (
+                        <span key={page} className="px-2 py-2 text-gray-400">
+                          ...
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-lg border-2 ${
+                    currentPage === totalPages
+                      ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                      : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <FiChevronRight size={20} />
+                </button>
+              </div>
             </div>
           )}
         </div>

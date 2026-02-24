@@ -1,11 +1,9 @@
-// This is your Prisma schema file
-
 generator client {
     provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mongodb"
+    provider = "mongodb"  // Must be lowercase
     url      = env("DATABASE_URL")
 }
 
@@ -27,10 +25,8 @@ enum UserStatus {
 enum ProductCategory {
     HAIR_OIL
     SHAMPOO
-    GROWTH_SERUM
-    HAIR_BUNDLE
-    CONDITIONER
-    TREATMENT
+    MASK
+    BUTTER
 }
 
 enum ProductStatus {
@@ -38,6 +34,12 @@ enum ProductStatus {
     INACTIVE
     OUT_OF_STOCK
     DISCONTINUED
+}
+
+enum BundleStatus {
+    ACTIVE
+    INACTIVE
+    OUT_OF_STOCK
 }
 
 enum OrderStatus {
@@ -115,8 +117,7 @@ model User {
     updatedAt   DateTime  @updatedAt
     deletedAt   DateTime?
 
-    
-
+    // Only add indexes for fields that are NOT @unique
     @@index([role])
     @@index([status])
     @@map("users")
@@ -130,6 +131,7 @@ model RefreshToken {
     expiresAt DateTime
     createdAt DateTime @default(now())
 
+    // Only index userId (token is already @unique)
     @@index([userId])
     @@map("refresh_tokens")
 }
@@ -198,6 +200,7 @@ model Product {
     orderItems    OrderItem[]
     reviews       Review[]
     wishlistItems WishlistItem[]
+    bundleItems   BundleItem[]
 
     // Metadata
     viewCount  Int     @default(0)
@@ -208,6 +211,7 @@ model Product {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
+    // Only add indexes for non-unique fields that need searching
     @@index([category])
     @@index([status])
     @@index([featured])
@@ -229,6 +233,70 @@ model ProductImage {
     @@map("product_images")
 }
 
+// ============= PRODUCT BUNDLES =============
+
+model Bundle {
+    id               String       @id @default(auto()) @map("_id") @db.ObjectId
+    name             String
+    slug             String       @unique
+    description      String
+    shortDescription String?
+    status           BundleStatus @default(ACTIVE)
+
+    // Pricing
+    bundlePrice    Float
+    originalPrice  Float
+    savingsAmount  Float
+    savingsPercent Float
+
+    // Bundle items
+    items BundleItem[]
+
+    // Relations
+    cartItems     CartItem[]
+    orderItems    OrderItem[]
+    wishlistItems WishlistItem[]
+
+    // Metadata
+    viewCount  Int     @default(0)
+    salesCount Int     @default(0)
+    featured   Boolean @default(false)
+
+    // SEO
+    metaTitle       String?
+    metaDescription String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // Only add indexes for non-unique fields
+    @@index([status])
+    @@index([featured])
+    @@map("bundles")
+}
+
+model BundleItem {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    bundleId String @db.ObjectId
+    bundle   Bundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+    productId String @db.ObjectId
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    quantity     Int   @default(1)
+    productName  String
+    productPrice Float
+    productImage String?
+
+    createdAt DateTime @default(now())
+
+    @@unique([bundleId, productId])
+    @@index([bundleId])
+    @@index([productId])
+    @@map("bundle_items")
+}
+
 // ============= SHOPPING CART =============
 
 model Cart {
@@ -245,21 +313,28 @@ model Cart {
 }
 
 model CartItem {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
-    cartId    String @db.ObjectId
-    cart      Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
-    productId String @db.ObjectId
-    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    id     String @id @default(auto()) @map("_id") @db.ObjectId
+    cartId String @db.ObjectId
+    cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
-    quantity Int   @default(1)
+    // Can be either a product OR a bundle
+    productId String? @db.ObjectId
+    product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    bundleId String? @db.ObjectId
+    bundle   Bundle? @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+    isBundle Boolean @default(false)
+    quantity Int     @default(1)
     price    Float
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@unique([cartId, productId])
+    @@unique([cartId, productId, bundleId])
     @@index([cartId])
     @@index([productId])
+    @@index([bundleId])
     @@map("cart_items")
 }
 
@@ -322,6 +397,7 @@ model Order {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    // Only add indexes for non-unique fields
     @@index([userId])
     @@index([status])
     @@index([paymentStatus])
@@ -331,16 +407,27 @@ model Order {
 }
 
 model OrderItem {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
-    orderId   String @db.ObjectId
-    order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-    productId String @db.ObjectId
-    product   Product @relation(fields: [productId], references: [id])
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    orderId String @db.ObjectId
+    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+    // Can be either a product OR a bundle
+    productId String? @db.ObjectId
+    product   Product? @relation(fields: [productId], references: [id])
+
+    bundleId String? @db.ObjectId
+    bundle   Bundle? @relation(fields: [bundleId], references: [id])
+
+    isBundle Boolean @default(false)
 
     // Snapshot data
     productName  String
-    productSku   String
+    productSku   String?
     productImage String?
+
+    // For bundles, store the items as JSON string
+    bundleName  String?
+    bundleItems String?
 
     quantity Int
     price    Float
@@ -350,6 +437,7 @@ model OrderItem {
 
     @@index([orderId])
     @@index([productId])
+    @@index([bundleId])
     @@map("order_items")
 }
 
@@ -398,7 +486,7 @@ model DiscountCode {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-
+    // Only add indexes for non-unique fields
     @@index([isActive])
     @@index([startDate, endDate])
     @@map("discount_codes")
@@ -440,14 +528,21 @@ model WishlistItem {
     userId String @db.ObjectId
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    productId String @db.ObjectId
-    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+    // Can be either a product OR a bundle
+    productId String? @db.ObjectId
+    product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    bundleId String? @db.ObjectId
+    bundle   Bundle? @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+    isBundle Boolean @default(false)
 
     createdAt DateTime @default(now())
 
-    @@unique([userId, productId])
+    @@unique([userId, productId, bundleId])
     @@index([userId])
     @@index([productId])
+    @@index([bundleId])
     @@map("wishlist_items")
 }
 
@@ -503,6 +598,5 @@ model DailyMetrics {
 
     createdAt DateTime @default(now())
 
-    
     @@map("daily_metrics")
 }

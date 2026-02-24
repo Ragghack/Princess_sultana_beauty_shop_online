@@ -3,6 +3,8 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const { generateSKU, generateSlug } = require("../utils/helpers");
+const path = require("path");
+const fs = require("fs").promises;
 
 class ProductController {
   /**
@@ -237,7 +239,7 @@ class ProductController {
 
   /**
    * @route   POST /api/v1/products
-   * @desc    Create new product
+   * @desc    Create new product with image upload
    * @access  Private (Admin/Staff)
    */
   createProduct = asyncHandler(async (req, res) => {
@@ -254,14 +256,38 @@ class ProductController {
       weight,
       volume,
       bundleLength,
-      featuredImage,
-      images,
       featured,
     } = req.body;
+
+    // Validate required fields
+    if (!name || !category || !price) {
+      throw new ApiError(400, "Nom, catégorie et prix sont obligatoires");
+    }
+
+    // Check if featured image was uploaded
+    if (!req.files || !req.files.featuredImage) {
+      throw new ApiError(400, "Image principale est obligatoire");
+    }
 
     // Generate SKU and slug
     const sku = generateSKU(name, category);
     const slug = generateSlug(name);
+
+    // Process featured image
+    const featuredImageFile = req.files.featuredImage[0];
+    const featuredImageUrl = `/uploads/products/${featuredImageFile.filename}`;
+
+    // Process gallery images
+    const galleryImagesData = [];
+    if (req.files.galleryImages) {
+      req.files.galleryImages.forEach((file, index) => {
+        galleryImagesData.push({
+          url: `/uploads/products/${file.filename}`,
+          altText: `${name} - Image ${index + 1}`,
+          position: index,
+        });
+      });
+    }
 
     // Create product
     const product = await prisma.product.create({
@@ -272,25 +298,22 @@ class ProductController {
         description,
         shortDescription,
         category,
-        price,
-        compareAtPrice,
-        cost,
-        stockQuantity,
-        lowStockThreshold: lowStockThreshold || 10,
-        weight,
-        volume,
-        bundleLength,
-        featuredImage,
-        featured: featured || false,
-        images: images
-          ? {
-              create: images.map((img, index) => ({
-                url: img.url,
-                altText: img.altText,
-                position: index,
-              })),
-            }
-          : undefined,
+        price: parseFloat(price),
+        compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
+        cost: cost ? parseFloat(cost) : null,
+        stockQuantity: parseInt(stockQuantity) || 0,
+        lowStockThreshold: parseInt(lowStockThreshold) || 10,
+        weight: weight ? parseFloat(weight) : null,
+        volume: volume ? parseFloat(volume) : null,
+        bundleLength: bundleLength ? parseFloat(bundleLength) : null,
+        featuredImage: featuredImageUrl,
+        featured: featured === "true" || featured === true,
+        images:
+          galleryImagesData.length > 0
+            ? {
+                create: galleryImagesData,
+              }
+            : undefined,
       },
       include: {
         images: true,
@@ -310,7 +333,8 @@ class ProductController {
   updateProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
-
+    console.log("updateData");
+    console.log(updateData);
     // Check if product exists
     const existingProduct = await prisma.product.findUnique({
       where: { id },
@@ -323,6 +347,26 @@ class ProductController {
     // Update slug if name changed
     if (updateData.name && updateData.name !== existingProduct.name) {
       updateData.slug = generateSlug(updateData.name);
+    }
+
+    // Handle featured image update
+    if (req.files && req.files.featuredImage) {
+      // Delete old featured image if exists
+      if (existingProduct.featuredImage) {
+        const oldImagePath = path.join(
+          __dirname,
+          "..",
+          existingProduct.featuredImage,
+        );
+        try {
+          await fs.unlink(oldImagePath);
+        } catch (err) {
+          console.error("Error deleting old image:", err);
+        }
+      }
+
+      const featuredImageFile = req.files.featuredImage[0];
+      updateData.featuredImage = `/uploads/products/${featuredImageFile.filename}`;
     }
 
     const product = await prisma.product.update({
@@ -344,11 +388,22 @@ class ProductController {
   deleteProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new ApiError(404, "Produit non trouvé");
+    }
+
     // Soft delete
     await prisma.product.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
+
+    // Note: We keep the images in case of restoration
+    // You can implement hard delete separately if needed
 
     res.status(200).json(new ApiResponse(200, null, "Produit supprimé"));
   });

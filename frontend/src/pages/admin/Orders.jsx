@@ -1,63 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { FiEye, FiFilter } from "react-icons/fi";
+import { FiEye, FiFilter, FiMoreHorizontal, FiTrash2 } from "react-icons/fi";
 import Card from "../../components/common/Card";
 import Badge from "../../components/common/Badge";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { formatCurrency, formatDateTime } from "../../utils/formatters";
-import api from "../../services/api";
+import { useOrders } from "../../hooks/useOrders";
+import Pagination from "../../components/common/Pagination";
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState("ALL");
-
-  useEffect(() => {
-    fetchOrders();
-  }, [statusFilter]);
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const params = {};
-      if (statusFilter !== "ALL") {
-        params.status = statusFilter;
-      }
-      const response = await api.get("/orders", { params });
-      setOrders(response.data.data.orders || []);
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getStatusBadge = (status) => {
-    const variants = {
-      PENDING: "warning",
-      CONFIRMED: "info",
-      PROCESSING: "info",
-      ASSIGNED: "primary",
-      OUT_FOR_DELIVERY: "primary",
-      DELIVERED: "success",
-      CANCELLED: "danger",
-      FAILED: "danger",
-    };
-    return variants[status] || "primary";
-  };
-
-  const getStatusLabel = (status) => {
-    const labels = {
-      PENDING: "En attente",
-      CONFIRMED: "Confirmée",
-      PROCESSING: "En préparation",
-      ASSIGNED: "Assignée",
-      OUT_FOR_DELIVERY: "En livraison",
-      DELIVERED: "Livrée",
-      CANCELLED: "Annulée",
-      FAILED: "Échouée",
-    };
-    return labels[status] || status;
-  };
+  const {
+    getStatusBadge,
+    getStatusLabel,
+    orders,
+    loading,
+    setStatusFilter,
+    statusFilter,
+    updateOrderStatus,
+    handleDelete,
+    totalPages,
+    currentPage,
+    getPageNumbers,
+    goToPage,
+    setCurrentPage,
+    getValuesAbove,
+    navigate,
+  } = useOrders();
 
   if (loading) {
     return <LoadingSpinner size="lg" text="Chargement des commandes..." />;
@@ -77,7 +43,10 @@ const Orders = () => {
           <FiFilter className="text-gray-400" />
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setCurrentPage(1);
+            }}
             className="px-4 py-2 rounded-xl border-2 border-gray-200 focus:border-primary-300 focus:outline-none"
           >
             <option value="ALL">Tous les statuts</option>
@@ -93,8 +62,8 @@ const Orders = () => {
       </Card>
 
       {/* Orders Table */}
-      <Card padding="lg">
-        <div className="overflow-x-auto">
+      <Card padding="lg" className="relative">
+        <div className="overflow-x-auto relative">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200">
@@ -161,9 +130,37 @@ const Orders = () => {
                     </Badge>
                   </td>
                   <td className="py-3 px-4">
-                    <button className="p-2 text-primary-500 hover:bg-primary-50 rounded-lg">
+                    <button
+                      onClick={() => navigate(`/admin/orders/${order.id}`)}
+                      className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"
+                    >
                       <FiEye size={18} />
                     </button>
+                    <button
+                      onClick={() => handleDelete("CANCELLED", order.id)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                    >
+                      <FiTrash2 size={18} />
+                    </button>
+                    <div className="relative inline-block group">
+                      <button className="p-2 text-primary-500 hover:bg-primary-50 rounded-lg">
+                        <FiMoreHorizontal size={18} />
+                      </button>
+
+                      <div className="absolute -left-32 -top-20 hidden group-hover:block mt-2 w-40 bg-white rounded-lg shadow-lg border">
+                        {getValuesAbove(order.status).map((item, index) => (
+                          <button
+                            onClick={() =>
+                              updateOrderStatus(item.status, order.id)
+                            }
+                            key={index}
+                            className="py-2 px-4 hover:bg-gray-100 text-left rounded-lg block w-full"
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -174,6 +171,16 @@ const Orders = () => {
             <div className="text-center py-12 text-gray-500">
               Aucune commande trouvée
             </div>
+          )}
+
+          {/* Pagination */}
+          {!loading && totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              getPageNumbers={getPageNumbers}
+              goToPage={goToPage}
+            />
           )}
         </div>
       </Card>

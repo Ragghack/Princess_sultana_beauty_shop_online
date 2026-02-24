@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FiSearch,
   FiHeart,
@@ -16,11 +16,16 @@ const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const { getCartCount } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-soft">

@@ -28,14 +28,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const { user, accessToken, refreshToken } = await authService.login(
-      email,
-      password,
-    );
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-    setUser(user);
-    return user;
+    const response = await authService.login(email, password);
+    localStorage.setItem("accessToken", response.data.accessToken);
+    localStorage.setItem("refreshToken", response.data.refreshToken);
+    setUser(response.data.user);
+    return response.data.user; // ← Return user so we can check role
   };
 
   const register = async (userData) => {
@@ -61,6 +58,8 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     isAdmin: user?.role === "ADMIN",
     isStaff: user?.role === "STAFF" || user?.role === "ADMIN",
+    isDelivery: user?.role === "DELIVERY",
+    isCustomer: user?.role === "CUSTOMER",
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,3 +1,4 @@
+const prisma = require("../config/database");
 const authService = require("../services/authService");
 const ApiResponse = require("../utils/ApiResponse");
 const asyncHandler = require("../utils/asyncHandler");
@@ -67,9 +68,20 @@ class AuthController {
    * @access  Private
    */
   getCurrentUser = asyncHandler(async (req, res) => {
-    res
-      .status(200)
-      .json(new ApiResponse(200, req.user, "Utilisateur récupéré"));
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+      },
+    });
+    res.status(200).json(new ApiResponse(200, user, "Utilisateur récupéré"));
   });
 }
 

@@ -47,7 +47,7 @@ const validations = {
 
   // Order validations
   createOrder: [
-    body("addressId").isUUID().withMessage("Adresse invalide"),
+    // body("addressId").isUUID().withMessage("Adresse invalide"),
     body("paymentMethod")
       .isIn(["MOBILE_MONEY", "ORANGE_MONEY", "CASH_ON_DELIVERY"])
       .withMessage("Mode de paiement invalide"),

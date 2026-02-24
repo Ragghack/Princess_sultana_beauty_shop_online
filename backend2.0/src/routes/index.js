@@ -7,6 +7,11 @@ const orderRoutes = require("./orderRoutes");
 const cartRoutes = require("./cartRoutes");
 const discountRoutes = require("./discountRoutes");
 const analyticsRoutes = require("./analyticsRoutes");
+const addressRoutes = require("./addressRoutes");
+const bundleRoutes = require("./bundleRoutes");
+const wishlistRoutes = require("./wishlistRoutes");
+const settingsRoutes = require("./settingsRoutes");
+const userRoutes = require("./userRoutes");
 
 // Mount routes
 router.use("/auth", authRoutes);
@@ -15,6 +20,11 @@ router.use("/orders", orderRoutes);
 router.use("/cart", cartRoutes);
 router.use("/discounts", discountRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/address", addressRoutes);
+router.use("/bundles", bundleRoutes);
+router.use("/wishlist", wishlistRoutes);
+router.use("/settings", settingsRoutes);
+router.use("/users", userRoutes);
 
 // Health check
 router.get("/health", (req, res) => {

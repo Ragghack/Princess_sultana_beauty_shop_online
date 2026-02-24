@@ -43,90 +43,92 @@ const Register = () => {
   };
 
   return (
-    <Card padding="lg">
-      <h2 className="font-serif text-2xl font-bold text-gray-800 mb-6 text-center">
-        Inscription
-      </h2>
+    <div className="w-full flex justify-center items-center">
+      <Card padding="lg" className="w-full md:w-2/3">
+        <h2 className="font-serif text-2xl font-bold text-gray-800 mb-6 text-center">
+          Inscription
+        </h2>
 
-      {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit}>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              label="Prénom"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              icon={<FiUser />}
+              required
+            />
+            <Input
+              label="Nom"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              icon={<FiUser />}
+              required
+            />
+          </div>
+
           <Input
-            label="Prénom"
-            name="firstName"
-            value={formData.firstName}
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
             onChange={handleChange}
-            icon={<FiUser />}
+            icon={<FiMail />}
             required
           />
+
           <Input
-            label="Nom"
-            name="lastName"
-            value={formData.lastName}
+            label="Téléphone"
+            type="tel"
+            name="phone"
+            value={formData.phone}
             onChange={handleChange}
-            icon={<FiUser />}
+            icon={<FiPhone />}
+            placeholder="+237 6XX XX XX XX"
             required
           />
-        </div>
 
-        <Input
-          label="Email"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          icon={<FiMail />}
-          required
-        />
+          <Input
+            label="Mot de passe"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            icon={<FiLock />}
+            required
+          />
 
-        <Input
-          label="Téléphone"
-          type="tel"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          icon={<FiPhone />}
-          placeholder="+237 6XX XX XX XX"
-          required
-        />
-
-        <Input
-          label="Mot de passe"
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          icon={<FiLock />}
-          required
-        />
-
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          fullWidth
-          loading={loading}
-          className="mb-4"
-        >
-          S'inscrire
-        </Button>
-
-        <p className="text-center text-gray-600">
-          Déjà un compte?{" "}
-          <Link
-            to="/login"
-            className="text-primary-500 hover:text-primary-600 font-medium"
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={loading}
+            className="mb-4"
           >
-            Se connecter
-          </Link>
-        </p>
-      </form>
-    </Card>
+            S'inscrire
+          </Button>
+
+          <p className="text-center text-gray-600">
+            Déjà un compte?{" "}
+            <Link
+              to="/login"
+              className="text-primary-500 hover:text-primary-600 font-medium"
+            >
+              Se connecter
+            </Link>
+          </p>
+        </form>
+      </Card>
+    </div>
   );
 };
 

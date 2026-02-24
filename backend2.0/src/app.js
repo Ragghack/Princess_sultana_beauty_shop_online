@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const path = require("path");
 const routes = require("./routes");
 const errorHandler = require("./middleware/errorHandler");
 const { limiter } = require("./middleware/rateLimiter");
@@ -23,9 +24,18 @@ app.use(
   }),
 );
 
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
+
 // Body parser
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Serve uploaded images
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Logging
 if (process.env.NODE_ENV === "development") {
