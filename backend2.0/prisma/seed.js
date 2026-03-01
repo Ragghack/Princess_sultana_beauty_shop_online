@@ -5,9 +5,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Starting database seed...");
-
   // Clear existing data (in correct order to respect foreign keys)
-  await prisma.orderStatusHistory.deleteMany();
+ await prisma.orderStatusHistory.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.bundleItem.deleteMany(); // NEW

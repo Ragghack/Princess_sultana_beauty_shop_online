@@ -305,8 +305,9 @@ class ProductController {
         lowStockThreshold: parseInt(lowStockThreshold) || 10,
         weight: weight ? parseFloat(weight) : null,
         volume: volume ? parseFloat(volume) : null,
-        bundleLength: bundleLength ? parseFloat(bundleLength) : null,
+        bundleLength: bundleLength ? String(bundleLength) : null,
         featuredImage: featuredImageUrl,
+        status:"ACTIVE",
         featured: featured === "true" || featured === true,
         images:
           galleryImagesData.length > 0

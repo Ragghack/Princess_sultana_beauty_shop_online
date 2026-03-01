@@ -32,28 +32,35 @@ const Products = () => {
     fetchProducts();
   }, [currentPage, categoryFilter]);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const params = {
-        page: currentPage,
-        limit: itemsPerPage,
-      };
+const fetchProducts = async () => {
+  try {
+    setLoading(true);
+    const params = {
+      page: currentPage,
+      limit: itemsPerPage,
+    };
 
-      if (categoryFilter !== "ALL") {
-        params.category = categoryFilter;
-      }
-
-      const response = await api.get("/products", { params });
-      setProducts(response.data.data.products || []);
-      setTotalPages(response.data.data.pagination?.pages || 1);
-      setTotalProducts(response.data.data.pagination?.total || 0);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    } finally {
-      setLoading(false);
+    if (categoryFilter !== "ALL") {
+      params.category = categoryFilter;
     }
-  };
+
+    // ADD THIS: Add cache-busting parameter
+    params._t = Date.now(); // Forces fresh request
+
+    const response = await api.get("/products", { params });
+    
+    // LOG THIS to see what you're getting
+    console.log("Products received:", response.data.data.products);
+    
+    setProducts(response.data.data.products || []);
+    setTotalPages(response.data.data.pagination?.pages || 1);
+    setTotalProducts(response.data.data.pagination?.total || 0);
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDelete = async (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit?")) {
@@ -252,6 +259,7 @@ const Products = () => {
                   </td>
                 </tr>
               ))}
+              
             </tbody>
           </table>
 
