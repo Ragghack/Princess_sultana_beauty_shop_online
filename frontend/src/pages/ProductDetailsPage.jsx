@@ -1,17 +1,24 @@
-import { FiMinus, FiPlus, FiShoppingCart, FiHeart } from "react-icons/fi";
+import { FiMinus, FiPlus, FiShoppingCart } from "react-icons/fi";
 import { formatCurrency } from "@utils/formatters";
 import Button from "@components/common/Button";
 import Badge from "@components/common/Badge";
 import Card from "@components/common/Card";
 import LoadingSpinner from "@components/common/LoadingSpinner";
 import { useProductDetails } from "../hooks/useProductDetails";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+
+// Consistent image helper — same pattern used across all product components
+const BASE_URL = (import.meta.env.VITE_APP_IMAGE_BASE_URL || "http://localhost:5000").replace(/\/$/, "");
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith("http")) return imagePath;
+  return `${BASE_URL}${imagePath}`;
+};
 
 const ProductDetailsPage = () => {
   const {
     handleAddToCart,
     handleBuyNow,
-    addToCart,
     adding,
     selectedImage,
     setSelectedImage,
@@ -19,10 +26,7 @@ const ProductDetailsPage = () => {
     setQuantity,
     loading,
     navigate,
-    slug,
     product,
-    addBundleToWishlist,
-    addToWishlist,
   } = useProductDetails();
 
   if (loading) {
@@ -51,63 +55,87 @@ const ProductDetailsPage = () => {
   const isOutOfStock = product.stockQuantity <= 0;
   const discount = product.compareAtPrice
     ? Math.round(
-        ((product.compareAtPrice - product.price) / product.compareAtPrice) *
-          100,
+        ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
       )
     : 0;
+
+  // FIX: Build the main displayed image correctly
+  // Priority: selected gallery image → featuredImage → null
+  const hasGallery = product.images && product.images.length > 0;
+  const mainImageSrc = hasGallery
+    ? getImageUrl(product.images[selectedImage]?.url) || getImageUrl(product.featuredImage)
+    : getImageUrl(product.featuredImage);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Images */}
+
+            {/* ===== IMAGES SECTION ===== */}
             <div className="space-y-4">
+
               {/* Main Image */}
               <div className="relative aspect-square bg-white rounded-2xl overflow-hidden shadow-soft-lg">
-                <img
-                  src={
-                    `${VITE_APP_IMAGE_BASE_URL}${product.images?.[selectedImage]?.url}` ||
-                    `${VITE_APP_IMAGE_BASE_URL}${product.featuredImage}`
-                  }
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
+                {mainImageSrc ? (
+                  <img
+                    src={mainImageSrc}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.warn("❌ Main image failed:", mainImageSrc);
+                      e.target.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <span className="text-gray-400">Aucune image</span>
+                  </div>
+                )}
+
                 {discount > 0 && (
                   <div className="absolute top-4 left-4">
-                    <Badge variant="danger" size="lg">
-                      -{discount}%
-                    </Badge>
+                    <Badge variant="danger" size="lg">-{discount}%</Badge>
                   </div>
                 )}
               </div>
 
-              {/* Thumbnail Images */}
-              {product.images && product.images.length > 1 && (
+              {/* Thumbnail Gallery */}
+              {hasGallery && product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-4">
-                  {product.images.map((image, index) => (
-                    <button
-                      key={image.id}
-                      onClick={() => setSelectedImage(index)}
-                      className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                        selectedImage === index
-                          ? "border-primary-400 shadow-soft"
-                          : "border-gray-200 hover:border-primary-200"
-                      }`}
-                    >
-                      <img
-                        // src={image.url}
-                        src={`${VITE_APP_IMAGE_BASE_URL}${image.url}`}
-                        alt={`${product.name} ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
+                  {product.images.map((image, index) => {
+                    const thumbSrc = getImageUrl(image.url);
+                    return (
+                      <button
+                        key={image.id}
+                        onClick={() => setSelectedImage(index)}
+                        className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                          selectedImage === index
+                            ? "border-primary-400 shadow-soft"
+                            : "border-gray-200 hover:border-primary-200"
+                        }`}
+                      >
+                        {thumbSrc ? (
+                          <img
+                            src={thumbSrc}
+                            alt={`${product.name} ${index + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              console.warn("❌ Thumbnail failed:", thumbSrc);
+                              e.target.style.display = "none";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
 
-            {/* Product Info */}
+            {/* ===== PRODUCT INFO SECTION ===== */}
             <div className="space-y-6">
               <div>
                 <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">
@@ -195,9 +223,7 @@ const ProductDetailsPage = () => {
                     </span>
                     <button
                       onClick={() =>
-                        setQuantity(
-                          Math.min(product.stockQuantity, quantity + 1),
-                        )
+                        setQuantity(Math.min(product.stockQuantity, quantity + 1))
                       }
                       className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors"
                     >
@@ -207,7 +233,7 @@ const ProductDetailsPage = () => {
                 </div>
               )}
 
-              {/* Actions */}
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   variant="primary"
@@ -229,34 +255,25 @@ const ProductDetailsPage = () => {
                 >
                   Ajouter au Panier
                 </Button>
-                {/* <Button variant="ghost" size="sm" icon={<FiHeart />}></Button> */}
               </div>
 
               {/* Product Features */}
-              <Card
-                padding="lg"
-                className="bg-gradient-to-br from-primary-50 to-secondary-50"
-              >
+              <Card padding="lg" className="bg-gradient-to-br from-primary-50 to-secondary-50">
                 <h3 className="font-semibold text-lg text-gray-800 mb-4">
                   Caractéristiques
                 </h3>
                 <ul className="space-y-2">
-                  <li className="flex items-center gap-2 text-gray-700">
-                    <span className="text-primary-500">✓</span>
-                    100% Ingrédients naturels
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700">
-                    <span className="text-primary-500">✓</span>
-                    Sans parabènes ni sulfates
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700">
-                    <span className="text-primary-500">✓</span>
-                    Convient à tous types de cheveux
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-700">
-                    <span className="text-primary-500">✓</span>
-                    Testé dermatologiquement
-                  </li>
+                  {[
+                    "100% Ingrédients naturels",
+                    "Sans parabènes ni sulfates",
+                    "Convient à tous types de cheveux",
+                    "Testé dermatologiquement",
+                  ].map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-gray-700">
+                      <span className="text-primary-500">✓</span>
+                      {feature}
+                    </li>
+                  ))}
                 </ul>
               </Card>
             </div>

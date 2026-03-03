@@ -12,7 +12,13 @@ import { formatCurrency } from "@utils/formatters";
 import { DELIVERY_FEE } from "@utils/constants";
 import Button from "@components/common/Button";
 import Card from "@components/common/Card";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+// Consistent image helper — fallback prevents "undefined/uploads/..." broken URLs
+const BASE_URL = (import.meta.env.VITE_APP_IMAGE_BASE_URL || "http://localhost:5000").replace(/\/$/, "");
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith("http")) return imagePath;
+  return `${BASE_URL}${imagePath}`;
+};
 
 const Cart = () => {
   const {
@@ -185,11 +191,16 @@ export const CartItem = ({ item, updateQuantity, removeFromCart }) => {
                   key={idx}
                   className="relative rounded overflow-hidden bg-gray-100"
                 >
-                  <img
-                    src={`${VITE_APP_IMAGE_BASE_URL}${bundleItem.productImage || bundleItem.product?.featuredImage}`}
-                    alt={bundleItem.productName}
-                    className="w-full h-full object-cover"
-                  />
+                  {getImageUrl(bundleItem.productImage || bundleItem.product?.featuredImage) ? (
+                    <img
+                      src={getImageUrl(bundleItem.productImage || bundleItem.product?.featuredImage)}
+                      alt={bundleItem.productName}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { console.warn("❌ Bundle img failed:", e.target.src); e.target.style.display = "none"; }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200" />
+                  )}
                   {bundleItem.quantity > 1 && (
                     <div className="absolute bottom-0 right-0 bg-black bg-opacity-70 text-white text-xs px-1">
                       x{bundleItem.quantity}
@@ -283,11 +294,18 @@ export const CartItem = ({ item, updateQuantity, removeFromCart }) => {
   return (
     <Card padding="md">
       <div className="flex gap-4">
-        <img
-          src={`${VITE_APP_IMAGE_BASE_URL}${item.product?.featuredImage}`}
-          alt={item.product?.name}
-          className="w-24 h-24 object-cover rounded-xl flex-shrink-0"
-        />
+        {getImageUrl(item.product?.featuredImage) ? (
+          <img
+            src={getImageUrl(item.product?.featuredImage)}
+            alt={item.product?.name}
+            className="w-24 h-24 object-cover rounded-xl flex-shrink-0"
+            onError={(e) => { console.warn("❌ Cart img failed:", e.target.src); e.target.style.display = "none"; }}
+          />
+        ) : (
+          <div className="w-24 h-24 rounded-xl bg-gray-200 flex-shrink-0 flex items-center justify-center">
+            <span className="text-gray-400 text-xs">No img</span>
+          </div>
+        )}
 
         <div className="flex-1">
           <Link

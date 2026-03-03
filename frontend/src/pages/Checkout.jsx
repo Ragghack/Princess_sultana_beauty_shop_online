@@ -11,7 +11,13 @@ import {
   FiCreditCard,
 } from "react-icons/fi";
 import { useCheckout } from "../hooks/useCheckout";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+// Consistent image helper — fallback prevents "undefined/uploads/..." broken URLs
+const BASE_URL = (import.meta.env.VITE_APP_IMAGE_BASE_URL || "http://localhost:5000").replace(/\/$/, "");
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith("http")) return imagePath;
+  return `${BASE_URL}${imagePath}`;
+};
 
 const Checkout = () => {
   const {
@@ -198,11 +204,16 @@ const Checkout = () => {
                     if (!item.isBundle && !item.bundle) {
                       return (
                         <div key={item.id} className="flex gap-3">
-                          <img
-                            src={`${VITE_APP_IMAGE_BASE_URL}${item.product?.featuredImage}`}
-                            alt={item.product.name}
-                            className="w-16 h-16 object-cover rounded-lg"
-                          />
+                          {getImageUrl(item.product?.featuredImage) ? (
+                            <img
+                              src={getImageUrl(item.product?.featuredImage)}
+                              alt={item.product.name}
+                              className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                              onError={(e) => { console.warn("❌ Checkout product img failed:", e.target.src); e.target.style.display = "none"; }}
+                            />
+                          ) : (
+                            <div className="w-16 h-16 rounded-lg bg-gray-200 flex-shrink-0" />
+                          )}
                           <div className="flex-1">
                             <p className="font-medium text-sm text-gray-800 line-clamp-2">
                               {item.product.name}
@@ -237,11 +248,16 @@ const Checkout = () => {
                                   key={idx}
                                   className="relative rounded overflow-hidden bg-gray-100"
                                 >
-                                  <img
-                                    src={`${VITE_APP_IMAGE_BASE_URL}${bundleItem.productImage || bundleItem.product?.featuredImage}`}
-                                    alt={bundleItem.productName}
-                                    className="w-full h-full object-cover"
-                                  />
+                                  {getImageUrl(bundleItem.productImage || bundleItem.product?.featuredImage) ? (
+                                    <img
+                                      src={getImageUrl(bundleItem.productImage || bundleItem.product?.featuredImage)}
+                                      alt={bundleItem.productName}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => { console.warn("❌ Checkout bundle img failed:", e.target.src); e.target.style.display = "none"; }}
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full bg-gray-200" />
+                                  )}
                                   {bundleItem.quantity > 1 && (
                                     <div className="absolute bottom-0 right-0 bg-black bg-opacity-70 text-white text-xs px-1">
                                       x{bundleItem.quantity}

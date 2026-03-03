@@ -8,19 +8,26 @@ import Button from "@components/common/Button";
 import Badge from "@components/common/Badge";
 import { useAuth } from "@hooks/useAuth";
 
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+// FIX: fallback to localhost:5000 if env var is missing or undefined
+const BASE_URL =
+  import.meta.env.VITE_APP_IMAGE_BASE_URL || "http://localhost:5000";
+
+// Helper: build a safe image URL from a stored path like /uploads/products/file.png
+const imageUrl = (path) => {
+  if (!path) return null;
+  // Avoid double slashes if BASE_URL has trailing slash
+  const base = BASE_URL.replace(/\/$/, "");
+  return `${base}${path}`;
+};
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const inWishlist = isInWishlist(product.id, false);
-
-  const { isAuthenticated } = useAuth();
-
-  const navigate = useNavigate();
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -41,12 +48,6 @@ const ProductCard = ({ product }) => {
     }
   };
 
-  const handleWishlist = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
-  };
-
   const handleToggle = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -64,11 +65,17 @@ const ProductCard = ({ product }) => {
   const discount = product.compareAtPrice
     ? Math.round(
         ((product.compareAtPrice - product.price) / product.compareAtPrice) *
-          100,
+          100
       )
     : 0;
 
   const isOutOfStock = product.stockQuantity <= 0;
+
+  // Build the image src — use featuredImage, fallback to first gallery image
+  const imgSrc =
+    imageUrl(product.featuredImage) ||
+    imageUrl(product.images?.[0]?.url) ||
+    null;
 
   return (
     <div className="group">
@@ -76,11 +83,23 @@ const ProductCard = ({ product }) => {
         <div className="bg-white rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-300 hover:-translate-y-2">
           {/* Image Container */}
           <div className="relative aspect-square overflow-hidden bg-gray-100">
-            <img
-              src={`${VITE_APP_IMAGE_BASE_URL}${product.featuredImage}`}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            />
+            {imgSrc ? (
+              <img
+                src={imgSrc}
+                alt={product.name}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                onError={(e) => {
+                  // Log broken image to console for debugging
+                  console.warn("❌ Broken image:", imgSrc);
+                  e.target.style.display = "none";
+                }}
+              />
+            ) : (
+              // Placeholder when no image at all
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <span className="text-gray-400 text-sm">No image</span>
+              </div>
+            )}
 
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">

@@ -115,7 +115,8 @@ model User {
     lastLoginAt DateTime?
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
-    deletedAt   DateTime?
+    deletedAt   DateTime? @default(dbgenerated())
+    
 
     // Only add indexes for fields that are NOT @unique
     @@index([role])

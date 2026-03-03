@@ -154,7 +154,7 @@ const Contact = () => {
                 </h3>
                 <div className="flex gap-3">
                   <a
-                    href="https://wa.me/237XXXXXXXXX"
+                    href="https://wa.me/237693190930"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-600 transition-colors"

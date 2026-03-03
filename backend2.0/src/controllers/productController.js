@@ -35,11 +35,11 @@ class ProductController {
       where.category = category;
     }
 
-    if (status) {
-      where.status = status;
-    } else {
-      where.status = "ACTIVE"; // Only show active products by default
-    }
+  if (status && status !== 'ALL') {
+  where.status = status;
+} else if (!status) {
+  where.status = "ACTIVE"; // public default
+}
 
     if (featured === "true") {
       where.featured = true;
@@ -308,6 +308,7 @@ class ProductController {
         bundleLength: bundleLength ? parseFloat(bundleLength) : null,
         featuredImage: featuredImageUrl,
         featured: featured === "true" || featured === true,
+        status:"ACTIVE",
         images:
           galleryImagesData.length > 0
             ? {
