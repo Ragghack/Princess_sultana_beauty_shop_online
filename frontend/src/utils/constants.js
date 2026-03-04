@@ -24,7 +24,7 @@ export const PRODUCT_CATEGORIES = [
 ];
 
 export const DELIVERY_FEE = Number(import.meta.env.VITE_DELIVERY_FEE) || 1000;
-export const ADMIN_WHATSAPP = "+237688049127";
+export const ADMIN_WHATSAPP = "+237693190930";
 
 export const EMAILJS_SERVICE_ID = import.meta.env.EMAILJS_SERVICE_ID;
 export const EMAILJS_TEMPLATE_ID = import.meta.env.EMAILJS_TEMPLATE_ID;

@@ -6,7 +6,7 @@ export const useSettings = () => {
     deliveryFee: "1000",
     shopName: "Princesse Sultana Hair Care",
     shopEmail: "contact@princesse-sultana.cm",
-    shopPhone: "+237 6 XX XX XX XX",
+    shopPhone: "+237 6 93 19 09 30",
     shopAddress: "Akwa, Douala, Cameroun",
     lowStockThreshold: "10",
     taxRate: "0",

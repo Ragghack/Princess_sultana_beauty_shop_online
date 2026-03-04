@@ -30,49 +30,54 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 bg-white shadow-soft">
       {/* Top Bar */}
-      <div className="bg-gradient-to-r from-primary-100 to-secondary-100 py-2">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center text-sm">
-            <div className="hidden md:flex gap-6 text-gray-700">
-              <span>📞 +237 6 XX XX XX XX</span>
-              <span>✉️ contact@princesse-sultana.cm</span>
-            </div>
-            <div className="flex gap-4 ml-auto">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/account"
-                    className="text-gray-700 hover:text-primary-500 transition-colors"
-                  >
-                    Mon Compte
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="text-gray-700 hover:text-primary-500 transition-colors"
-                  >
-                    Déconnexion
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-gray-700 hover:text-primary-500 transition-colors"
-                  >
-                    Connexion
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="text-gray-700 hover:text-primary-500 transition-colors"
-                  >
-                    Inscription
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+<div className="bg-gradient-to-r from-primary-100 to-secondary-100 py-2">
+  <div className="container mx-auto px-4">
+    <div className="flex justify-between items-center text-sm">
+      <div className="hidden md:flex gap-6 text-gray-700">
+       {/* <span>📞 +237693190930</span>
+        <span>✉️ contact@princesse-sultana.cm</span>*/}
       </div>
+      <div className="flex gap-4 ml-auto">
+        {isAuthenticated ? (
+          <>
+            <Link
+              to="/account"
+              className="text-gray-700 hover:text-primary-500 transition-colors"
+            >
+              Mon Compte
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="text-gray-700 hover:text-primary-500 transition-colors"
+            >
+              Déconnexion
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/login"
+              className="relative inline-flex items-center justify-center px-6 py-2 overflow-hidden font-medium text-primary-600 rounded-full shadow-2xl group hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-primary-400 via-primary-300 to-secondary-300"></span>
+              <span className="absolute bottom-0 right-0 block w-64 h-64 mb-32 mr-4 transition duration-500 origin-bottom-left transform rotate-45 translate-x-24 bg-primary-200 rounded-full opacity-30 group-hover:rotate-90 ease"></span>
+              <span className="relative text-white">Connexion</span>
+            </Link>
+            
+            <Link
+              to="/register"
+              className="relative inline-flex items-center justify-center px-6 py-2 overflow-hidden font-medium text-secondary-600 rounded-full shadow-2xl group hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-secondary-400 via-secondary-300 to-primary-300"></span>
+              <span className="absolute bottom-0 right-0 block w-64 h-64 mb-32 mr-4 transition duration-500 origin-bottom-left transform rotate-45 translate-x-24 bg-secondary-200 rounded-full opacity-30 group-hover:rotate-90 ease"></span>
+              <span className="relative text-white">Inscription</span>
+            </Link>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
 
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4">

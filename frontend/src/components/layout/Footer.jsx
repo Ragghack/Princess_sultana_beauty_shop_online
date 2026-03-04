@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { FiFacebook, FiInstagram } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
-
+import { FaTiktok } from 'react-icons/fa';
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-50 mt-20">
@@ -26,14 +26,14 @@ const Footer = () => {
               >
                 <FiFacebook size={20} />
               </a>
-              <a
+              {/*<a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
               >
                 <FiInstagram size={20} />
-              </a>
+              </a>*/}
               <a
                 href="https://whatsapp.com"
                 target="_blank"
@@ -42,6 +42,14 @@ const Footer = () => {
               >
                 <FaWhatsapp size={20} />
               </a>
+                  <a
+      href="https://tiktok.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
+    >
+      <FaTiktok size={20} />
+    </a>
             </div>
           </div>
 
@@ -135,7 +143,7 @@ const Footer = () => {
             <ul className="space-y-2 text-gray-600">
               <li className="flex items-center gap-2">
                 <span>📞</span>
-                <span>+237 6 XX XX XX XX</span>
+                <span>+237693190930</span>
               </li>
               <li className="flex items-center gap-2">
                 <span>✉️</span>

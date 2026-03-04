@@ -15,7 +15,13 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { formatCurrency } from "../../utils/formatters";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+// Consistent image helper — same pattern used across all product components
+const BASE_URL = (import.meta.env.VITE_APP_IMAGE_BASE_URL || "http://localhost:5000").replace(/\/$/, "");
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith("http")) return imagePath;
+  return `${BASE_URL}${imagePath}`;
+};
 
 const Bundles = () => {
   const navigate = useNavigate();
@@ -38,14 +44,22 @@ const Bundles = () => {
       const params = {
         page: currentPage,
         limit: itemsPerPage,
+        status: statusFilter, // "ALL" handled correctly by bundleController
+        _t: Date.now(),
       };
 
-      if (statusFilter !== "ALL") {
-        params.status = statusFilter;
+      const response = await api.get("/bundles", { params });
+      const fetched = response.data.data.bundles || [];
+
+      // Diagnostic — remove once bundles confirmed visible
+      console.log("📦 Bundles fetched:", fetched.length);
+      if (fetched.length > 0) {
+        console.log("📦 First bundle items:", fetched[0].items?.length, "items");
+        console.log("🖼️  First item image:", fetched[0].items?.[0]?.productImage);
+        console.log("🖼️  Full image URL:", getImageUrl(fetched[0].items?.[0]?.productImage));
       }
 
-      const response = await api.get("/bundles", { params });
-      setBundles(response.data.data.bundles || []);
+      setBundles(fetched);
       setTotalPages(response.data.data.pagination?.pages || 1);
       setTotalBundles(response.data.data.pagination?.total || 0);
     } catch (error) {
@@ -184,17 +198,28 @@ const Bundles = () => {
                   {/* Preview Images */}
                   <td className="py-3 px-4">
                     <div className="flex -space-x-2">
-                      {bundle.items?.slice(0, 3).map((item, idx) => (
-                        <img
-                          key={idx}
-                          src={
-                            `${VITE_APP_IMAGE_BASE_URL}${item.productImage}` ||
-                            item.productImage
-                          }
-                          alt={item.productName}
-                          className="w-12 h-12 object-cover rounded-lg border-2 border-white"
-                        />
-                      ))}
+                      {bundle.items?.slice(0, 3).map((item, idx) => {
+                          const imgSrc = getImageUrl(item.productImage);
+                          return imgSrc ? (
+                            <img
+                              key={idx}
+                              src={imgSrc}
+                              alt={item.productName}
+                              className="w-12 h-12 object-cover rounded-lg border-2 border-white"
+                              onError={(e) => {
+                                console.warn("❌ Bundle preview img failed:", imgSrc);
+                                e.target.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <div
+                              key={idx}
+                              className="w-12 h-12 rounded-lg border-2 border-white bg-gray-200 flex items-center justify-center"
+                            >
+                              <span className="text-gray-400 text-xs">?</span>
+                            </div>
+                          );
+                        })}
                       {bundle.items?.length > 3 && (
                         <div className="w-12 h-12 rounded-lg border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
                           +{bundle.items.length - 3}
