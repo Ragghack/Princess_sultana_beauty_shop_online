@@ -11,6 +11,10 @@ const { limiter } = require("./middleware/rateLimiter");
 const ApiError = require("./utils/ApiError");
 
 const app = express();
+// Backend URL configuration
+const BACKEND_URL =
+  process.env.BACKEND_URL ||
+  "https://princess-sultana-beauty-shop-online-k0fh.onrender.com";
 
 // ============= DIRECTORY SETUP =============
 const uploadDirs = [
@@ -67,7 +71,7 @@ app.use(
 // ============= CORS =============
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
-  "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173"
+  "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173,https://princess-sultana-beauty-shop-online-qv9q0c9a0.vercel.app"
   
 )
   .split(",")
