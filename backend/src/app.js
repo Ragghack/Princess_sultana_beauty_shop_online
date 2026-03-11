@@ -44,7 +44,7 @@ app.use(
           "http://localhost:*",
           "https://localhost:*",
           process.env.FRONTEND_URL,
-          process.env.BACKEND_URL,
+          BACKEND_URL,
           "*",
         ].filter(Boolean),
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
@@ -53,7 +53,7 @@ app.use(
         connectSrc: [
           "'self'",
           process.env.FRONTEND_URL,
-          process.env.BACKEND_URL,
+          BACKEND_URL,
           "*",
         ],
         mediaSrc: ["'self'", "*"],
@@ -68,6 +68,7 @@ app.use(
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
   "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173"
+  
 )
   .split(",")
   .map((o) => o.trim());
@@ -184,7 +185,7 @@ app.get("/control/images", async (req, res) => {
       success: true,
       total: Object.values(images).flat().length,
       byCategory: images,
-      baseUrl: `${process.env.BACKEND_URL || "http://localhost:5000"}/uploads`,
+       baseUrl: `${BACKEND_URL}/uploads`,
     });
   } catch (err) {
     res.status(500).json({ error: "Failed to scan uploads directory" });
@@ -216,7 +217,7 @@ app.get("/api/v1", (req, res) => {
     success: true,
     message: "Sultana Beauty API v1",
     images: {
-      baseUrl: `${process.env.BACKEND_URL || "http://localhost:5000"}/uploads`,
+      baseUrl: `${BACKEND_URL}/uploads`,
     },
     status: "operational",
     timestamp: new Date().toISOString(),
