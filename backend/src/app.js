@@ -71,7 +71,7 @@ app.use(
 // ============= CORS =============
 const allowedOrigins = (
   process.env.ALLOWED_ORIGINS ||
-  "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173,https://princess-sultana-beauty-shop-online-qv9q0c9a0.vercel.app"
+  "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173,princess-sultana-beauty-shop-online-5khykxmpt.vercel.app"
   
 )
   .split(",")
