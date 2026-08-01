@@ -612,7 +612,7 @@ class OrderController {
       throw new ApiError(400, "Capture d'écran du paiement requise");
     }
 
-    const paymentProofUrl = `/uploads/payment-proofs/${req.file.filename}`;
+    const paymentProofUrl = req.file.path; // Cloudinary-hosted URL
 
     const updatedOrder = await prisma.order.update({
       where: { id },

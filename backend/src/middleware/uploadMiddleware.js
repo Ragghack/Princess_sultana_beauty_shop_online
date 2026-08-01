@@ -1,54 +1,81 @@
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const cloudinary = require("../config/cloudinary");
 
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, "../uploads/products");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    // Generate unique filename: timestamp-randomstring-originalname
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    const nameWithoutExt = path.basename(file.originalname, ext);
-    const sanitizedName = nameWithoutExt.replace(/[^a-zA-Z0-9]/g, "-");
-    cb(null, `${sanitizedName}-${uniqueSuffix}${ext}`);
-  },
-});
-
-// File filter - only accept images
+// Only accept image files
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
-  const extname = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase(),
-  );
-  const mimetype = allowedTypes.test(file.mimetype);
+  const extOk = allowedTypes.test(file.originalname.toLowerCase());
+  const mimeOk = allowedTypes.test(file.mimetype);
 
-  if (mimetype && extname) {
+  if (mimeOk && extOk) {
     return cb(null, true);
-  } else {
-    cb(
-      new Error(
-        "Seules les images sont autorisées (JPEG, JPG, PNG, GIF, WEBP)",
-      ),
-    );
   }
+  cb(
+    new Error(
+      "Seules les images sont autorisées (JPEG, JPG, PNG, GIF, WEBP)",
+    ),
+  );
 };
 
-// Create multer instance
+// Helper to build a clean, unique public_id from the original filename
+const buildPublicId = (originalname) => {
+  const nameWithoutExt = originalname.replace(/\.[^/.]+$/, "");
+  const sanitized = nameWithoutExt.replace(/[^a-zA-Z0-9]/g, "-");
+  const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+  return `${sanitized}-${uniqueSuffix}`;
+};
+
+/**
+ * Minimal multer storage engine that streams the uploaded file
+ * straight to Cloudinary — avoids relying on the unmaintained
+ * "multer-storage-cloudinary" package, which is stuck requiring
+ * cloudinary@^1.x as a peer dependency.
+ *
+ * After upload, req.file / req.files entries get:
+ *   - path      -> Cloudinary secure_url (what we store in MongoDB)
+ *   - filename  -> Cloudinary public_id (used later to delete the asset)
+ */
+class CloudinaryEngine {
+  constructor(options) {
+    this.folder = options.folder;
+    this.publicIdPrefix = options.publicIdPrefix || "";
+  }
+
+  _handleFile(req, file, cb) {
+    const publicId = `${this.publicIdPrefix}${buildPublicId(file.originalname)}`;
+
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: this.folder,
+        public_id: publicId,
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) return cb(error);
+        cb(null, {
+          path: result.secure_url,
+          filename: result.public_id,
+          size: result.bytes,
+        });
+      },
+    );
+
+    file.stream.pipe(uploadStream);
+  }
+
+  _removeFile(req, file, cb) {
+    if (!file.filename) return cb(null);
+    cloudinary.uploader.destroy(file.filename, (err) => cb(err));
+  }
+}
+
+// ---- Product images (featured + gallery) ----
 const upload = multer({
-  storage: storage,
+  storage: new CloudinaryEngine({ folder: "sultana/products" }),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB max file size
   },
-  fileFilter: fileFilter,
+  fileFilter,
 });
 
 // Middleware for product image uploads
@@ -57,29 +84,16 @@ const uploadProductImages = upload.fields([
   { name: "galleryImages", maxCount: 6 },
 ]);
 
-// Payment proof uploads
-const paymentProofDir = path.join(__dirname, "../uploads/payment-proofs");
-if (!fs.existsSync(paymentProofDir)) {
-  fs.mkdirSync(paymentProofDir, { recursive: true });
-}
-
-const paymentProofStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, paymentProofDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `payment-${uniqueSuffix}${ext}`);
-  },
-});
-
+// ---- Payment proof uploads ----
 const uploadPaymentProof = multer({
-  storage: paymentProofStorage,
+  storage: new CloudinaryEngine({
+    folder: "sultana/payment-proofs",
+    publicIdPrefix: "payment-",
+  }),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB max file size
   },
-  fileFilter: fileFilter,
+  fileFilter,
 }).single("paymentProof");
 
 module.exports = {

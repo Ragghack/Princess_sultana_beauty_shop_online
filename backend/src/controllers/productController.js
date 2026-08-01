@@ -3,8 +3,8 @@ const ApiResponse = require("../utils/ApiResponse");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const { generateSKU, generateSlug } = require("../utils/helpers");
-const path = require("path");
-const fs = require("fs").promises;
+const cloudinary = require("../config/cloudinary");
+const { getPublicIdFromUrl } = require("../utils/cloudinaryHelpers");
 
 class ProductController {
   /**
@@ -273,16 +273,16 @@ class ProductController {
     const sku = generateSKU(name, category);
     const slug = generateSlug(name);
 
-    // Process featured image
+    // Process featured image (Cloudinary sets file.path to the hosted URL)
     const featuredImageFile = req.files.featuredImage[0];
-    const featuredImageUrl = `/uploads/products/${featuredImageFile.filename}`;
+    const featuredImageUrl = featuredImageFile.path;
 
     // Process gallery images
     const galleryImagesData = [];
     if (req.files.galleryImages) {
       req.files.galleryImages.forEach((file, index) => {
         galleryImagesData.push({
-          url: `/uploads/products/${file.filename}`,
+          url: file.path,
           altText: `${name} - Image ${index + 1}`,
           position: index,
         });
@@ -352,22 +352,20 @@ class ProductController {
 
     // Handle featured image update
     if (req.files && req.files.featuredImage) {
-      // Delete old featured image if exists
+      // Delete old featured image from Cloudinary if it exists
       if (existingProduct.featuredImage) {
-        const oldImagePath = path.join(
-          __dirname,
-          "..",
-          existingProduct.featuredImage,
-        );
-        try {
-          await fs.unlink(oldImagePath);
-        } catch (err) {
-          console.error("Error deleting old image:", err);
+        const oldPublicId = getPublicIdFromUrl(existingProduct.featuredImage);
+        if (oldPublicId) {
+          try {
+            await cloudinary.uploader.destroy(oldPublicId);
+          } catch (err) {
+            console.error("Error deleting old image from Cloudinary:", err);
+          }
         }
       }
 
       const featuredImageFile = req.files.featuredImage[0];
-      updateData.featuredImage = `/uploads/products/${featuredImageFile.filename}`;
+      updateData.featuredImage = featuredImageFile.path;
     }
 
     const product = await prisma.product.update({
