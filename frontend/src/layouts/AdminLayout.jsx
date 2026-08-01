@@ -8,6 +8,7 @@ import {
   FiSettings,
   FiMenu,
   FiX,
+  FiMapPin,
 } from "react-icons/fi";
 
 const AdminLayout = () => {
@@ -36,6 +37,11 @@ const AdminLayout = () => {
       label: "Bundles",
     },
     { path: "/admin/customers", icon: <FiUsers size={20} />, label: "Clients" },
+    {
+      path: "/admin/delivery-zones",
+      icon: <FiMapPin size={20} />,
+      label: "Zones de Livraison",
+    },
     {
       path: "/admin/settings",
       icon: <FiSettings size={20} />,

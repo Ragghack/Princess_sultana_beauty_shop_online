@@ -32,6 +32,7 @@ import AdminAddBundle from "../pages/admin/AddBundle";
 import AdminBundles from "../pages/admin/Bundles";
 import AdminEditBundle from "../pages/admin/EditBundle";
 import AdminEditProduct from "../pages/admin/EditProduct";
+import AdminDeliveryZones from "../pages/admin/DeliveryZones";
 
 // Delivery Pages
 import DeliveryDashboard from "../pages/delivery/Dashboard";
@@ -77,6 +78,7 @@ const AppRoutes = () => {
         <Route path="orders" element={<AdminOrders />} />
         <Route path="orders/:id" element={<AdminOrderDetail />} />
         <Route path="customers" element={<AdminCustomers />} />
+        <Route path="delivery-zones" element={<AdminDeliveryZones />} />
         <Route path="settings" element={<AdminSettings />} />
         <Route path="products/add" element={<AdminAddProduct />} />
         <Route path="products/edit/:id" element={<AdminEditProduct />} />

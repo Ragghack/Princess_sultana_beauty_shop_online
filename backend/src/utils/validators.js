@@ -49,9 +49,12 @@ const validations = {
   createOrder: [
     // body("addressId").isUUID().withMessage("Adresse invalide"),
     body("paymentMethod")
-      .isIn(["MOBILE_MONEY", "ORANGE_MONEY", "CASH_ON_DELIVERY"])
+      .isIn(["MOBILE_MONEY", "ORANGE_MONEY", "CASH_ON_DELIVERY", "CARD"])
       .withMessage("Mode de paiement invalide"),
     body("items").isArray({ min: 1 }).withMessage("Au moins un article requis"),
+    body("deliveryZoneId")
+      .notEmpty()
+      .withMessage("Veuillez sélectionner votre ville/quartier"),
   ],
 
   // Discount validations

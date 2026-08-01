@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatCurrency } from "@utils/formatters";
 import {
   PAYMENT_METHODS,
   PAYMENT_INSTRUCTIONS,
-  DELIVERY_FEE,
 } from "@utils/constants";
 import Input from "@components/common/Input";
 import Button from "@components/common/Button";
@@ -48,9 +47,33 @@ const Checkout = () => {
     paymentProofFile,
     paymentProofPreview,
     handlePaymentProofChange,
+    deliveryZones,
+    zonesLoading,
+    selectedZone,
+    handleSelectZone,
+    deliveryFee,
   } = useCheckout();
 
   const [copied, setCopied] = useState(false);
+  const [zoneQuery, setZoneQuery] = useState("");
+  const [zoneDropdownOpen, setZoneDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (selectedZone) {
+      setZoneQuery(
+        `${selectedZone.town}${selectedZone.quarter ? " - " + selectedZone.quarter : ""}`,
+      );
+    }
+  }, [selectedZone]);
+
+  const filteredZones =
+    zoneQuery.trim().length === 0
+      ? deliveryZones
+      : deliveryZones.filter((z) => {
+          const label =
+            `${z.region} ${z.town} ${z.quarter || ""}`.toLowerCase();
+          return label.includes(zoneQuery.trim().toLowerCase());
+        });
 
   const handleCopyCode = (code) => {
     navigator.clipboard?.writeText(code);
@@ -145,25 +168,83 @@ const Checkout = () => {
                     required
                   />
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      label="Ville"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      error={errors.city}
-                      placeholder="Ex: Douala"
-                      required
-                    />
-                    <Input
-                      label="Région"
-                      name="region"
-                      value={formData.region}
-                      onChange={handleChange}
-                      error={errors.region}
-                      placeholder="Ex: Littoral"
-                      required
-                    />
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Ville / Quartier
+                    </label>
+                    <div className="relative">
+                      <FiMapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        value={zoneQuery}
+                        onChange={(e) => {
+                          setZoneQuery(e.target.value);
+                          setZoneDropdownOpen(true);
+                        }}
+                        onFocus={() => setZoneDropdownOpen(true)}
+                        onBlur={() =>
+                          setTimeout(() => setZoneDropdownOpen(false), 150)
+                        }
+                        placeholder={
+                          zonesLoading
+                            ? "Chargement des zones..."
+                            : "Rechercher votre ville ou quartier..."
+                        }
+                        className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-300 ${
+                          errors.deliveryZone
+                            ? "border-red-300"
+                            : "border-gray-200"
+                        }`}
+                      />
+                    </div>
+                    {errors.deliveryZone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.deliveryZone}
+                      </p>
+                    )}
+
+                    {zoneDropdownOpen && (
+                      <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg">
+                        {filteredZones.length === 0 ? (
+                          <p className="p-4 text-sm text-gray-500 text-center">
+                            Aucune zone trouvée. Contactez-nous pour ajouter
+                            votre quartier.
+                          </p>
+                        ) : (
+                          filteredZones.map((zone) => (
+                            <button
+                              type="button"
+                              key={zone.id}
+                              onMouseDown={() => {
+                                handleSelectZone(zone);
+                                setZoneDropdownOpen(false);
+                              }}
+                              className="w-full text-left px-4 py-3 hover:bg-primary-50 flex justify-between items-center border-b border-gray-50 last:border-0"
+                            >
+                              <span className="text-sm text-gray-800">
+                                {zone.town}
+                                {zone.quarter ? ` - ${zone.quarter}` : ""}
+                                <span className="text-gray-400 text-xs ml-1">
+                                  ({zone.region})
+                                </span>
+                              </span>
+                              <span className="text-sm font-medium text-primary-500 whitespace-nowrap ml-2">
+                                {formatCurrency(zone.fee)}
+                              </span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+
+                    {selectedZone && (
+                      <p className="text-sm text-gray-500 mt-2">
+                        Frais de livraison :{" "}
+                        <span className="font-medium text-gray-700">
+                          {formatCurrency(selectedZone.fee)}
+                        </span>
+                      </p>
+                    )}
                   </div>
 
                   <Input
@@ -446,7 +527,11 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Livraison</span>
-                    <span>{formatCurrency(DELIVERY_FEE)}</span>
+                    <span>
+                      {selectedZone
+                        ? formatCurrency(deliveryFee)
+                        : "À sélectionner"}
+                    </span>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-green-600">

@@ -143,6 +143,26 @@ model RefreshToken {
     @@map("refresh_tokens")
 }
 
+model DeliveryZone {
+    id     String @id @default(auto()) @map("_id") @db.ObjectId
+
+    region  String
+    town    String
+    quarter String?
+    fee     Float
+    isActive Boolean @default(true)
+
+    orders Order[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([town, quarter])
+    @@index([isActive])
+    @@index([town])
+    @@map("delivery_zones")
+}
+
 model Address {
     id     String @id @default(auto()) @map("_id") @db.ObjectId
     userId String @db.ObjectId
@@ -362,6 +382,8 @@ model Order {
     deliveryPersonnelId String? @db.ObjectId
     deliveryPersonnel   User?   @relation("DeliveryPersonnel", fields: [deliveryPersonnelId], references: [id])
     deliveryFee         Float
+    deliveryZoneId      String?       @db.ObjectId
+    deliveryZone        DeliveryZone? @relation(fields: [deliveryZoneId], references: [id])
     deliveryNotes       String?
 
     // Pricing

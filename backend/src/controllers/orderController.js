@@ -7,7 +7,6 @@ const {
   calculateDiscount,
   isDiscountCodeValid,
 } = require("../utils/helpers");
-const { DELIVERY_FEE } = require("../config/constants");
 const WhatsAppService = require("../services/simpleWhatsAppService");
 
 class OrderController {
@@ -24,8 +23,26 @@ class OrderController {
       discountCode,
       customerNotes,
       address,
+      deliveryZoneId,
     } = req.body;
     const userId = req.user.id;
+
+    if (!deliveryZoneId) {
+      throw new ApiError(400, "Veuillez sélectionner votre ville/quartier");
+    }
+
+    const deliveryZone = await prisma.deliveryZone.findUnique({
+      where: { id: deliveryZoneId },
+    });
+
+    if (!deliveryZone || !deliveryZone.isActive) {
+      throw new ApiError(
+        400,
+        "Zone de livraison invalide ou indisponible. Veuillez sélectionner à nouveau votre ville/quartier.",
+      );
+    }
+
+    const deliveryFee = deliveryZone.fee;
 
     // Check if user has address
     let userAddress = await prisma.address.findFirst({
@@ -113,7 +130,7 @@ class OrderController {
       discountCodeId = code.id;
     }
 
-    const total = subtotal + DELIVERY_FEE - discount;
+    const total = subtotal + deliveryFee - discount;
 
     // Create order
     const order = await prisma.$transaction(async (tx) => {
@@ -129,7 +146,8 @@ class OrderController {
           paymentMethod,
           subtotal,
           discount,
-          deliveryFee: DELIVERY_FEE,
+          deliveryFee,
+          deliveryZoneId: deliveryZone.id,
           total,
           customerNotes,
           discountCodeId,

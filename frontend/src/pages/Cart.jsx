@@ -9,7 +9,6 @@ import {
 } from "react-icons/fi";
 import { useCart } from "@hooks/useCart";
 import { formatCurrency } from "@utils/formatters";
-import { DELIVERY_FEE } from "@utils/constants";
 import Button from "@components/common/Button";
 import Card from "@components/common/Card";
 // Consistent image helper — fallback prevents "undefined/uploads/..." broken URLs
@@ -32,7 +31,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const subtotal = getCartTotal();
-  const total = subtotal + DELIVERY_FEE;
+  const total = subtotal;
 
   if (!loading && cartItems?.length === 0) {
     return (
@@ -115,17 +114,13 @@ const Cart = () => {
                 </h2>
 
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-gray-600">
-                    <span>Sous-total</span>
-                    <span>{formatCurrency(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-gray-500 text-sm">
                     <span>Livraison</span>
-                    <span>{formatCurrency(DELIVERY_FEE)}</span>
+                    <span>Calculée à l'étape suivante</span>
                   </div>
                   <div className="border-t border-gray-200 pt-4">
                     <div className="flex justify-between text-xl font-bold text-gray-800">
-                      <span>Total</span>
+                      <span>Sous-total</span>
                       <span className="text-primary-500">
                         {formatCurrency(total)}
                       </span>

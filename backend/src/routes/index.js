@@ -12,6 +12,7 @@ const bundleRoutes = require("./bundleRoutes");
 const wishlistRoutes = require("./wishlistRoutes");
 const settingsRoutes = require("./settingsRoutes");
 const userRoutes = require("./userRoutes");
+const deliveryZoneRoutes = require("./deliveryZoneRoutes");
 
 // Mount routes
 router.use("/auth", authRoutes);
@@ -25,6 +26,7 @@ router.use("/bundles", bundleRoutes);
 router.use("/wishlist", wishlistRoutes);
 router.use("/settings", settingsRoutes);
 router.use("/users", userRoutes);
+router.use("/delivery-zones", deliveryZoneRoutes);
 
 // Health check
 router.get("/health", (req, res) => {

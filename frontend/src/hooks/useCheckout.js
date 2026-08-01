@@ -3,7 +3,7 @@ import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@hooks/useAuth";
 import { useCart } from "@hooks/useCart";
-import { ADMIN_WHATSAPP, DELIVERY_FEE, PAYMENT_METHODS } from "../utils/constants";
+import { ADMIN_WHATSAPP, PAYMENT_METHODS } from "../utils/constants";
 import {
   notifyAdminNewOrder,
   notifyCustomerOrderConfirmation,
@@ -23,6 +23,12 @@ export const useCheckout = () => {
   const [address, setAddress] = useState({});
   const [paymentProofFile, setPaymentProofFile] = useState(null);
   const [paymentProofPreview, setPaymentProofPreview] = useState(null);
+
+  // Delivery zones (dynamic per-town/quarter fee)
+  const [deliveryZones, setDeliveryZones] = useState([]);
+  const [zonesLoading, setZonesLoading] = useState(true);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const deliveryFee = selectedZone?.fee ?? 0;
 
   const requiresPaymentProof = ["MOBILE_MONEY", "ORANGE_MONEY"].includes(
     paymentMethod,
@@ -50,6 +56,7 @@ export const useCheckout = () => {
 
   useEffect(() => {
     fetchAuthUserAddress();
+    fetchDeliveryZones();
   }, []);
 
   useEffect(() => {
@@ -75,8 +82,46 @@ export const useCheckout = () => {
     }
   }, [address]);
 
+  // Once zones are loaded, try to pre-select a zone matching the saved address
+  useEffect(() => {
+    if (!address?.city || deliveryZones.length === 0 || selectedZone) return;
+    const match = deliveryZones.find(
+      (z) =>
+        z.town.toLowerCase() === address.city.toLowerCase() &&
+        (!address.landmark ||
+          !z.quarter ||
+          address.landmark.toLowerCase().includes(z.quarter.toLowerCase())),
+    );
+    if (match) handleSelectZone(match);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, deliveryZones]);
+
   const subtotal = getCartTotal();
-  const total = subtotal + DELIVERY_FEE - discount;
+  const total = subtotal + deliveryFee - discount;
+
+  const fetchDeliveryZones = async () => {
+    try {
+      setZonesLoading(true);
+      const response = await api.get("/delivery-zones");
+      setDeliveryZones(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch delivery zones:", error);
+    } finally {
+      setZonesLoading(false);
+    }
+  };
+
+  const handleSelectZone = (zone) => {
+    setSelectedZone(zone);
+    setFormData((prev) => ({
+      ...prev,
+      city: zone.town,
+      region: zone.region,
+    }));
+    if (errors.deliveryZone) {
+      setErrors((prev) => ({ ...prev, deliveryZone: "" }));
+    }
+  };
 
   const fetchAuthUserAddress = async () => {
     try {
@@ -110,8 +155,9 @@ export const useCheckout = () => {
     if (!formData.email.trim()) newErrors.email = "Email requis";
     if (!formData.phone.trim()) newErrors.phone = "Téléphone requis";
     if (!formData.street.trim()) newErrors.street = "Adresse requise";
-    if (!formData.city.trim()) newErrors.city = "Ville requise";
-    if (!formData.region.trim()) newErrors.region = "Région requise";
+    if (!selectedZone) {
+      newErrors.deliveryZone = "Veuillez sélectionner votre ville/quartier";
+    }
     if (requiresPaymentProof && !paymentProofFile) {
       newErrors.paymentProof =
         "Veuillez joindre une capture d'écran du paiement";
@@ -161,6 +207,7 @@ export const useCheckout = () => {
         address: formData,
         paymentMethod,
         discountCode: discountCode || null,
+        deliveryZoneId: selectedZone?.id,
       };
 
       const response = await api.post("/orders", orderData);
@@ -194,7 +241,7 @@ export const useCheckout = () => {
         })),
         total: formatCurrency(order.total),
         paymentMethod: paymentMethodLabel,
-        deliveryFee: formatCurrency(DELIVERY_FEE),
+        deliveryFee: formatCurrency(deliveryFee),
       };
 
       // Auto-open WhatsApp for admin (500ms delay)
@@ -246,5 +293,10 @@ export const useCheckout = () => {
     paymentProofFile,
     paymentProofPreview,
     handlePaymentProofChange,
+    deliveryZones,
+    zonesLoading,
+    selectedZone,
+    handleSelectZone,
+    deliveryFee,
   };
 };
