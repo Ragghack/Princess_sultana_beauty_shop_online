@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Connection Guide | Huile de Chèbe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --golden-brown: #B76E22;
+            --dark-brown: #8B4513;
+            --light-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --off-white: #FDF6E3;
+            --black: #333333;
+            --green: #2E8B57;
+            --blue: #4682B4;
+            --red: #DC3545;
+            --gray: #6C757D;
+            --purple: #9370DB;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--off-white) 100%);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: var(--black);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .guide-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--dark-brown);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gold);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .step-card {
+            background: var(--off-white);
+            border-radius: 10px;
+            padding: 25px;
+            border-left: 4px solid var(--blue);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--dark-brown);
+            font-size: 1.2rem;
+        }
+        
+        .step-content {
+            color: var(--black);
+        }
+        
+        .code-container {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+        
+        .php-keyword {
+            color: #f92672;
+        }
+        
+        .php-variable {
+            color: #66d9ef;
+        }
+        
+        .php-string {
+            color: #a6e22e;
+        }
+        
+        .php-comment {
+            color: #75715e;
+        }
+        
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .config-table th, .config-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .config-table th {
+            background-color: var(--light-gold);
+            color: var(--dark-brown);
+        }
+        
+        .config-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .note-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .note-title i {
+            margin-right: 8px;
+        }
+        
+        .technology-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tech-tab {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--light-gold);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-tab.active {
+            background: var(--golden-brown);
+            color: white;
+            border-color: var(--golden-brown);
+        }
+        
+        .tech-content {
+            display: none;
+        }
+        
+        .tech-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .code-container {
+                font-size: 12px;
+                padding: 12px;
+            }
+            
+            .config-table {
+                font-size: 14px;
+            }
+        }
+        
+        .completion-banner {
+            background: linear-gradient(135deg, var(--blue) 0%, #3a71a3 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .completion-banner i {
+            font-size: 1.5rem;
+        }
+        
+        .file-structure {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .file-item {
+            margin-left: 20px;
+            padding: 5px 0;
+        }
+        
+        .folder:before {
+            content: '📁 ';
+            margin-right: 5px;
+        }
+        
+        .file:before {
+            content: '📄 ';
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Database Connection Configuration</h1>
+            <p>Step-by-step guide to connect your application to the MySQL database</p>
+        </header>
+        
+        <div class="completion-banner">
+            <i class="fas fa-database"></i>
+            <span><strong>Configuration Guide:</strong> Follow these steps to connect your application</span>
+        </div>
+        
+        <div class="guide-section">
+            <h2 class="section-title"><i class="fas fa-cogs"></i> Database Connection Setup</h2>
+            <p>To connect your application to the MySQL database, you need to configure your application with the database credentials. This process varies depending on your technology stack.</p>
+            
+            <div class="technology-tabs">
+                <div class="tech-tab active" data-tech="php">PHP</div>
+                <div class="tech-tab" data-tech="node">Node.js</div>
+                <div class="tech-tab" data-tech="python">Python</div>
+                <div class="tech-tab" data-tech="env">Environment Variables</div>
+            </div>
+            
+            <div class="tech-content active" id="php-content">
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">Create a Configuration File</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a <code>config.php</code> file in your project to store database credentials:</p>
+                            <div class="code-container">
+                                <pre><code><span class="php-comment">// config.php</span>
+<span class="php-comment">// Database configuration</span>
+<span class="php-variable">$db_host</span> = <span class="php-string">'localhost'</span>;
+<span class="php-variable">$db_name</span> = <span class="php-string">'huile_de_chebe'</span>;
+<span class="php-variable">$db_user</span> = <span class="php-string">'your_username'</span>;
+<span class="php-variable">$db_pass</span> = <span class="php-string">'your_password'</span>;
+
+<span class="php-comment">// Create connection</span>
+<span class="php-keyword">try</span> {
+    <span class="php-variable">$pdo</span> = <span class="php-keyword">new</span> PDO(<span class="php-string">"mysql:host=$db_host;dbname=$db_name;charset=utf8"</span>, <span class="php-variable">$db_user</span>, <span class="php-variable">$db_pass</span>);
+    <span class="php-variable">$pdo</span>->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    <span class="php-keyword">echo</span> <span class="php-string">"Connected successfully"</span>;
+} <span class="php-keyword">catch</span>(PDOException <span class="php-variable">$e</span>) {
+    <span class="php-keyword">echo</span> <span class="php-string">"Connection failed: "</span> . <span class="php-variable">$e</span>->getMessage();
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">Include the Configuration File</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Include the configuration file in your PHP pages where you need database access:</p>
+                            <div class="code-container">
+                                <pre><code><span class="php-comment">// index.php or other PHP files</span>
+<span class="php-keyword">require_once</span> <span class="php-string">'config.php'</span>;
+
+<span class="php-comment">// Now you can use the $pdo object to query the database</span>
+<span class="php-variable">$stmt</span> = <span class="php-variable">$pdo</span>->query(<span class="php-string">'SELECT * FROM products'</span>);
+<span class="php-variable">$products</span> = <span class="php-variable">$stmt</span>->fetchAll(PDO::FETCH_ASSOC);
+
+<span class="php-comment">// Use the data in your application</span>
+<span class="php-keyword">foreach</span> (<span class="php-variable">$products</span> <span class="php-keyword">as</span> <span class="php-variable">$product</span>) {
+    <span class="php-keyword">echo</span> <span class="php-variable">$product</span>[<span class="php-string">'name'</span>] . <span class="php-string">' - '</span> . <span class="php-variable">$product</span>[<span class="php-string">'price'</span>];
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tech-content" id="node-content">
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">Install MySQL Package</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Install the MySQL package for Node.js using npm:</p>
+                            <div class="code-container">
+                                <pre><code>npm install mysql2</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">Create a Database Connection File</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a <code>database.js</code> file to handle database connections:</p>
+                            <div class="code-container">
+                                <pre><code><span class="php-comment">// database.js</span>
+const mysql = require('mysql2');
+
+<span class="php-comment">// Create connection pool</span>
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'your_username',
+    password: 'your_password',
+    database: 'huile_de_chebe',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+<span class="php-comment">// Get a promise based connection</span>
+const promisePool = pool.promise();
+
+module.exports = promisePool;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <h3 class="step-title">Use the Database Connection</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Use the database connection in your application:</p>
+                            <div class="code-container">
+                                <pre><code><span class="php-comment">// app.js or your route files</span>
+const db = require('./database');
+
+async function getProducts() {
+    try {
+        const [rows, fields] = await db.execute('SELECT * FROM products');
+        return rows;
+    } catch (error) {
+        console.error('Database error:', error);
+        throw error;
+    }
+}
+
+<span class="php-comment">// Use the function</span>
+getProducts()
+    .then(products => {
+        console.log('Products:', products);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="important-note">
+                <div class="note-title">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Important Security Note
+                </div>
+                <p>Never commit database credentials to version control. Use environment variables or configuration files that are excluded from your repository.</p>
+            </div>
+            
+            <div class="tech-content" id="env-content">
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <h3 class="step-title">Create Environment Variables File</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Create a <code>.env</code> file in your project root (add it to <code>.gitignore</code>):</p>
+                            <div class="code-container">
+                                <pre><code>DB_HOST=localhost
+DB_NAME=huile_de_chebe
+DB_USER=your_username
+DB_PASS=your_password
+DB_PORT=3306</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <h3 class="step-title">Use Environment Variables in Your Code</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Update your configuration to use environment variables:</p>
+                            <div class="code-container">
+                                <pre><code><span class="php-comment">// For PHP, use getenv() or $_ENV</span>
+<span class="php-variable">$db_host</span> = getenv('DB_HOST');
+<span class="php-variable">$db_name</span> = getenv('DB_NAME');
+<span class="php-variable">$db_user</span> = getenv('DB_USER');
+<span class="php-variable">$db_pass</span> = getenv('DB_PASS');
+
+<span class="php-comment">// For Node.js, use process.env</span>
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="section-title"><i class="fas fa-list-check"></i> Configuration Checklist</h3>
+            
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th>Step</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>MySQL server is running</td>
+                        <td><i class="fas fa-check-circle" style="color: var(--green);"></i> Complete</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Database created (huile_de_chebe)</td>
+                        <td><i class="fas fa-check-circle" style="color: var(--green);"></i> Complete</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Tables created successfully</td>
+                        <td><i class="fas fa-check-circle" style="color: var(--green);"></i> Complete</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Database user with proper permissions</td>
+                        <td><i class="fas fa-times-circle" style="color: var(--red);"></i> Pending</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Application configuration file created</td>
+                        <td><i class="fas fa-times-circle" style="color: var(--red);"></i> Pending</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Database connection tested</td>
+                        <td><i class="fas fa-times-circle" style="color: var(--red);"></i> Pending</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="important-note">
+                <div class="note-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Pro Tip
+                </div>
+                <p>Create a separate database user for your application with only the necessary permissions (SELECT, INSERT, UPDATE, DELETE) rather than using the root account.</p>
+            </div>
+            
+            <h3 class="section-title"><i class="fas fa-folder-open"></i> Project Structure</h3>
+            
+            <div class="file-structure">
+                <div class="file-item folder">huile-de-chebe</div>
+                <div class="file-item file">index.php</div>
+                <div class="file-item file">shop.php</div>
+                <div class="file-item file">cart.php</div>
+                <div class="file-item folder">includes</div>
+                <div class="file-item file" style="margin-left: 40px;">config.php</div>
+                <div class="file-item file" style="margin-left: 40px;">database.php</div>
+                <div class="file-item folder">css</div>
+                <div class="file-item folder">js</div>
+                <div class="file-item file">.env</div>
+                <div class="file-item file">.gitignore</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const techTabs = document.querySelectorAll('.tech-tab');
+            
+            techTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tech = tab.getAttribute('data-tech');
+                    
+                    // Update active tab
+                    techTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.tech-content').forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tech}-content`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

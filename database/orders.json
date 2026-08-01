@@ -1,0 +1,9 @@
+{
+  "userId": { "$oid": "000000000000000000000001" },
+  "subject": "Product arrived damaged",
+  "priority": "high",
+  "message": "One of the bottles was leaking in transit.",
+  "status": "open",
+  "orderId": "HC-98760",
+  "createdAt": { "$date": "2025-09-11T12:00:00Z" }
+}

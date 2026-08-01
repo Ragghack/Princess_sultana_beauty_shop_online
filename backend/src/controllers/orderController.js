@@ -1,0 +1,685 @@
+const prisma = require("../config/database");
+const ApiResponse = require("../utils/ApiResponse");
+const ApiError = require("../utils/ApiError");
+const asyncHandler = require("../utils/asyncHandler");
+const {
+  generateOrderNumber,
+  calculateDiscount,
+  isDiscountCodeValid,
+} = require("../utils/helpers");
+const { DELIVERY_FEE } = require("../config/constants");
+const WhatsAppService = require("../services/simpleWhatsAppService");
+
+class OrderController {
+  /**
+   * @route   POST /api/v1/orders
+   * @desc    Create new order with WhatsApp notifications
+   * @access  Private
+   */
+  createOrder = asyncHandler(async (req, res) => {
+    const {
+      addressId,
+      paymentMethod,
+      items,
+      discountCode,
+      customerNotes,
+      address,
+    } = req.body;
+    const userId = req.user.id;
+
+    // Check if user has address
+    let userAddress = await prisma.address.findFirst({
+      where: {
+        userId,
+        street: address.street,
+      },
+    });
+
+    if (!userAddress) {
+      userAddress = await prisma.address.create({
+        data: {
+          userId,
+          city: address.city,
+          fullName: address.firstName + " " + address.lastName,
+          phone: address.phone,
+          region: address.region,
+          street: address.street,
+          isDefault: true,
+          landmark: address.landmark,
+          postalCode: address.postalCode,
+        },
+      });
+    }
+
+    // Validate items and calculate subtotal
+    let subtotal = 0;
+    const orderItems = [];
+
+    for (const item of items) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+      });
+
+      if (!product || product.status !== "ACTIVE") {
+        throw new ApiError(400, `Produit ${item.productId} non disponible`);
+      }
+
+      if (product.stockQuantity < item.quantity) {
+        throw new ApiError(400, `Stock insuffisant pour ${product.name}`);
+      }
+
+      const itemTotal = parseFloat(product.price) * item.quantity;
+      subtotal += itemTotal;
+
+      orderItems.push({
+        productId: product.id,
+        productName: product.name,
+        productSku: product.sku,
+        productImage: product.featuredImage,
+        quantity: item.quantity,
+        price: product.price,
+        subtotal: itemTotal,
+      });
+    }
+
+    // Validate and apply discount code
+    let discount = 0;
+    let discountCodeId = null;
+
+    if (discountCode) {
+      const code = await prisma.discountCode.findUnique({
+        where: { code: discountCode },
+      });
+
+      if (!code) {
+        throw new ApiError(400, "Code promo invalide");
+      }
+
+      if (!isDiscountCodeValid(code)) {
+        throw new ApiError(400, "Code promo expiré ou limite atteinte");
+      }
+
+      if (
+        code.minPurchaseAmount &&
+        subtotal < parseFloat(code.minPurchaseAmount)
+      ) {
+        throw new ApiError(
+          400,
+          `Montant minimum de ${code.minPurchaseAmount} XAF requis`,
+        );
+      }
+
+      discount = calculateDiscount(subtotal, code);
+      discountCodeId = code.id;
+    }
+
+    const total = subtotal + DELIVERY_FEE - discount;
+
+    // Create order
+    const order = await prisma.$transaction(async (tx) => {
+      // Generate order number
+      const orderNumber = generateOrderNumber();
+
+      // Create order
+      const newOrder = await tx.order.create({
+        data: {
+          orderNumber,
+          userId,
+          addressId: userAddress.id,
+          paymentMethod,
+          subtotal,
+          discount,
+          deliveryFee: DELIVERY_FEE,
+          total,
+          customerNotes,
+          discountCodeId,
+          status: "PENDING",
+          paymentStatus: "PENDING",
+          items: {
+            create: orderItems,
+          },
+        },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+          address: true,
+          user: true,
+        },
+      });
+
+      // Update product stock
+      for (const item of items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: {
+            stockQuantity: { decrement: item.quantity },
+            salesCount: { increment: item.quantity },
+          },
+        });
+      }
+
+      // Update discount code usage
+      if (discountCodeId) {
+        await tx.discountCode.update({
+          where: { id: discountCodeId },
+          data: { usedCount: { increment: 1 } },
+        });
+      }
+
+      // Clear user's cart
+      await tx.cartItem.deleteMany({
+        where: {
+          cart: {
+            userId,
+          },
+        },
+      });
+
+      // Create status history
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: newOrder.id,
+          status: "PENDING",
+          notes: "Commande créée",
+          changedBy: userId,
+        },
+      });
+
+      return newOrder;
+    });
+
+    // // ✅ SEND WHATSAPP NOTIFICATIONS
+    // try {
+    //   // Send confirmation to customer
+    //   await WhatsAppService.sendOrderConfirmation(order);
+
+    //   // Send notification to admin
+    //   await WhatsAppService.sendAdminOrderNotification(order);
+
+    //   console.log("✅ WhatsApp notifications sent successfully");
+    // } catch (error) {
+    //   console.error("WhatsApp notification failed:", error);
+    //   // Don't fail the order creation if notification fails
+    // }
+
+    res
+      .status(201)
+      .json(new ApiResponse(201, order, "Commande créée avec succès"));
+  });
+
+  /**
+   * @route   GET /api/v1/orders
+   * @desc    Get orders (filtered by role)
+   * @access  Private
+   */
+  getOrders = asyncHandler(async (req, res) => {
+    const { status, page = 1, limit = 20 } = req.query;
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Build where clause based on role
+    let where = {};
+
+    if (userRole === "CUSTOMER") {
+      where.userId = userId;
+    } else if (userRole === "DELIVERY") {
+      where.deliveryPersonnelId = userId;
+    }
+    // Admin and Staff can see all orders
+
+    if (status) {
+      where.status = status;
+    }
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        skip,
+        take: parseInt(limit),
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+          address: true,
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true,
+            },
+          },
+          deliveryPersonnel: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    res.status(200).json(
+      new ApiResponse(200, {
+        orders,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit)),
+        },
+      }),
+    );
+  });
+
+  /**
+   * @route   GET /api/v1/orders/:id
+   * @desc    Get order by ID
+   * @access  Private
+   */
+  getOrderById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+        address: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+          },
+        },
+        deliveryPersonnel: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+          },
+        },
+        statusHistory: {
+          orderBy: { createdAt: "desc" },
+        },
+        discountCode: true,
+      },
+    });
+
+    if (!order) {
+      throw new ApiError(404, "Commande non trouvée");
+    }
+
+    // Check authorization
+    if (
+      (userRole === "CUSTOMER" && order.userId !== userId) ||
+      (userRole === "DELIVERY" && order.deliveryPersonnelId !== userId)
+    ) {
+      throw new ApiError(403, "Accès refusé");
+    }
+
+    res.status(200).json(new ApiResponse(200, order));
+  });
+
+  /**
+   * @route   PATCH /api/v1/orders/:id/status
+   * @desc    Update order status
+   * @access  Private (Admin/Staff)
+   */
+  updateOrderStatus = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { status, notes } = req.body;
+    const userId = req.user.id;
+
+    const order = await prisma.$transaction(async (tx) => {
+      // Update order
+      const updatedOrder = await tx.order.update({
+        where: { id },
+        data: {
+          status,
+          ...(status === "CONFIRMED" && { confirmedAt: new Date() }),
+          ...(status === "CONFIRMED" && { paymentStatus: "COMPLETED" }),
+          ...(status === "DELIVERED" && { deliveredAt: new Date() }),
+          ...(status === "CANCELLED" && { cancelledAt: new Date() }),
+        },
+        include: {
+          items: true,
+          user: true,
+        },
+      });
+
+      // Create status history
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: id,
+          status,
+          notes,
+          changedBy: userId,
+        },
+      });
+
+      // If cancelled, restore stock
+      if (status === "CANCELLED") {
+        for (const item of updatedOrder.items) {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: {
+              stockQuantity: { increment: item.quantity },
+              salesCount: { decrement: item.quantity },
+            },
+          });
+        }
+      }
+
+      return updatedOrder;
+    });
+
+    res.status(200).json(new ApiResponse(200, order, "Statut mis à jour"));
+  });
+
+  /**
+   * @route   PATCH /api/v1/orders/:id/assign-delivery
+   * @desc    Assign order to delivery personnel
+   * @access  Private (Admin/Staff)
+   */
+  assignDelivery = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { deliveryPersonnelId } = req.body;
+
+    // Validate delivery personnel
+    const deliveryPerson = await prisma.user.findUnique({
+      where: { id: deliveryPersonnelId },
+    });
+
+    if (!deliveryPerson || deliveryPerson.role !== "DELIVERY") {
+      throw new ApiError(400, "Personnel de livraison invalide");
+    }
+
+    const order = await prisma.order.update({
+      where: { id },
+      data: {
+        deliveryPersonnelId,
+        status: "ASSIGNED",
+        assignedAt: new Date(),
+      },
+      include: {
+        deliveryPersonnel: true,
+        user: true,
+        address: true,
+      },
+    });
+
+    // Create status history
+    await prisma.orderStatusHistory.create({
+      data: {
+        orderId: id,
+        status: "ASSIGNED",
+        notes: `Assigné à ${deliveryPerson.firstName} ${deliveryPerson.lastName}`,
+        changedBy: req.user.id,
+      },
+    });
+
+    res.status(200).json(new ApiResponse(200, order, "Livreur assigné"));
+  });
+
+  /**
+   * @route   PATCH /api/v1/orders/:id/mark-delivered
+   * @desc    Mark order as delivered
+   * @access  Private (Delivery)
+   */
+  markAsDelivered = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Check if order is assigned to this delivery person
+    const order = await prisma.order.findUnique({
+      where: { id },
+    });
+
+    if (!order) {
+      throw new ApiError(404, "Commande non trouvée");
+    }
+
+    if (order.deliveryPersonnelId !== userId) {
+      throw new ApiError(403, "Commande non assignée à vous");
+    }
+
+    const updatedOrder = await prisma.$transaction(async (tx) => {
+      const updated = await tx.order.update({
+        where: { id },
+        data: {
+          status: "DELIVERED",
+          deliveredAt: new Date(),
+          ...(order.paymentMethod === "CASH_ON_DELIVERY" && {
+            paymentStatus: "COMPLETED",
+            paidAt: new Date(),
+          }),
+        },
+        include: {
+          user: true,
+          items: true,
+        },
+      });
+
+      // Create status history
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: id,
+          status: "DELIVERED",
+          notes: "Commande livrée",
+          changedBy: userId,
+        },
+      });
+
+      return updated;
+    });
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, updatedOrder, "Commande marquée comme livrée"),
+      );
+  });
+
+  /**
+   * @route   PATCH /api/v1/orders/:id/cancel
+   * @desc    Cancel order
+   * @access  Private (Customer/Admin)
+   */
+  cancelOrder = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: { items: true },
+    });
+
+    if (!order) {
+      throw new ApiError(404, "Commande non trouvée");
+    }
+
+    // Check authorization
+    if (userRole === "CUSTOMER" && order.userId !== userId) {
+      throw new ApiError(403, "Accès refusé");
+    }
+
+    // Check if order can be cancelled
+    if (["DELIVERED", "CANCELLED"].includes(order.status)) {
+      throw new ApiError(400, "Cette commande ne peut pas être annulée");
+    }
+
+    const cancelledOrder = await prisma.$transaction(async (tx) => {
+      // Update order
+      const updated = await tx.order.update({
+        where: { id },
+        data: {
+          status: "CANCELLED",
+          cancelledAt: new Date(),
+          adminNotes: reason,
+        },
+      });
+
+      // Restore stock
+      for (const item of order.items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: {
+            stockQuantity: { increment: item.quantity },
+            salesCount: { decrement: item.quantity },
+          },
+        });
+      }
+
+      // Create status history
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: id,
+          status: "CANCELLED",
+          notes: reason || "Commande annulée",
+          changedBy: userId,
+        },
+      });
+
+      return updated;
+    });
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, cancelledOrder, "Commande annulée"));
+  });
+  /**
+   * @route   POST /api/v1/orders/:id/payment-proof
+   * @desc    Upload payment screenshot for mobile money / orange money orders
+   * @access  Private (Customer - order owner)
+   */
+  uploadPaymentProof = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const order = await prisma.order.findUnique({ where: { id } });
+
+    if (!order) {
+      throw new ApiError(404, "Commande non trouvée");
+    }
+
+    if (order.userId !== userId) {
+      throw new ApiError(403, "Accès refusé");
+    }
+
+    if (!req.file) {
+      throw new ApiError(400, "Capture d'écran du paiement requise");
+    }
+
+    const paymentProofUrl = `/uploads/payment-proofs/${req.file.filename}`;
+
+    const updatedOrder = await prisma.order.update({
+      where: { id },
+      data: {
+        paymentProofUrl,
+        paymentStatus: "PENDING_VERIFICATION",
+      },
+    });
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          updatedOrder,
+          "Preuve de paiement envoyée, en attente de vérification",
+        ),
+      );
+  });
+
+  /**
+   * @route   PATCH /api/v1/orders/:id/verify-payment
+   * @desc    Approve or reject a customer's payment proof
+   * @access  Private (Admin/Staff)
+   */
+  verifyPayment = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { approved, rejectionReason } = req.body;
+    const adminId = req.user.id;
+
+    const order = await prisma.order.findUnique({ where: { id } });
+
+    if (!order) {
+      throw new ApiError(404, "Commande non trouvée");
+    }
+
+    if (!order.paymentProofUrl) {
+      throw new ApiError(
+        400,
+        "Aucune preuve de paiement n'a été soumise pour cette commande",
+      );
+    }
+
+    const updatedOrder = await prisma.$transaction(async (tx) => {
+      const updated = await tx.order.update({
+        where: { id },
+        data: {
+          paymentStatus: approved ? "COMPLETED" : "FAILED",
+          paymentVerifiedBy: adminId,
+          paymentVerifiedAt: new Date(),
+          paymentRejectionReason: approved ? null : rejectionReason || null,
+          ...(approved && { paidAt: new Date() }),
+          ...(approved &&
+            order.status === "PENDING" && {
+              status: "CONFIRMED",
+              confirmedAt: new Date(),
+            }),
+        },
+        include: { items: true, user: true },
+      });
+
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: id,
+          status: updated.status,
+          notes: approved
+            ? "Paiement vérifié et approuvé"
+            : `Paiement rejeté${rejectionReason ? `: ${rejectionReason}` : ""}`,
+          changedBy: adminId,
+        },
+      });
+
+      return updated;
+    });
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          updatedOrder,
+          approved ? "Paiement approuvé" : "Paiement rejeté",
+        ),
+      );
+  });
+}
+
+module.exports = new OrderController();
