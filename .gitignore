@@ -1,2 +1,45 @@
-backend.zip
-frontend.zip
+# --- Environment variables (never commit secrets) ---
+.env
+.env.*
+!.env.example
+
+# --- Dependencies ---
+node_modules/
+
+# --- Zip / archive files ---
+*.zip
+*.rar
+*.7z
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+
+# --- Local uploads (now on Cloudinary, but ignore just in case) ---
+uploads/
+backend/uploads/
+
+# --- OS / editor junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# --- Build output ---
+dist/
+build/
+
+# --- Prisma ---
+# (schema.prisma stays tracked; generated client output should not be)
+generated/
+
+# --- Temp / lock files that don't need tracking ---
+*.tmp
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# --- Package manager lock file (optional: keep if you want reproducible installs) ---
+# package-lock.json
