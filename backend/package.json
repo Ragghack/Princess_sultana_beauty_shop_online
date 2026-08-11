@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "E-commerce backend for Princesse Sultana Hair Care",
   "main": "src/server.js",
-"scripts": {
-  "start": "node src/server.js",
-  "dev": "nodemon src/server.js",
-  "build": "prisma generate", 
-  "prisma:generate": "npx prisma generate",
-  "prisma:seed": "node prisma/seed.js",
-  "init:whatsapp": "node src/initWhatsApp.js"
-},
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "build": "prisma generate",
+    "prisma:generate": "npx prisma generate",
+    "prisma:seed": "node prisma/seed.js",
+    "init:whatsapp": "node src/initWhatsApp.js"
+  },
   "keywords": [
     "ecommerce",
     "nodejs",
@@ -34,9 +34,10 @@
     "handlebars": "^4.7.8",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "3.6",
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
-    "nodemailer": "^8.0.2",
+    "nodemailer": "^9.0.5",
     "pino": "^10.3.1",
     "prisma": "^5.22.0",
     "twilio": "^4.20.0"

@@ -7,6 +7,7 @@ import { formatCurrency } from "@utils/formatters";
 import Button from "@components/common/Button";
 import Badge from "@components/common/Badge";
 import { useAuth } from "@hooks/useAuth";
+import { setPendingCartAction } from "@utils/pendingCartAction";
 
 // FIX: fallback to localhost:5000 if env var is missing or undefined
 const BASE_URL =
@@ -33,6 +34,7 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
+      setPendingCartAction("ADD_TO_CART", { productId: product.id });
       navigate("/login", {
         state: { title: "toBeAuthToAddToCart", from: { pathname: "/shop" } },
       });

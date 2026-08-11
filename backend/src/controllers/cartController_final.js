@@ -11,15 +11,24 @@ let mongoClient;
 let mongoDb;
 
 async function getMongoDatabase() {
-  if (!mongoClient) {
-    const parsedUrl = new URL(mongoUrl);
-    const dbName = parsedUrl.pathname.replace(/^\/+/, "") || "hairshop";
-    mongoClient = new MongoClient(mongoUrl);
-    await mongoClient.connect();
-    mongoDb = mongoClient.db(dbName);
-  }
+  if (mongoDb) return mongoDb;
 
-  return mongoDb;
+  try {
+    // Extract the db name via regex instead of the URL class, since
+    // standard (non-SRV) connection strings can list multiple
+    // comma-separated hosts, which new URL() cannot parse.
+    const dbNameMatch = mongoUrl.match(/\/([^/?]+)(\?|$)/);
+    const dbName = (dbNameMatch && dbNameMatch[1]) || "hairshop";
+    const client = new MongoClient(mongoUrl);
+    await client.connect();
+    mongoClient = client;
+    mongoDb = client.db(dbName);
+    return mongoDb;
+  } catch (error) {
+    mongoClient = null;
+    mongoDb = null;
+    throw error;
+  }
 }
 
 function normalizeObjectId(id) {

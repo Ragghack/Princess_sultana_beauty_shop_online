@@ -1,6 +1,12 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useCart } from "../hooks/useCart";
+import { productService } from "../services/productService";
+import {
+  getPendingCartAction,
+  clearPendingCartAction,
+} from "../utils/pendingCartAction";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
@@ -18,13 +24,37 @@ const Register = () => {
   const [error, setError] = useState("");
 
   const { register } = useAuth();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Page the user was trying to reach before being sent here (if any)
+  const from = location.state?.from?.pathname || null;
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const runPendingCartAction = async () => {
+    const pending = getPendingCartAction();
+    if (!pending) return null;
+
+    clearPendingCartAction();
+
+    try {
+      const { data: product } = await productService.getProductById(
+        pending.productId,
+      );
+      await addToCart(product, pending.quantity || 1);
+    } catch (err) {
+      console.error("Failed to complete pending cart action:", err);
+      return null;
+    }
+
+    return pending.type === "BUY_NOW" ? "/checkout" : from;
   };
 
   const handleSubmit = async (e) => {
@@ -34,7 +64,9 @@ const Register = () => {
 
     try {
       await register(formData);
-      navigate("/");
+
+      const pendingDestination = await runPendingCartAction();
+      navigate(pendingDestination || from || "/", { replace: true });
     } catch (err) {
       setError(err.response?.data?.error || "Erreur d'inscription");
     } finally {
@@ -121,6 +153,7 @@ const Register = () => {
             Déjà un compte?{" "}
             <Link
               to="/login"
+              state={location.state}
               className="text-primary-500 hover:text-primary-600 font-medium"
             >
               Se connecter

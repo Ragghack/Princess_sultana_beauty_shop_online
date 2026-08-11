@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useCart } from "../hooks/useCart";
+import { productService } from "../services/productService";
+import {
+  getPendingCartAction,
+  clearPendingCartAction,
+} from "../utils/pendingCartAction";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
@@ -15,6 +21,7 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const { login } = useAuth();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,6 +41,27 @@ const Login = () => {
     });
   };
 
+  // Completes whatever the customer was trying to do (add to cart / buy
+  // now) before being sent to login, then returns where to navigate next.
+  const runPendingCartAction = async () => {
+    const pending = getPendingCartAction();
+    if (!pending) return null;
+
+    clearPendingCartAction();
+
+    try {
+      const { data: product } = await productService.getProductById(
+        pending.productId,
+      );
+      await addToCart(product, pending.quantity || 1);
+    } catch (err) {
+      console.error("Failed to complete pending cart action:", err);
+      return null;
+    }
+
+    return pending.type === "BUY_NOW" ? "/checkout" : from;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -41,6 +69,12 @@ const Login = () => {
 
     try {
       const user = await login(formData.email, formData.password);
+
+      const pendingDestination = await runPendingCartAction();
+      if (pendingDestination) {
+        navigate(pendingDestination, { replace: true });
+        return;
+      }
 
       // Role-based redirect
       redirectBasedOnRole(user);
@@ -125,6 +159,7 @@ const Login = () => {
           Pas de compte?{" "}
           <Link
             to="/register"
+            state={location.state}
             className="text-primary-500 hover:text-primary-600 font-medium"
           >
             S'inscrire

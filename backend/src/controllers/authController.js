@@ -12,15 +12,21 @@ let mongoClient;
 let mongoDb;
 
 async function getMongoDatabase() {
-  if (!mongoClient) {
+  if (mongoDb) return mongoDb;
+
+  try {
     const parsedUrl = new URL(mongoUrl);
     const dbName = parsedUrl.pathname.replace(/^\/+/, "") || "hairshop";
-    mongoClient = new MongoClient(mongoUrl);
-    await mongoClient.connect();
-    mongoDb = mongoClient.db(dbName);
+    const client = new MongoClient(mongoUrl);
+    await client.connect();
+    mongoClient = client;
+    mongoDb = client.db(dbName);
+    return mongoDb;
+  } catch (error) {
+    mongoClient = null;
+    mongoDb = null;
+    throw error;
   }
-
-  return mongoDb;
 }
 
 function normalizeObjectId(id) {

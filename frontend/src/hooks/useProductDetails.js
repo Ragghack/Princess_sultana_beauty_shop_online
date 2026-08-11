@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { productService } from "@services/productService";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useCart } from "@hooks/useCart";
 import { useWishlist } from "@hooks/useWishlist";
+import { useAuth } from "@hooks/useAuth";
+import { setPendingCartAction } from "@utils/pendingCartAction";
 
 export const useProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
   const { addBundleToWishlist, addToWishlist } = useWishlist();
 
@@ -31,7 +35,20 @@ export const useProductDetails = () => {
     }
   };
 
+  // If not signed in, remember exactly what the customer wanted to do so
+  // it can run automatically right after login, then send them to login.
+  const redirectToLoginWithAction = (type) => {
+    setPendingCartAction(type, { productId: product.id, quantity });
+    navigate("/login", {
+      state: { title: "toBeAuthToAddToCart", from: location },
+    });
+  };
+
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      redirectToLoginWithAction("ADD_TO_CART");
+      return;
+    }
     setAdding(true);
     try {
       await addToCart(product, quantity);
@@ -44,6 +61,10 @@ export const useProductDetails = () => {
   };
 
   const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      redirectToLoginWithAction("BUY_NOW");
+      return;
+    }
     await handleAddToCart();
     navigate("/checkout");
   };
