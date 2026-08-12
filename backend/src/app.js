@@ -116,13 +116,20 @@ app.use(
 
 const allowedOrigins = [
   FRONTEND_URL,
-   "https://sultanacare.com",        // ✅ ADD THIS
-  "https://www.sultanacare.com",    // ✅ ADD THIS
+  "https://sultanacare.com",
+  "https://www.sultanacare.com",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:5173",
 ];
+
+// Vercel assigns a new random URL to every preview/production deployment
+// (e.g. princess-sultana-beauty-shop-online-sigma.vercel.app,
+// ...-glqw-kzvm7tfcq.vercel.app, etc). Rather than updating FRONTEND_URL
+// by hand every time, allow any *.vercel.app URL belonging to this project.
+const vercelPreviewPattern =
+  /^https:\/\/princess-sultana-beauty-shop-online(-[a-z0-9]+)*\.vercel\.app$/;
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -130,7 +137,7 @@ const corsOptions = {
     // Allow server tools like Postman
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes(origin) || vercelPreviewPattern.test(origin)) {
       return callback(null, true);
     }
 
