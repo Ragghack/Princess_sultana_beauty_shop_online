@@ -24,7 +24,7 @@ import { formatCurrency, formatDateTime } from "../../utils/formatters";
 import api from "../../services/api";
 import { notifyCustomerStatusUpdate } from "../../utils/whatsappHelper";
 
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+import { getImageUrl } from "../../utils/imageUrl";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -290,7 +290,7 @@ const OrderDetails = () => {
                                 .map((bundleItem, idx) => (
                                   <img
                                     key={idx}
-                                    src={`${VITE_APP_IMAGE_BASE_URL}${bundleItem.productImage}`}
+                                    src={getImageUrl(bundleItem.productImage)}
                                     alt={bundleItem.productName}
                                     className="w-full h-full object-cover rounded"
                                   />
@@ -353,7 +353,7 @@ const OrderDetails = () => {
                     className="flex gap-4 p-4 border border-gray-200 rounded-xl"
                   >
                     <img
-                      src={`${VITE_APP_IMAGE_BASE_URL}${item.productImage}`}
+                      src={getImageUrl(item.productImage)}
                       alt={item.productName}
                       className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                     />
@@ -599,12 +599,12 @@ const OrderDetails = () => {
                     Preuve de paiement
                   </p>
                   <a
-                    href={`${VITE_APP_IMAGE_BASE_URL}${order.paymentProofUrl}`}
+                    href={getImageUrl(order.paymentProofUrl)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src={`${VITE_APP_IMAGE_BASE_URL}${order.paymentProofUrl}`}
+                      src={getImageUrl(order.paymentProofUrl)}
                       alt="Preuve de paiement"
                       className="w-full rounded-lg border border-gray-200 hover:opacity-90 transition-opacity"
                     />

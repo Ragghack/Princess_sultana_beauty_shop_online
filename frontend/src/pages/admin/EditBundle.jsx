@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 import { formatCurrency } from "../../utils/formatters";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+import { getImageUrl } from "../../utils/imageUrl";
 
 const EditBundle = () => {
   const navigate = useNavigate();
@@ -290,10 +290,7 @@ const EditBundle = () => {
                     >
                       {/* Product Image */}
                       <img
-                        src={
-                          `${VITE_APP_IMAGE_BASE_URL}${item.image}` ||
-                          item.image
-                        }
+                        src={getImageUrl(item.image)}
                         alt={item.name}
                         className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                       />

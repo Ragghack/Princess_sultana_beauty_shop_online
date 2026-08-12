@@ -27,7 +27,7 @@ const BACKEND_URL =
 
 const FRONTEND_URL =
   process.env.FRONTEND_URL ||
-  "princess-sultana-beauty-shop-online-dwma5aatw.vercel.app";
+  "https://princess-sultana-beauty-shop-online-g682p8r6d.vercel.app";
 
 /*
 |--------------------------------------------------------------------------

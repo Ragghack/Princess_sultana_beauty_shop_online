@@ -5,7 +5,7 @@ import Badge from "../common/Badge";
 import LoadingSpinner from "../common/LoadingSpinner";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 import api from "../../services/api";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+import { getImageUrl } from "../../utils/imageUrl";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -132,7 +132,7 @@ const OrderHistory = () => {
                     {order.items?.map((item) => (
                       <div key={item.id} className="flex items-center gap-4">
                         <img
-                          src={`${VITE_APP_IMAGE_BASE_URL}${item.productImage}`}
+                          src={getImageUrl(item.productImage)}
                           alt={item.productName}
                           className="w-16 h-16 object-cover rounded-lg"
                         />

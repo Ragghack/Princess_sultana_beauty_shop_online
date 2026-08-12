@@ -9,17 +9,7 @@ import Badge from "@components/common/Badge";
 import { useAuth } from "@hooks/useAuth";
 import { setPendingCartAction } from "@utils/pendingCartAction";
 
-// FIX: fallback to localhost:5000 if env var is missing or undefined
-const BASE_URL =
-  import.meta.env.VITE_APP_IMAGE_BASE_URL || "http://localhost:5000";
-
-// Helper: build a safe image URL from a stored path like /uploads/products/file.png
-const imageUrl = (path) => {
-  if (!path) return null;
-  // Avoid double slashes if BASE_URL has trailing slash
-  const base = BASE_URL.replace(/\/$/, "");
-  return `${base}${path}`;
-};
+import { getImageUrl as imageUrl } from "@utils/imageUrl";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();

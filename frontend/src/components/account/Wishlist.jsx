@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useWishlist } from "@hooks/useWishlist";
 import { formatCurrency } from "../../utils/formatters";
 import Badge from "../common/Badge";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+import { getImageUrl } from "../../utils/imageUrl";
 
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist, moveToCart } = useWishlist();
@@ -73,10 +73,7 @@ const Wishlist = () => {
                 >
                   <td className="py-3 px-4">
                     <img
-                      src={
-                        `${VITE_APP_IMAGE_BASE_URL}${product.product.featuredImage}` ||
-                        `${product.product.featuredImage}`
-                      }
+                      src={getImageUrl(product.product.featuredImage)}
                       alt={product.product.name}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
