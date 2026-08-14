@@ -4,6 +4,7 @@ import { AuthProvider } from "@context/AuthContext";
 import { CartProvider } from "@context/CartContext";
 import { WishlistProvider } from "@context/WishlistContext";
 import AppRoutes from "./routes/AppRoutes";
+import ServerWakingBanner from "@components/common/ServerWakingBanner";
 
 function App() {
   return (
