@@ -124,12 +124,20 @@ async function buildCartResponse(database, userId, cartDoc) {
         _id: normalizeObjectId(item.productId),
       });
 
+      let variant = null;
+      if (item.variantId) {
+        variant = await database.collection("product_variants").findOne({
+          _id: normalizeObjectId(item.variantId),
+        });
+      }
+
       enrichedItems.push({
         ...item,
         id: serializeId(item._id),
         cartId: serializeId(item.cartId),
         productId: serializeId(item.productId),
         bundleId: null,
+        variantId: item.variantId ? serializeId(item.variantId) : null,
         product: product
           ? {
               id: serializeId(product._id),
@@ -138,6 +146,14 @@ async function buildCartResponse(database, userId, cartDoc) {
               stockQuantity: product.stockQuantity,
               status: product.status,
               featuredImage: product.featuredImage,
+            }
+          : null,
+        variant: variant
+          ? {
+              id: serializeId(variant._id),
+              label: variant.label,
+              price: variant.price,
+              stockQuantity: variant.stockQuantity,
             }
           : null,
         bundle: null,
@@ -275,6 +291,10 @@ class CartController {
       }
     } else {
       const targetProductId = normalizeObjectId(productId);
+      const targetVariantId = req.body.variantId
+        ? normalizeObjectId(req.body.variantId)
+        : null;
+
       const product = await database.collection("products").findOne({
         _id: targetProductId,
       });
@@ -283,13 +303,29 @@ class CartController {
         throw new ApiError(400, "Produit non disponible");
       }
 
-      if (product.stockQuantity < parseInt(quantity, 10)) {
+      let unitPrice = product.price;
+
+      if (targetVariantId) {
+        const variant = await database
+          .collection("product_variants")
+          .findOne({ _id: targetVariantId, productId: targetProductId });
+
+        if (!variant) {
+          throw new ApiError(400, "Variante introuvable pour ce produit");
+        }
+        if (variant.stockQuantity < parseInt(quantity, 10)) {
+          throw new ApiError(400, "Stock insuffisant pour cette variante");
+        }
+
+        unitPrice = variant.price;
+      } else if (product.stockQuantity < parseInt(quantity, 10)) {
         throw new ApiError(400, "Stock insuffisant");
       }
 
       const existingItem = await database.collection("cart_items").findOne({
         cartId: cart._id,
         productId: targetProductId,
+        variantId: targetVariantId,
         isBundle: false,
       });
 
@@ -299,7 +335,7 @@ class CartController {
           {
             $set: {
               quantity: existingItem.quantity + parseInt(quantity, 10),
-              price: product.price,
+              price: unitPrice,
               updatedAt: new Date(),
             },
           },
@@ -309,8 +345,9 @@ class CartController {
           _id: new ObjectId(),
           cartId: cart._id,
           productId: targetProductId,
+          variantId: targetVariantId,
           quantity: parseInt(quantity, 10),
-          price: product.price,
+          price: unitPrice,
           isBundle: false,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -381,11 +418,20 @@ class CartController {
         }
       }
     } else {
-      const product = await database.collection("products").findOne({
-        _id: normalizeObjectId(cartItem.productId),
-      });
-      if (!product || product.stockQuantity < parseInt(quantity, 10)) {
-        throw new ApiError(400, "Stock insuffisant");
+      if (cartItem.variantId) {
+        const variant = await database
+          .collection("product_variants")
+          .findOne({ _id: normalizeObjectId(cartItem.variantId) });
+        if (!variant || variant.stockQuantity < parseInt(quantity, 10)) {
+          throw new ApiError(400, "Stock insuffisant pour cette variante");
+        }
+      } else {
+        const product = await database.collection("products").findOne({
+          _id: normalizeObjectId(cartItem.productId),
+        });
+        if (!product || product.stockQuantity < parseInt(quantity, 10)) {
+          throw new ApiError(400, "Stock insuffisant");
+        }
       }
     }
 

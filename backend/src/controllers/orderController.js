@@ -81,20 +81,45 @@ class OrderController {
         throw new ApiError(400, `Produit ${item.productId} non disponible`);
       }
 
-      if (product.stockQuantity < item.quantity) {
+      let unitPrice = product.price;
+      let variant = null;
+
+      if (item.variantId) {
+        variant = await prisma.productVariant.findUnique({
+          where: { id: item.variantId },
+        });
+
+        if (!variant || variant.productId !== product.id) {
+          throw new ApiError(
+            400,
+            `Variante introuvable pour ${product.name}`,
+          );
+        }
+
+        if (variant.stockQuantity < item.quantity) {
+          throw new ApiError(
+            400,
+            `Stock insuffisant pour ${product.name} (${variant.label})`,
+          );
+        }
+
+        unitPrice = variant.price;
+      } else if (product.stockQuantity < item.quantity) {
         throw new ApiError(400, `Stock insuffisant pour ${product.name}`);
       }
 
-      const itemTotal = parseFloat(product.price) * item.quantity;
+      const itemTotal = parseFloat(unitPrice) * item.quantity;
       subtotal += itemTotal;
 
       orderItems.push({
         productId: product.id,
         productName: product.name,
-        productSku: product.sku,
+        productSku: variant?.sku || product.sku,
         productImage: product.featuredImage,
+        variantId: variant?.id || null,
+        variantLabel: variant?.label || null,
         quantity: item.quantity,
-        price: product.price,
+        price: unitPrice,
         subtotal: itemTotal,
       });
     }
@@ -168,14 +193,22 @@ class OrderController {
         },
       });
 
-      // Update product stock
+      // Update product/variant stock
       for (const item of items) {
+        if (item.variantId) {
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stockQuantity: { decrement: item.quantity } },
+          });
+        } else {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stockQuantity: { decrement: item.quantity } },
+          });
+        }
         await tx.product.update({
           where: { id: item.productId },
-          data: {
-            stockQuantity: { decrement: item.quantity },
-            salesCount: { increment: item.quantity },
-          },
+          data: { salesCount: { increment: item.quantity } },
         });
       }
 
@@ -400,12 +433,20 @@ class OrderController {
       // If cancelled, restore stock
       if (status === "CANCELLED") {
         for (const item of updatedOrder.items) {
+          if (item.variantId) {
+            await tx.productVariant.update({
+              where: { id: item.variantId },
+              data: { stockQuantity: { increment: item.quantity } },
+            });
+          } else {
+            await tx.product.update({
+              where: { id: item.productId },
+              data: { stockQuantity: { increment: item.quantity } },
+            });
+          }
           await tx.product.update({
             where: { id: item.productId },
-            data: {
-              stockQuantity: { increment: item.quantity },
-              salesCount: { decrement: item.quantity },
-            },
+            data: { salesCount: { decrement: item.quantity } },
           });
         }
       }
@@ -563,12 +604,20 @@ class OrderController {
 
       // Restore stock
       for (const item of order.items) {
+        if (item.variantId) {
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stockQuantity: { increment: item.quantity } },
+          });
+        } else {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stockQuantity: { increment: item.quantity } },
+          });
+        }
         await tx.product.update({
           where: { id: item.productId },
-          data: {
-            stockQuantity: { increment: item.quantity },
-            salesCount: { decrement: item.quantity },
-          },
+          data: { salesCount: { decrement: item.quantity } },
         });
       }
 

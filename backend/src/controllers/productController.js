@@ -63,6 +63,9 @@ class ProductController {
           images: {
             orderBy: { position: "asc" },
           },
+        variants: {
+          orderBy: { position: "asc" },
+        },
           reviews: {
             where: { isApproved: true },
             select: {
@@ -115,6 +118,9 @@ class ProductController {
       where: { id },
       include: {
         images: {
+          orderBy: { position: "asc" },
+        },
+        variants: {
           orderBy: { position: "asc" },
         },
         reviews: {
@@ -170,6 +176,9 @@ class ProductController {
       where: { slug },
       include: {
         images: {
+          orderBy: { position: "asc" },
+        },
+        variants: {
           orderBy: { position: "asc" },
         },
         reviews: {
@@ -230,6 +239,9 @@ class ProductController {
         images: {
           orderBy: { position: "asc" },
         },
+        variants: {
+          orderBy: { position: "asc" },
+        },
       },
       orderBy: { salesCount: "desc" },
     });
@@ -257,6 +269,7 @@ class ProductController {
       volume,
       bundleLength,
       featured,
+      variants,
     } = req.body;
 
     // Validate required fields
@@ -289,6 +302,27 @@ class ProductController {
       });
     }
 
+    // Variants (e.g. 50ml / 100ml / 250ml) — optional. Sent as a JSON
+    // string from multipart form-data: [{ label, price, stockQuantity }]
+    let variantsData = [];
+    if (variants) {
+      try {
+        const parsed = JSON.parse(variants);
+        variantsData = parsed.map((v, index) => ({
+          label: v.label,
+          price: parseFloat(v.price),
+          compareAtPrice: v.compareAtPrice
+            ? parseFloat(v.compareAtPrice)
+            : null,
+          stockQuantity: parseInt(v.stockQuantity) || 0,
+          sku: v.sku || null,
+          position: index,
+        }));
+      } catch (err) {
+        throw new ApiError(400, "Format des variantes invalide");
+      }
+    }
+
     // Create product
     const product = await prisma.product.create({
       data: {
@@ -315,9 +349,16 @@ class ProductController {
                 create: galleryImagesData,
               }
             : undefined,
+        variants:
+          variantsData.length > 0
+            ? {
+                create: variantsData,
+              }
+            : undefined,
       },
       include: {
         images: true,
+        variants: true,
       },
     });
 
@@ -412,6 +453,7 @@ class ProductController {
       data: updateData,
       include: {
         images: true,
+        variants: true,
       },
     });
 
@@ -470,11 +512,62 @@ class ProductController {
       });
     }
 
+    // Sync variants (e.g. 50ml / 100ml / 250ml). Sent as a JSON string:
+    // [{ id?, label, price, compareAtPrice?, stockQuantity, sku? }]
+    // Entries with an id are updated, entries without one are created,
+    // and any existing variant not present in the list gets deleted.
+    if (rawData.variants !== undefined) {
+      let variantsPayload = [];
+      try {
+        variantsPayload = JSON.parse(rawData.variants);
+      } catch (err) {
+        throw new ApiError(400, "Format des variantes invalide");
+      }
+
+      const keepIds = variantsPayload
+        .filter((v) => v.id)
+        .map((v) => v.id);
+
+      await prisma.productVariant.deleteMany({
+        where: {
+          productId: id,
+          id: { notIn: keepIds },
+        },
+      });
+
+      for (const [index, v] of variantsPayload.entries()) {
+        const data = {
+          label: v.label,
+          price: parseFloat(v.price),
+          compareAtPrice: v.compareAtPrice
+            ? parseFloat(v.compareAtPrice)
+            : null,
+          stockQuantity: parseInt(v.stockQuantity) || 0,
+          sku: v.sku || null,
+          position: index,
+        };
+
+        if (v.id) {
+          await prisma.productVariant.update({
+            where: { id: v.id },
+            data,
+          });
+        } else {
+          await prisma.productVariant.create({
+            data: { ...data, productId: id },
+          });
+        }
+      }
+    }
+
     // Return the fully up-to-date product (in case images changed above)
     const finalProduct = await prisma.product.findUnique({
       where: { id },
       include: {
         images: {
+          orderBy: { position: "asc" },
+        },
+        variants: {
           orderBy: { position: "asc" },
         },
       },

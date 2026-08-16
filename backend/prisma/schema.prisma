@@ -198,6 +198,10 @@ model Product {
     images        ProductImage[]
     featuredImage String?
 
+    // Variants (e.g. 50ml / 100ml / 250ml) — optional, most products won't
+    // have any and just use price/stockQuantity above directly.
+    variants ProductVariant[]
+
     // SEO
     metaTitle       String?
     metaDescription String?
@@ -238,6 +242,29 @@ model ProductImage {
 
     @@index([productId])
     @@map("product_images")
+}
+
+model ProductVariant {
+    id        String  @id @default(auto()) @map("_id") @db.ObjectId
+    productId String  @db.ObjectId
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    label String // e.g. "50ml", "100ml", "250ml"
+    sku   String?
+
+    price          Float
+    compareAtPrice Float?
+    stockQuantity  Int    @default(0)
+    position       Int    @default(0)
+
+    cartItems  CartItem[]
+    orderItems OrderItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([productId])
+    @@map("product_variants")
 }
 
 // ============= PRODUCT BUNDLES =============
@@ -331,6 +358,11 @@ model CartItem {
     bundleId String? @db.ObjectId
     bundle   Bundle? @relation(fields: [bundleId], references: [id], onDelete: Cascade)
 
+    // Optional — set when the customer picked a specific size/quantity
+    // variant of the product (e.g. "250ml") rather than the base product.
+    variantId String?         @db.ObjectId
+    variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
     isBundle Boolean @default(false)
     quantity Int     @default(1)
     price    Float
@@ -338,10 +370,11 @@ model CartItem {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@unique([cartId, productId, bundleId])
+    @@unique([cartId, productId, bundleId, variantId])
     @@index([cartId])
     @@index([productId])
     @@index([bundleId])
+    @@index([variantId])
     @@map("cart_items")
 }
 
@@ -425,12 +458,18 @@ model OrderItem {
     bundleId String? @db.ObjectId
     bundle   Bundle? @relation(fields: [bundleId], references: [id])
 
+    // Optional — set when the customer picked a specific size/quantity
+    // variant of the product (e.g. "250ml") rather than the base product.
+    variantId String?         @db.ObjectId
+    variant   ProductVariant? @relation(fields: [variantId], references: [id])
+
     isBundle Boolean @default(false)
 
     // Snapshot data
     productName  String
     productSku   String?
     productImage String?
+    variantLabel String? // e.g. "250ml" — kept even if the variant is later deleted
 
     // For bundles, store the items as JSON string
     bundleName  String?
@@ -445,6 +484,7 @@ model OrderItem {
     @@index([orderId])
     @@index([productId])
     @@index([bundleId])
+    @@index([variantId])
     @@map("order_items")
 }
 
