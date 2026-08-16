@@ -305,7 +305,7 @@ class ProductController {
         lowStockThreshold: parseInt(lowStockThreshold) || 10,
         weight: weight ? parseFloat(weight) : null,
         volume: volume ? parseFloat(volume) : null,
-        bundleLength: bundleLength ? parseFloat(bundleLength) : null,
+        bundleLength: bundleLength ? String(bundleLength) : null,
         featuredImage: featuredImageUrl,
         featured: featured === "true" || featured === true,
         status:"ACTIVE",
@@ -333,9 +333,8 @@ class ProductController {
    */
   updateProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const updateData = req.body;
-    console.log("updateData");
-    console.log(updateData);
+    const rawData = req.body;
+
     // Check if product exists
     const existingProduct = await prisma.product.findUnique({
       where: { id },
@@ -344,6 +343,46 @@ class ProductController {
     if (!existingProduct || existingProduct.deletedAt) {
       throw new ApiError(404, "Produit non trouvé");
     }
+
+    // Multipart form-data sends every field as a string, so we coerce each
+    // field to the type Prisma actually expects instead of passing req.body
+    // straight through. Fields not present in the request are left alone.
+    const updateData = {};
+
+    if (rawData.name !== undefined) updateData.name = rawData.name;
+    if (rawData.description !== undefined)
+      updateData.description = rawData.description;
+    if (rawData.shortDescription !== undefined)
+      updateData.shortDescription = rawData.shortDescription;
+    if (rawData.category !== undefined) updateData.category = rawData.category;
+    if (rawData.status !== undefined) updateData.status = rawData.status;
+
+    if (rawData.price !== undefined)
+      updateData.price = parseFloat(rawData.price);
+    if (rawData.compareAtPrice !== undefined)
+      updateData.compareAtPrice = rawData.compareAtPrice
+        ? parseFloat(rawData.compareAtPrice)
+        : null;
+    if (rawData.cost !== undefined)
+      updateData.cost = rawData.cost ? parseFloat(rawData.cost) : null;
+
+    if (rawData.stockQuantity !== undefined)
+      updateData.stockQuantity = parseInt(rawData.stockQuantity);
+    if (rawData.lowStockThreshold !== undefined)
+      updateData.lowStockThreshold = parseInt(rawData.lowStockThreshold);
+
+    if (rawData.weight !== undefined)
+      updateData.weight = rawData.weight ? parseFloat(rawData.weight) : null;
+    if (rawData.volume !== undefined)
+      updateData.volume = rawData.volume ? parseFloat(rawData.volume) : null;
+    if (rawData.bundleLength !== undefined)
+      updateData.bundleLength = rawData.bundleLength
+        ? String(rawData.bundleLength)
+        : null;
+
+    if (rawData.featured !== undefined)
+      updateData.featured =
+        rawData.featured === "true" || rawData.featured === true;
 
     // Update slug if name changed
     if (updateData.name && updateData.name !== existingProduct.name) {
@@ -376,7 +415,74 @@ class ProductController {
       },
     });
 
-    res.status(200).json(new ApiResponse(200, product, "Produit mis à jour"));
+    // Remove gallery images the admin deselected (keepImages is a JSON
+    // array of image IDs to keep; anything else for this product goes)
+    if (rawData.keepImages !== undefined) {
+      let keepIds = [];
+      try {
+        keepIds = JSON.parse(rawData.keepImages);
+      } catch (err) {
+        keepIds = [];
+      }
+
+      const imagesToRemove = await prisma.productImage.findMany({
+        where: {
+          productId: id,
+          id: { notIn: keepIds },
+        },
+      });
+
+      for (const image of imagesToRemove) {
+        const publicId = getPublicIdFromUrl(image.url);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId);
+          } catch (err) {
+            console.error(
+              "Error deleting gallery image from Cloudinary:",
+              err,
+            );
+          }
+        }
+      }
+
+      await prisma.productImage.deleteMany({
+        where: {
+          productId: id,
+          id: { notIn: keepIds },
+        },
+      });
+    }
+
+    // Add any newly uploaded gallery images
+    if (req.files && req.files.galleryImages) {
+      const existingCount = await prisma.productImage.count({
+        where: { productId: id },
+      });
+
+      await prisma.productImage.createMany({
+        data: req.files.galleryImages.map((file, index) => ({
+          productId: id,
+          url: file.path,
+          altText: `${updateData.name || existingProduct.name} - Image ${existingCount + index + 1}`,
+          position: existingCount + index,
+        })),
+      });
+    }
+
+    // Return the fully up-to-date product (in case images changed above)
+    const finalProduct = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        images: {
+          orderBy: { position: "asc" },
+        },
+      },
+    });
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, finalProduct, "Produit mis à jour"));
   });
 
   /**

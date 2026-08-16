@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
+import { PRODUCT_CATEGORIES } from "../utils/constants";
 
 export const useEditProduct = () => {
   const navigate = useNavigate();
@@ -35,14 +36,12 @@ export const useEditProduct = () => {
   // Gallery — images that already exist in the DB and should be kept
   const [existingGalleryImages, setExistingGalleryImages] = useState([]);
 
-  const categories = [
-    { value: "HAIR_OIL", label: "Huiles Capillaires" },
-    { value: "SHAMPOO", label: "Shampoings" },
-    { value: "GROWTH_SERUM", label: "Sérums de Croissance" },
-    { value: "HAIR_BUNDLE", label: "Tissages" },
-    { value: "CONDITIONER", label: "Après-Shampoings" },
-    { value: "TREATMENT", label: "Traitements" },
-  ];
+  // Single source of truth for categories, shared with Add Product — keeps
+  // this dropdown from silently drifting out of sync again.
+  const categories = PRODUCT_CATEGORIES.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }));
 
   // ─── Load product on mount ────────────────────────────────────────────────
   useEffect(() => {

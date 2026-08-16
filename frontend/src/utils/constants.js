@@ -37,6 +37,11 @@ export const PRODUCT_CATEGORIES = [
   { id: "SHAMPOO", name: "Shampoings" },
   { id: "MASK", name: "Masque Capillaires" },
   { id: "BUTTER", name: "Beurre" },
+  { id: "TREATMENT", name: "Traitements" },
+  { id: "GROWTH_SERUM", name: "Sérums de Croissance" },
+  { id: "CONDITIONER", name: "Après-Shampoings" },
+  { id: "HAIR_BUNDLE", name: "Tissages" },
+  { id: "GAMME", name: "Gamme" },
 ];
 
 export const DELIVERY_FEE = Number(import.meta.env.VITE_DELIVERY_FEE) || 1000;
