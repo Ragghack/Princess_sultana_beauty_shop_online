@@ -27,6 +27,11 @@ const ProductDetailsPage = () => {
     loading,
     navigate,
     product,
+    selectedVariant,
+    setSelectedVariant,
+    displayPrice,
+    displayCompareAtPrice,
+    displayStock,
   } = useProductDetails();
 
   if (loading) {
@@ -52,10 +57,10 @@ const ProductDetailsPage = () => {
     );
   }
 
-  const isOutOfStock = product.stockQuantity <= 0;
-  const discount = product.compareAtPrice
+  const isOutOfStock = displayStock <= 0;
+  const discount = displayCompareAtPrice
     ? Math.round(
-        ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
+        ((displayCompareAtPrice - displayPrice) / displayCompareAtPrice) * 100
       )
     : 0;
 
@@ -177,11 +182,11 @@ const ProductDetailsPage = () => {
                 {/* Price */}
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-4xl font-bold text-primary-500">
-                    {formatCurrency(product.price)}
+                    {formatCurrency(displayPrice)}
                   </span>
-                  {product.compareAtPrice && (
+                  {displayCompareAtPrice && (
                     <span className="text-xl text-gray-400 line-through">
-                      {formatCurrency(product.compareAtPrice)}
+                      {formatCurrency(displayCompareAtPrice)}
                     </span>
                   )}
                 </div>
@@ -191,14 +196,50 @@ const ProductDetailsPage = () => {
                   {product.description}
                 </p>
 
+                {/* Size / quantity selector */}
+                {product.variants?.length > 0 && (
+                  <div className="mb-6">
+                    <span className="text-gray-700 font-medium block mb-2">
+                      Contenance :
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {product.variants.map((variant) => {
+                        const isSelected = selectedVariant?.id === variant.id;
+                        const variantOutOfStock = variant.stockQuantity <= 0;
+                        return (
+                          <button
+                            key={variant.id}
+                            type="button"
+                            disabled={variantOutOfStock}
+                            onClick={() => {
+                              setSelectedVariant(variant);
+                              setQuantity(1);
+                            }}
+                            className={`px-4 py-2 rounded-xl border-2 text-sm font-medium transition-colors ${
+                              variantOutOfStock
+                                ? "border-gray-100 text-gray-300 cursor-not-allowed"
+                                : isSelected
+                                  ? "border-primary-500 bg-primary-50 text-primary-600"
+                                  : "border-gray-200 text-gray-700 hover:border-primary-200"
+                            }`}
+                          >
+                            {variant.label}
+                            {variantOutOfStock && " (épuisé)"}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Stock Status */}
                 {isOutOfStock ? (
                   <Badge variant="danger" size="lg" className="mb-6">
                     Rupture de stock
                   </Badge>
-                ) : product.stockQuantity < 10 ? (
+                ) : displayStock < 10 ? (
                   <Badge variant="warning" size="lg" className="mb-6">
-                    Plus que {product.stockQuantity} en stock
+                    Plus que {displayStock} en stock
                   </Badge>
                 ) : (
                   <Badge variant="success" size="lg" className="mb-6">
@@ -223,7 +264,7 @@ const ProductDetailsPage = () => {
                     </span>
                     <button
                       onClick={() =>
-                        setQuantity(Math.min(product.stockQuantity, quantity + 1))
+                        setQuantity(Math.min(displayStock, quantity + 1))
                       }
                       className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-lg transition-colors"
                     >

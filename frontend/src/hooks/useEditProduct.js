@@ -36,6 +36,10 @@ export const useEditProduct = () => {
   // Gallery — images that already exist in the DB and should be kept
   const [existingGalleryImages, setExistingGalleryImages] = useState([]);
 
+  // Variants (e.g. 50ml / 100ml / 250ml) — optional. Existing ones keep
+  // their `id` so the backend knows to update rather than recreate them.
+  const [variants, setVariants] = useState([]);
+
   // Single source of truth for categories, shared with Add Product — keeps
   // this dropdown from silently drifting out of sync again.
   const categories = PRODUCT_CATEGORIES.map((cat) => ({
@@ -89,6 +93,19 @@ export const useEditProduct = () => {
               ? img.url
               : `${import.meta.env.VITE_APP_IMAGE_BASE_URL}${img.url}`,
           ),
+        );
+      }
+
+      // Existing variants
+      if (product.variants?.length > 0) {
+        setVariants(
+          product.variants.map((v) => ({
+            id: v.id,
+            label: v.label ?? "",
+            price: v.price ?? "",
+            compareAtPrice: v.compareAtPrice ?? "",
+            stockQuantity: v.stockQuantity ?? "",
+          })),
         );
       }
     } catch (error) {
@@ -176,12 +193,49 @@ export const useEditProduct = () => {
     setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const addVariant = () => {
+    setVariants((prev) => [
+      ...prev,
+      { label: "", price: "", compareAtPrice: "", stockQuantity: "" },
+    ]);
+  };
+
+  const updateVariant = (index, field, value) => {
+    setVariants((prev) =>
+      prev.map((v, i) => (i === index ? { ...v, [field]: value } : v)),
+    );
+  };
+
+  const removeVariant = (index) => {
+    setVariants((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name || !formData.category || !formData.price) {
       alert("Veuillez remplir tous les champs obligatoires");
       return;
+    }
+
+    // Validate variants, if any
+    const cleanedVariants = variants
+      .map((v) => ({
+        id: v.id,
+        label: v.label.trim(),
+        price: v.price,
+        compareAtPrice: v.compareAtPrice,
+        stockQuantity: v.stockQuantity,
+      }))
+      .filter((v) => v.label || v.price || v.stockQuantity);
+
+    for (const v of cleanedVariants) {
+      if (!v.label || !v.price || v.stockQuantity === "") {
+        alert(
+          "Chaque variante doit avoir une taille, un prix et une quantité en stock",
+        );
+        return;
+      }
     }
 
     try {
@@ -247,6 +301,10 @@ export const useEditProduct = () => {
       const keepImageIds = existingGalleryImages.map((img) => img.id);
       formDataToSend.append("keepImages", JSON.stringify(keepImageIds));
 
+      // Always send variants (even an empty array) so the backend can
+      // correctly delete any that were removed here.
+      formDataToSend.append("variants", JSON.stringify(cleanedVariants));
+
       const response = await api.patch(`/products/${id}`, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -282,5 +340,9 @@ export const useEditProduct = () => {
     galleryPreviews,
     galleryImages,
     existingGalleryImages,
+    variants,
+    addVariant,
+    updateVariant,
+    removeVariant,
   };
 };

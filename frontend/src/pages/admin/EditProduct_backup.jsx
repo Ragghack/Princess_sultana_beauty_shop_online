@@ -1,200 +1,31 @@
-import { FiArrowLeft, FiUpload, FiX, FiImage } from "react-icons/fi";
+import { FiArrowLeft, FiUpload, FiX, FiImage, FiPlus, FiTrash2 } from "react-icons/fi";
 import Card from "../../components/common/Card";
 import Button from "../../components/common/Button";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import api from "../../services/api";
-const VITE_APP_IMAGE_BASE_URL = import.meta.env.VITE_APP_IMAGE_BASE_URL;
+import { useEditProduct } from "../../hooks/useEditProduct";
 
 const EditProduct = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
-  const [featuredImageFile, setFeaturedImageFile] = useState(null);
-  const [galleryPreviews, setGalleryPreviews] = useState([]);
-  const [galleryImages, setGalleryImages] = useState([]);
-  const [existingGalleryImages, setExistingGalleryImages] = useState([]);
-  const [formData, setFormData] = useState({
-    name: "",
-    shortDescription: "",
-    description: "",
-    category: "",
-    price: "",
-    compareAtPrice: "",
-    cost: "",
-    stockQuantity: "",
-    lowStockThreshold: "",
-    weight: "",
-    volume: "",
-    bundleLength: "",
-    featured: false,
-    status: "ACTIVE",
-  });
-
-  const categories = [
-    { value: "HAIR_OIL", label: "Huiles Capillaires" },
-    { value: "SHAMPOO", label: "Shampoings" },
-    { value: "GROWTH_SERUM", label: "Sérums de Croissance" },
-    { value: "HAIR_BUNDLE", label: "Tissages" },
-    { value: "CONDITIONER", label: "Après-Shampoings" },
-    { value: "TREATMENT", label: "Traitements" },
-  ];
-
-  useEffect(() => {
-    fetchProduct();
-  }, [id]);
-
-  const fetchProduct = async () => {
-    try {
-      setInitialLoading(true);
-      const response = await api.get(`/products/${id}`);
-      const product = response.data.data;
-
-      setFormData({
-        name: product.name,
-        shortDescription: product.shortDescription || "",
-        description: product.description || "",
-        category: product.category,
-        price: product.price,
-        compareAtPrice: product.compareAtPrice || "",
-        cost: product.cost || "",
-        stockQuantity: product.stockQuantity,
-        lowStockThreshold: product.lowStockThreshold,
-        weight: product.weight || "",
-        volume: product.volume || "",
-        bundleLength: product.bundleLength || "",
-        featured: product.featured,
-        status: product.status,
-      });
-
-      // Set featured image preview
-      if (product.featuredImage) {
-        setFeaturedImagePreview(
-          `${VITE_APP_IMAGE_BASE_URL}${product.featuredImage}`,
-        );
-      }
-
-      // Set existing gallery images
-      if (product.images && product.images.length > 0) {
-        setExistingGalleryImages(product.images);
-        const previews = product.images.map(
-          (img) => `${VITE_APP_IMAGE_BASE_URL}${img.url}`,
-        );
-        setGalleryPreviews(previews);
-      }
-    } catch (error) {
-      console.error("Failed to fetch product:", error);
-      alert("Échec du chargement du produit");
-      navigate("/admin/products");
-    } finally {
-      setInitialLoading(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleFeaturedImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFeaturedImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFeaturedImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveFeaturedImage = () => {
-    setFeaturedImagePreview(null);
-    setFeaturedImageFile(null);
-  };
-
-  const handleGalleryImagesChange = (e) => {
-    const files = Array.from(e.target.files);
-    const remainingSlots =
-      6 - galleryImages.length - existingGalleryImages.length;
-    const filesToAdd = files.slice(0, remainingSlots);
-
-    setGalleryImages([...galleryImages, ...filesToAdd]);
-
-    filesToAdd.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setGalleryPreviews((prev) => [...prev, reader.result]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleRemoveGalleryImage = (index) => {
-    // Check if it's an existing image or new upload
-    if (index < existingGalleryImages.length) {
-      // Remove existing image
-      setExistingGalleryImages((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      // Remove new upload
-      const newIndex = index - existingGalleryImages.length;
-      setGalleryImages((prev) => prev.filter((_, i) => i !== newIndex));
-    }
-    setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const submitData = new FormData();
-
-      // Append form data
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] !== "" && formData[key] !== null) {
-          submitData.append(key, formData[key]);
-        }
-      });
-
-      // Append featured image if changed
-      if (featuredImageFile) {
-        submitData.append("featuredImage", featuredImageFile);
-      }
-
-      // Append gallery images if added
-      galleryImages.forEach((file) => {
-        submitData.append("images", file);
-      });
-
-      // Send IDs of existing images to keep
-      const keepImageIds = existingGalleryImages.map((img) => img.id);
-      submitData.append("keepImages", JSON.stringify(keepImageIds));
-      console.log(submitData);
-
-      await api.patch(`/products/${id}`, submitData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      alert("Produit mis à jour avec succès!");
-      navigate("/admin/products");
-    } catch (error) {
-      console.error("Error updating product:", error);
-      alert(
-        error.response?.data?.message || "Échec de la mise à jour du produit",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    navigate,
+    loading,
+    initialLoading,
+    formData,
+    handleInputChange,
+    handleFeaturedImageChange,
+    handleGalleryImagesChange,
+    handleSubmit,
+    handleRemoveFeaturedImage,
+    handleRemoveGalleryImage,
+    categories,
+    featuredImagePreview,
+    galleryPreviews,
+    galleryImages,
+    existingGalleryImages,
+    variants,
+    addVariant,
+    updateVariant,
+    removeVariant,
+  } = useEditProduct();
 
   if (initialLoading) {
     return <LoadingSpinner size="lg" text="Chargement du produit..." />;
@@ -564,6 +395,117 @@ const EditProduct = () => {
               )}
             </div>
           </div>
+        </Card>
+
+        {/* Variants (sizes/quantities) */}
+        <Card padding="lg">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-semibold">
+                Tailles / Contenances
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Optionnel — ajoutez des tailles (ex: 50ml, 100ml, 250ml) avec
+                leur propre prix et stock. Les images restent partagées avec
+                le produit.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              icon={<FiPlus />}
+              onClick={addVariant}
+            >
+              Ajouter une taille
+            </Button>
+          </div>
+
+          {variants.length === 0 ? (
+            <p className="text-sm text-gray-400 italic">
+              Aucune taille ajoutée — ce produit utilisera le prix et le
+              stock renseignés ci-dessus.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {variants.map((variant, index) => (
+                <div
+                  key={variant.id || `new-${index}`}
+                  className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-end p-3 bg-gray-50 rounded-xl"
+                >
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Taille
+                    </label>
+                    <input
+                      type="text"
+                      value={variant.label}
+                      onChange={(e) =>
+                        updateVariant(index, "label", e.target.value)
+                      }
+                      placeholder="Ex: 250ml"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Prix (FCFA)
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.price}
+                      onChange={(e) =>
+                        updateVariant(index, "price", e.target.value)
+                      }
+                      placeholder="8000"
+                      min="0"
+                      step="0.01"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Prix comparatif
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.compareAtPrice}
+                      onChange={(e) =>
+                        updateVariant(index, "compareAtPrice", e.target.value)
+                      }
+                      placeholder="Optionnel"
+                      min="0"
+                      step="0.01"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Stock
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.stockQuantity}
+                      onChange={(e) =>
+                        updateVariant(index, "stockQuantity", e.target.value)
+                      }
+                      placeholder="20"
+                      min="0"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(index)}
+                    className="p-2 rounded-lg hover:bg-red-50 text-red-500 h-fit"
+                    title="Supprimer cette taille"
+                  >
+                    <FiTrash2 size={18} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
 
         {/* Settings */}

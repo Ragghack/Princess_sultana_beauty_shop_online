@@ -201,6 +201,7 @@ export const useCheckout = () => {
       const orderData = {
         items: cartItems.map((item) => ({
           productId: item.product.id,
+          variantId: item.variant?.id || undefined,
           quantity: item.quantity,
           price: item.price,
         })),

@@ -20,6 +20,10 @@ export const useProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [adding, setAdding] = useState(false);
 
+  // Selected size/quantity variant (e.g. "250ml") — null if the product
+  // has no variants or none has been picked yet.
+  const [selectedVariant, setSelectedVariant] = useState(null);
+
   useEffect(() => {
     fetchProduct();
   }, [slug]);
@@ -28,6 +32,12 @@ export const useProductDetails = () => {
     try {
       const data = await productService.getProductBySlug(slug);
       setProduct(data.data);
+      // Default to the first variant if the product has any
+      if (data.data?.variants?.length > 0) {
+        setSelectedVariant(data.data.variants[0]);
+      } else {
+        setSelectedVariant(null);
+      }
     } catch (error) {
       console.error("Failed to fetch product:", error);
     } finally {
@@ -35,10 +45,21 @@ export const useProductDetails = () => {
     }
   };
 
+  // Effective price/stock reflect the selected variant when present,
+  // otherwise fall back to the base product.
+  const displayPrice = selectedVariant?.price ?? product?.price;
+  const displayCompareAtPrice =
+    selectedVariant?.compareAtPrice ?? product?.compareAtPrice;
+  const displayStock = selectedVariant?.stockQuantity ?? product?.stockQuantity;
+
   // If not signed in, remember exactly what the customer wanted to do so
   // it can run automatically right after login, then send them to login.
   const redirectToLoginWithAction = (type) => {
-    setPendingCartAction(type, { productId: product.id, quantity });
+    setPendingCartAction(type, {
+      productId: product.id,
+      quantity,
+      variantId: selectedVariant?.id || null,
+    });
     navigate("/login", {
       state: { title: "toBeAuthToAddToCart", from: location },
     });
@@ -51,7 +72,7 @@ export const useProductDetails = () => {
     }
     setAdding(true);
     try {
-      await addToCart(product, quantity);
+      await addToCart(product, quantity, selectedVariant);
       // Show success message
     } catch (error) {
       console.error("Failed to add to cart:", error);
@@ -84,5 +105,10 @@ export const useProductDetails = () => {
     product,
     addBundleToWishlist,
     addToWishlist,
+    selectedVariant,
+    setSelectedVariant,
+    displayPrice,
+    displayCompareAtPrice,
+    displayStock,
   };
 };

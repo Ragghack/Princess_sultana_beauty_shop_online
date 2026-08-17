@@ -309,6 +309,11 @@ export const CartItem = ({ item, updateQuantity, removeFromCart }) => {
           >
             {item.product?.name}
           </Link>
+          {item.variant?.label && (
+            <p className="text-sm text-primary-500 font-medium mt-0.5">
+              {item.variant.label}
+            </p>
+          )}
           <p className="text-sm text-gray-500 mt-1">{item.product?.category}</p>
           <p className="text-primary-500 font-bold mt-2">
             {formatCurrency(item.price)}

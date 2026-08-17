@@ -105,29 +105,41 @@ export const CartProvider = ({ children }) => {
   // ADD PRODUCT TO CART
   // ─────────────────────────────────────────────────────────────────────────
 
-  const addToCart = async (product, quantity = 1) => {
+  const addToCart = async (product, quantity = 1, variant = null) => {
     setLoading(true);
     try {
       if (isAuthenticated) {
         const response = await api.post("/cart/items", {
           productId: product.id,
           quantity,
+          variantId: variant?.id || undefined,
         });
         // Controller returns the full updated cart object
         setCartItems(response.data.data.items || []);
       } else {
         const existing = cartItems.find(
-          (item) => item.product?.id === product.id && !item.isBundle,
+          (item) =>
+            item.product?.id === product.id &&
+            !item.isBundle &&
+            (item.variant?.id || null) === (variant?.id || null),
         );
         const newItems = existing
           ? cartItems.map((item) =>
-              item.product?.id === product.id && !item.isBundle
+              item.product?.id === product.id &&
+              !item.isBundle &&
+              (item.variant?.id || null) === (variant?.id || null)
                 ? { ...item, quantity: item.quantity + quantity }
                 : item,
             )
           : [
               ...cartItems,
-              { product, quantity, price: product.price, isBundle: false },
+              {
+                product,
+                variant,
+                quantity,
+                price: variant?.price ?? product.price,
+                isBundle: false,
+              },
             ];
 
         setCartItems(newItems);

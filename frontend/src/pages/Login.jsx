@@ -53,7 +53,10 @@ const Login = () => {
       const { data: product } = await productService.getProductById(
         pending.productId,
       );
-      await addToCart(product, pending.quantity || 1);
+      const variant = pending.variantId
+        ? product.variants?.find((v) => v.id === pending.variantId) || null
+        : null;
+      await addToCart(product, pending.quantity || 1, variant);
     } catch (err) {
       console.error("Failed to complete pending cart action:", err);
       return null;

@@ -1,4 +1,4 @@
-import { FiArrowLeft, FiUpload, FiX, FiImage } from "react-icons/fi";
+import { FiArrowLeft, FiUpload, FiX, FiImage, FiPlus, FiTrash2 } from "react-icons/fi";
 import Card from "../../components/common/Card";
 import Button from "../../components/common/Button";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
@@ -20,6 +20,10 @@ const AddProduct = () => {
     featuredImagePreview,
     galleryPreviews,
     galleryImages,
+    variants,
+    addVariant,
+    updateVariant,
+    removeVariant,
   } = useAddProduct();
 
   return (
@@ -363,6 +367,117 @@ const AddProduct = () => {
               )}
             </div>
           </div>
+        </Card>
+
+        {/* Variants (sizes/quantities) */}
+        <Card padding="lg">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-semibold">
+                Tailles / Contenances
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Optionnel — ajoutez des tailles (ex: 50ml, 100ml, 250ml) avec
+                leur propre prix et stock. Les images restent partagées avec
+                le produit.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              icon={<FiPlus />}
+              onClick={addVariant}
+            >
+              Ajouter une taille
+            </Button>
+          </div>
+
+          {variants.length === 0 ? (
+            <p className="text-sm text-gray-400 italic">
+              Aucune taille ajoutée — ce produit utilisera le prix et le
+              stock renseignés ci-dessus.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {variants.map((variant, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-end p-3 bg-gray-50 rounded-xl"
+                >
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Taille
+                    </label>
+                    <input
+                      type="text"
+                      value={variant.label}
+                      onChange={(e) =>
+                        updateVariant(index, "label", e.target.value)
+                      }
+                      placeholder="Ex: 250ml"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Prix (FCFA)
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.price}
+                      onChange={(e) =>
+                        updateVariant(index, "price", e.target.value)
+                      }
+                      placeholder="8000"
+                      min="0"
+                      step="0.01"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Prix comparatif
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.compareAtPrice}
+                      onChange={(e) =>
+                        updateVariant(index, "compareAtPrice", e.target.value)
+                      }
+                      placeholder="Optionnel"
+                      min="0"
+                      step="0.01"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                      Stock
+                    </label>
+                    <input
+                      type="number"
+                      value={variant.stockQuantity}
+                      onChange={(e) =>
+                        updateVariant(index, "stockQuantity", e.target.value)
+                      }
+                      placeholder="20"
+                      min="0"
+                      className="w-full px-3 py-2 rounded-lg border-2 border-gray-200 focus:border-primary-300 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(index)}
+                    className="p-2 rounded-lg hover:bg-red-50 text-red-500 h-fit"
+                    title="Supprimer cette taille"
+                  >
+                    <FiTrash2 size={18} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
 
         {/* Settings */}

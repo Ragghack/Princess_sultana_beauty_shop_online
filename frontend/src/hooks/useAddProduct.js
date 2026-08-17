@@ -27,6 +27,27 @@ export const useAddProduct = () => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
 
+  // Variants (e.g. 50ml / 100ml / 250ml) — optional, most products won't
+  // have any and will just use the base price/stock fields above.
+  const [variants, setVariants] = useState([]);
+
+  const addVariant = () => {
+    setVariants((prev) => [
+      ...prev,
+      { label: "", price: "", compareAtPrice: "", stockQuantity: "" },
+    ]);
+  };
+
+  const updateVariant = (index, field, value) => {
+    setVariants((prev) =>
+      prev.map((v, i) => (i === index ? { ...v, [field]: value } : v)),
+    );
+  };
+
+  const removeVariant = (index) => {
+    setVariants((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const categories = [
     { value: "HAIR_OIL", label: "Huiles Capillaires" },
     { value: "SHAMPOO", label: "Shampoings" },
@@ -139,6 +160,25 @@ export const useAddProduct = () => {
       return;
     }
 
+    // Validate variants, if any were added
+    const cleanedVariants = variants
+      .map((v) => ({
+        label: v.label.trim(),
+        price: v.price,
+        compareAtPrice: v.compareAtPrice,
+        stockQuantity: v.stockQuantity,
+      }))
+      .filter((v) => v.label || v.price || v.stockQuantity);
+
+    for (const v of cleanedVariants) {
+      if (!v.label || !v.price || v.stockQuantity === "") {
+        alert(
+          "Chaque variante doit avoir une taille, un prix et une quantité en stock",
+        );
+        return;
+      }
+    }
+
     try {
       setLoading(true);
 
@@ -186,6 +226,10 @@ export const useAddProduct = () => {
 
       formDataToSend.append("featured", formData.featured);
 
+      if (cleanedVariants.length > 0) {
+        formDataToSend.append("variants", JSON.stringify(cleanedVariants));
+      }
+
       // Append featured image
       formDataToSend.append("featuredImage", featuredImage);
 
@@ -228,6 +272,10 @@ export const useAddProduct = () => {
     categories,
     featuredImagePreview,
     galleryPreviews,
+    variants,
+    addVariant,
+    updateVariant,
+    removeVariant,
     galleryImages,
   };
 };
