@@ -6,6 +6,31 @@ const { generateSKU, generateSlug } = require("../utils/helpers");
 const cloudinary = require("../config/cloudinary");
 const { getPublicIdFromUrl } = require("../utils/cloudinaryHelpers");
 
+// Appends -2, -3, etc. if the base slug is already taken, so two products
+// with the same (or similar) name don't collide on the unique slug field.
+// `excludeId` lets updateProduct check uniqueness without tripping over
+// the product's own existing slug.
+async function generateUniqueSlug(name, excludeId = null) {
+  const baseSlug = generateSlug(name);
+  let candidate = baseSlug;
+  let suffix = 2;
+
+  while (
+    await prisma.product.findFirst({
+      where: {
+        slug: candidate,
+        ...(excludeId ? { id: { not: excludeId } } : {}),
+      },
+      select: { id: true },
+    })
+  ) {
+    candidate = `${baseSlug}-${suffix}`;
+    suffix += 1;
+  }
+
+  return candidate;
+}
+
 class ProductController {
   /**
    * @route   GET /api/v1/products
@@ -282,9 +307,9 @@ class ProductController {
       throw new ApiError(400, "Image principale est obligatoire");
     }
 
-    // Generate SKU and slug
+    // Generate SKU and a guaranteed-unique slug
     const sku = generateSKU(name, category);
-    const slug = generateSlug(name);
+    const slug = await generateUniqueSlug(name);
 
     // Process featured image (Cloudinary sets file.path to the hosted URL)
     const featuredImageFile = req.files.featuredImage[0];
@@ -343,6 +368,7 @@ class ProductController {
         featuredImage: featuredImageUrl,
         featured: featured === "true" || featured === true,
         status:"ACTIVE",
+        deletedAt: null,
         images:
           galleryImagesData.length > 0
             ? {
@@ -427,7 +453,7 @@ class ProductController {
 
     // Update slug if name changed
     if (updateData.name && updateData.name !== existingProduct.name) {
-      updateData.slug = generateSlug(updateData.name);
+      updateData.slug = await generateUniqueSlug(updateData.name, id);
     }
 
     // Handle featured image update

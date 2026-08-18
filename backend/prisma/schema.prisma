@@ -63,10 +63,12 @@ enum PaymentMethod {
     MOBILE_MONEY
     ORANGE_MONEY
     CASH_ON_DELIVERY
+    CARD
 }
 
 enum PaymentStatus {
     PENDING
+    PENDING_VERIFICATION
     COMPLETED
     FAILED
     REFUNDED
@@ -140,6 +142,26 @@ model RefreshToken {
     // Only index userId (token is already @unique)
     @@index([userId])
     @@map("refresh_tokens")
+}
+
+model DeliveryZone {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    region   String
+    town     String
+    quarter  String?
+    fee      Float
+    isActive Boolean @default(true)
+
+    orders Order[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([town, quarter])
+    @@index([isActive])
+    @@index([town])
+    @@map("delivery_zones")
 }
 
 model Address {
@@ -394,6 +416,8 @@ model Order {
     deliveryPersonnelId String? @db.ObjectId
     deliveryPersonnel   User?   @relation("DeliveryPersonnel", fields: [deliveryPersonnelId], references: [id])
     deliveryFee         Float
+    deliveryZoneId      String?       @db.ObjectId
+    deliveryZone        DeliveryZone? @relation(fields: [deliveryZoneId], references: [id])
     deliveryNotes       String?
 
     // Pricing
@@ -406,10 +430,14 @@ model Order {
     discountCode   DiscountCode? @relation(fields: [discountCodeId], references: [id])
 
     // Payment
-    paymentMethod    PaymentMethod
-    paymentStatus    PaymentStatus @default(PENDING)
-    paymentReference String?
-    paidAt           DateTime?
+    paymentMethod          PaymentMethod
+    paymentStatus          PaymentStatus @default(PENDING)
+    paymentReference       String?
+    paymentProofUrl        String?
+    paymentVerifiedBy      String?       @db.ObjectId
+    paymentVerifiedAt      DateTime?
+    paymentRejectionReason String?
+    paidAt                 DateTime?
 
     // Order status
     status OrderStatus @default(PENDING)
