@@ -5,26 +5,26 @@ import { FaWhatsapp } from "react-icons/fa";
 import { FaTiktok } from 'react-icons/fa';
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-50 mt-20">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-50 mt-12">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-4">
+            <h3 className="font-serif text-xl font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent mb-2">
               Princesse Sultana
             </h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
+            <p className="text-sm text-gray-600 mb-3 leading-relaxed">
               Votre destination beauté pour des cheveux sains et magnifiques.
               Produits capillaires de qualité premium.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
+                className="w-9 h-9 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
               >
-                <FiFacebook size={20} />
+                <FiFacebook size={18} />
               </a>
               {/*<a
                 href="https://instagram.com"
@@ -38,27 +38,27 @@ const Footer = () => {
                 href="https://whatsapp.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
+                className="w-9 h-9 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
               >
-                <FaWhatsapp size={20} />
+                <FaWhatsapp size={18} />
               </a>
-                  <a
-      href="https://tiktok.com"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
-    >
-      <FaTiktok size={20} />
-    </a>
+              <a
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-white rounded-full flex items-center justify-center text-primary-500 hover:bg-primary-500 hover:text-white transition-all duration-300 hover:shadow-soft-md hover:-translate-y-1"
+              >
+                <FaTiktok size={18} />
+              </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 text-gray-800">
+            <h4 className="font-semibold text-base mb-3 text-gray-800">
               Liens Rapides
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5 text-sm">
               <li>
                 <Link
                   to="/shop"
@@ -96,10 +96,10 @@ const Footer = () => {
 
           {/* My Account */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 text-gray-800">
+            <h4 className="font-semibold text-base mb-3 text-gray-800">
               Mon Compte
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5 text-sm">
               <li>
                 <Link
                   to="/account"
@@ -137,10 +137,10 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-lg mb-4 text-gray-800">
+            <h4 className="font-semibold text-base mb-3 text-gray-800">
               Contact
             </h4>
-            <ul className="space-y-2 text-gray-600">
+            <ul className="space-y-1.5 text-sm text-gray-600">
               <li className="flex items-center gap-2">
                 <span>📞</span>
                 <span>+237693190930</span>
@@ -161,7 +161,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-primary-200/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-primary-200/50 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-gray-600 text-sm">
             &copy; 2024 Princesse Sultana. Tous droits réservés.
           </p>

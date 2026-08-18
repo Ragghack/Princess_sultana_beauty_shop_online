@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useCart } from "../hooks/useCart";
@@ -10,25 +10,28 @@ import {
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
-import { FiMail, FiLock, FiUser, FiPhone } from "react-icons/fi";
+import { FiMail, FiLock } from "react-icons/fi";
 
-const Register = () => {
+const Login = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
-    phone: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { register } = useAuth();
+  const { login } = useAuth();
   const { addToCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Page the user was trying to reach before being sent here (if any)
+  useEffect(() => {
+    if (location.state?.title === "toBeAuthToAddToCart") {
+      alert("Svp vous devez vous authentifier avant d'ajouter au panier");
+    }
+  }, [location]);
+
+  // Get the page user was trying to access (if any)
   const from = location.state?.from?.pathname || null;
 
   const handleChange = (e) => {
@@ -38,6 +41,8 @@ const Register = () => {
     });
   };
 
+  // Completes whatever the customer was trying to do (add to cart / buy
+  // now) before being sent to login, then returns where to navigate next.
   const runPendingCartAction = async () => {
     const pending = getPendingCartAction();
     if (!pending) return null;
@@ -48,7 +53,10 @@ const Register = () => {
       const { data: product } = await productService.getProductById(
         pending.productId,
       );
-      await addToCart(product, pending.quantity || 1);
+      const variant = pending.variantId
+        ? product.variants?.find((v) => v.id === pending.variantId) || null
+        : null;
+      await addToCart(product, pending.quantity || 1, variant);
     } catch (err) {
       console.error("Failed to complete pending cart action:", err);
       return null;
@@ -63,106 +71,106 @@ const Register = () => {
     setError("");
 
     try {
-      await register(formData);
+      const user = await login(formData.email, formData.password);
 
       const pendingDestination = await runPendingCartAction();
-      navigate(pendingDestination || from || "/", { replace: true });
+      if (pendingDestination) {
+        navigate(pendingDestination, { replace: true });
+        return;
+      }
+
+      // Role-based redirect
+      redirectBasedOnRole(user);
     } catch (err) {
-      setError(err.response?.data?.error || "Erreur d'inscription");
+      setError(err.response?.data?.error || "Erreur de connexion");
     } finally {
       setLoading(false);
     }
   };
 
+  const redirectBasedOnRole = (user) => {
+    // If user was trying to access a specific page, go there
+    if (from) {
+      navigate(from, { replace: true });
+      return;
+    }
+
+    // Otherwise, redirect based on role
+    switch (user.role) {
+      case "ADMIN":
+        navigate("/admin", { replace: true });
+        break;
+      case "STAFF":
+        navigate("/admin", { replace: true });
+        break;
+      case "DELIVERY":
+        navigate("/delivery", { replace: true });
+        break;
+      case "CUSTOMER":
+        navigate("/", { replace: true });
+        break;
+      default:
+        navigate("/", { replace: true });
+    }
+  };
+
   return (
-    <div className="w-full flex justify-center items-center">
-      <Card padding="lg" className="w-full md:w-2/3">
-        <h2 className="font-serif text-2xl font-bold text-gray-800 mb-6 text-center">
-          Inscription
-        </h2>
+    <Card padding="lg">
+      <h2 className="font-serif text-2xl font-bold text-gray-800 mb-6 text-center">
+        Connexion
+      </h2>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
+      {error && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
+          {error}
+        </div>
+      )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="grid md:grid-cols-2 gap-4">
-            <Input
-              label="Prénom"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              icon={<FiUser />}
-              required
-            />
-            <Input
-              label="Nom"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              icon={<FiUser />}
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit}>
+        <Input
+          label="Email"
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          icon={<FiMail />}
+          required
+        />
 
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            icon={<FiMail />}
-            required
-          />
+        <Input
+          label="Mot de passe"
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          icon={<FiLock />}
+          required
+        />
 
-          <Input
-            label="Téléphone"
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            icon={<FiPhone />}
-            placeholder="+237 6XX XX XX XX"
-            required
-          />
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={loading}
+          className="mb-4"
+        >
+          Se connecter
+        </Button>
 
-          <Input
-            label="Mot de passe"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            icon={<FiLock />}
-            required
-          />
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            fullWidth
-            loading={loading}
-            className="mb-4"
+        <p className="text-center text-gray-600">
+          Pas de compte?{" "}
+          <Link
+            to="/register"
+            state={location.state}
+            className="text-primary-500 hover:text-primary-600 font-medium"
           >
             S'inscrire
-          </Button>
-
-          <p className="text-center text-gray-600">
-            Déjà un compte?{" "}
-            <Link
-              to="/login"
-              state={location.state}
-              className="text-primary-500 hover:text-primary-600 font-medium"
-            >
-              Se connecter
-            </Link>
-          </p>
-        </form>
-      </Card>
-    </div>
+          </Link>
+        </p>
+      </form>
+    </Card>
   );
 };
 
-export default Register;
+export default Login;
