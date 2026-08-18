@@ -1,38 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useCart } from "../hooks/useCart";
-import { productService } from "../services/productService";
-import {
-  getPendingCartAction,
-  clearPendingCartAction,
-} from "../utils/pendingCartAction";
+
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import Card from "../components/common/Card";
-import { FiMail, FiLock } from "react-icons/fi";
 
-const Login = () => {
+import {
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiLock,
+} from "react-icons/fi";
+
+const Register = () => {
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
+    phone: "",
     password: "",
+    confirmPassword: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { login } = useAuth();
-  const { addToCart } = useCart();
+  const { register } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state?.title === "toBeAuthToAddToCart") {
-      alert("Svp vous devez vous authentifier avant d'ajouter au panier");
-    }
-  }, [location]);
-
-  // Get the page user was trying to access (if any)
-  const from = location.state?.from?.pathname || null;
 
   const handleChange = (e) => {
     setFormData({
@@ -41,83 +36,45 @@ const Login = () => {
     });
   };
 
-  // Completes whatever the customer was trying to do (add to cart / buy
-  // now) before being sent to login, then returns where to navigate next.
-  const runPendingCartAction = async () => {
-    const pending = getPendingCartAction();
-    if (!pending) return null;
-
-    clearPendingCartAction();
-
-    try {
-      const { data: product } = await productService.getProductById(
-        pending.productId,
-      );
-      const variant = pending.variantId
-        ? product.variants?.find((v) => v.id === pending.variantId) || null
-        : null;
-      await addToCart(product, pending.quantity || 1, variant);
-    } catch (err) {
-      console.error("Failed to complete pending cart action:", err);
-      return null;
-    }
-
-    return pending.type === "BUY_NOW" ? "/checkout" : from;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
     setError("");
 
-    try {
-      const user = await login(formData.email, formData.password);
-
-      const pendingDestination = await runPendingCartAction();
-      if (pendingDestination) {
-        navigate(pendingDestination, { replace: true });
-        return;
-      }
-
-      // Role-based redirect
-      redirectBasedOnRole(user);
-    } catch (err) {
-      setError(err.response?.data?.error || "Erreur de connexion");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const redirectBasedOnRole = (user) => {
-    // If user was trying to access a specific page, go there
-    if (from) {
-      navigate(from, { replace: true });
+    if (formData.password !== formData.confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
       return;
     }
 
-    // Otherwise, redirect based on role
-    switch (user.role) {
-      case "ADMIN":
-        navigate("/admin", { replace: true });
-        break;
-      case "STAFF":
-        navigate("/admin", { replace: true });
-        break;
-      case "DELIVERY":
-        navigate("/delivery", { replace: true });
-        break;
-      case "CUSTOMER":
-        navigate("/", { replace: true });
-        break;
-      default:
-        navigate("/", { replace: true });
+    setLoading(true);
+
+    try {
+      const userData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      };
+
+      await register(userData);
+
+      navigate("/", { replace: true });
+    } catch (err) {
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          "Erreur lors de l'inscription"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Card padding="lg">
       <h2 className="font-serif text-2xl font-bold text-gray-800 mb-6 text-center">
-        Connexion
+        Inscription
       </h2>
 
       {error && (
@@ -128,12 +85,42 @@ const Login = () => {
 
       <form onSubmit={handleSubmit}>
         <Input
+          label="Prénom"
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          icon={<FiUser />}
+          required
+        />
+
+        <Input
+          label="Nom"
+          type="text"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          icon={<FiUser />}
+          required
+        />
+
+        <Input
           label="Email"
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           icon={<FiMail />}
+          required
+        />
+
+        <Input
+          label="Téléphone"
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          icon={<FiPhone />}
           required
         />
 
@@ -147,6 +134,16 @@ const Login = () => {
           required
         />
 
+        <Input
+          label="Confirmer le mot de passe"
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          icon={<FiLock />}
+          required
+        />
+
         <Button
           type="submit"
           variant="primary"
@@ -155,17 +152,16 @@ const Login = () => {
           loading={loading}
           className="mb-4"
         >
-          Se connecter
+          S'inscrire
         </Button>
 
         <p className="text-center text-gray-600">
-          Pas de compte?{" "}
+          Vous avez déjà un compte?{" "}
           <Link
-            to="/register"
-            state={location.state}
+            to="/login"
             className="text-primary-500 hover:text-primary-600 font-medium"
           >
-            S'inscrire
+            Se connecter
           </Link>
         </p>
       </form>
@@ -173,4 +169,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
